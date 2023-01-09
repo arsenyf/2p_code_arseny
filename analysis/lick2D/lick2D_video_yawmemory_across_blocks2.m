@@ -48,30 +48,33 @@ for i_sub=1:1:numel(subjects_list)
             this_x_bin =   find(Tthis.lickport_pos_x_bins== Tthis.lickport_pos_x);
             prev_x_bin =   find(Tprev.lickport_pos_x_bins== Tprev.lickport_pos_x);
             
-            
-            if Tthis(1).current_trial_num_in_block==1 % a new trial block
-                if (this_x_bin==1 && prev_x_bin==numel(Tprev.lickport_pos_x_bins)) || (this_x_bin==numel(Tthis.lickport_pos_x_bins) && prev_x_bin==1)
-                    diff_across_block_previous(end+1) = abs(Tthis(1).lick_yaw_lickbout_avg_across_licks_before_lickportentrance - Tprev(1).lick_yaw_lickbout_avg_across_licks_after_lickportentrance); %lick_yaw_lickbout_avg_for_licks_with_touch
+            try
+                if Tthis(1).current_trial_num_in_block==1 % a new trial block
+                    if (this_x_bin==1 && prev_x_bin==numel(Tprev.lickport_pos_x_bins)) || (this_x_bin==numel(Tthis.lickport_pos_x_bins) && prev_x_bin==1)
+                        diff_across_block_previous(end+1) = abs(Tthis(1).lick_yaw_lickbout_avg_across_licks_before_lickportentrance - Tprev(1).lick_yaw_lickbout_avg_across_licks_after_lickportentrance); %lick_yaw_lickbout_avg_for_licks_with_touch
+                    end
+                elseif Tthis(1).current_trial_num_in_block==2
+                    if (this_x_bin==1)  || (this_x_bin==numel(Tthis.lickport_pos_x_bins))
+                        diff_within_12_block_previous(end+1) = abs(Tthis(1).lick_yaw_lickbout_avg_across_licks_before_lickportentrance - Tprev(1).lick_yaw_lickbout_avg_across_licks_after_lickportentrance);
+                    end
+                elseif Tthis(1).current_trial_num_in_block==3
+                    if (this_x_bin==1)  || (this_x_bin==numel(Tthis.lickport_pos_x_bins))
+                        diff_within_23_block_previous(end+1) = abs(Tthis(1).lick_yaw_lickbout_avg_across_licks_before_lickportentrance - Tprev(1).lick_yaw_lickbout_avg_across_licks_after_lickportentrance);
+                    end
                 end
-            elseif Tthis(1).current_trial_num_in_block==2
-                if (this_x_bin==1)  || (this_x_bin==numel(Tthis.lickport_pos_x_bins))
-                    diff_within_12_block_previous(end+1) = abs(Tthis(1).lick_yaw_lickbout_avg_across_licks_before_lickportentrance - Tprev(1).lick_yaw_lickbout_avg_across_licks_after_lickportentrance);
-                end
-            elseif Tthis(1).current_trial_num_in_block==3
-                if (this_x_bin==1)  || (this_x_bin==numel(Tthis.lickport_pos_x_bins))
-                    diff_within_23_block_previous(end+1) = abs(Tthis(1).lick_yaw_lickbout_avg_across_licks_before_lickportentrance - Tprev(1).lick_yaw_lickbout_avg_across_licks_after_lickportentrance);
-                end
+            catch
             end
         end
+        
         across_training{i_sub}.across_block.mean(i_ses) = nanmedian(diff_across_block_previous);
         across_training{i_sub}.across_block.stem(i_ses) = nanstd(diff_across_block_previous)/sqrt(numel(diff_across_block_previous));
-
+        
         across_training{i_sub}.within_12_block.mean(i_ses) = nanmedian(diff_within_12_block_previous);
         across_training{i_sub}.within_12_block.stem(i_ses) = nanstd(diff_within_12_block_previous)/sqrt(numel(diff_within_12_block_previous));
         
-          across_training{i_sub}.within_23_block.mean(i_ses) = nanmedian(diff_within_23_block_previous);
+        across_training{i_sub}.within_23_block.mean(i_ses) = nanmedian(diff_within_23_block_previous);
         across_training{i_sub}.within_23_block.stem(i_ses) = nanstd(diff_within_23_block_previous)/sqrt(numel(diff_within_23_block_previous));
-
+        
     end
 end
 
@@ -91,7 +94,7 @@ h(2)=shadedErrorBar(1:1:numel(sessions_list),across_training{1}.within_12_block.
 h(3)=shadedErrorBar(1:1:numel(sessions_list),across_training{1}.within_23_block.mean ,across_training{1}.within_23_block.stem,'lineprops',{'-','Color',[0 0 1]})
 legend([h(1).mainLine h(2).mainLine, h(3).mainLine], 'across blocks', 'within block, trial 1 vs. 2','within block, trial 2 vs. 3')
 
-% 
+%
 % plot(across_training{1}.across_block.mean,'-','Color',[1.00,0.41,0.16])
 % plot(across_training{1}.within_block.mean,'-','Color',[0.00,0.45,0.74])
 % legend({'across', 'within'});

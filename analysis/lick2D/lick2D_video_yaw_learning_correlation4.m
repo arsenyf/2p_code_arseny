@@ -1,0 +1,58 @@
+function    lick2D_video_yaw_learning_correlation4()
+clf
+
+
+
+    
+  
+        
+        
+           x_tong_port_corr=[];
+        %% BEFORE LICKPORT ENTRANCE
+        T= fetch((TRACKING.VideoNthLickTrial*EXP2.SessionTrial*TRACKING.VideoLickportPositionTrial*EXP2.TrialLickPort )-TRACKING.VideoGroomingTrial & 'trial>100' & 'lick_number_relative_to_lickport_entrance=-5','lick_peak_x','lickport_x');
+        x_tong_port_corr(end+1)=corr([T.lickport_x]',[T.lick_peak_x]','Rows','pairwise');
+        
+          T= fetch((TRACKING.VideoNthLickTrial*EXP2.SessionTrial*TRACKING.VideoLickportPositionTrial*EXP2.TrialLickPort )-TRACKING.VideoGroomingTrial & 'trial>100' & 'lick_number_relative_to_lickport_entrance=-4','lick_peak_x','lickport_x');
+        x_tong_port_corr(end+1)=corr([T.lickport_x]',[T.lick_peak_x]','Rows','pairwise');
+
+         T= fetch((TRACKING.VideoNthLickTrial*EXP2.SessionTrial*TRACKING.VideoLickportPositionTrial*EXP2.TrialLickPort  )-TRACKING.VideoGroomingTrial & 'trial>100' & 'lick_number_relative_to_lickport_entrance=-3','lick_peak_x','lickport_x');
+        x_tong_port_corr(end+1)=corr([T.lickport_x]',[T.lick_peak_x]','Rows','pairwise');
+
+ T= fetch((TRACKING.VideoNthLickTrial*EXP2.SessionTrial*TRACKING.VideoLickportPositionTrial*EXP2.TrialLickPort  )-TRACKING.VideoGroomingTrial & 'trial>100' & 'lick_number_relative_to_lickport_entrance=-2','lick_peak_x','lickport_x');
+        x_tong_port_corr(end+1)=corr([T.lickport_x]',[T.lick_peak_x]','Rows','pairwise');
+
+         T= fetch((TRACKING.VideoNthLickTrial*EXP2.SessionTrial*TRACKING.VideoLickportPositionTrial*EXP2.TrialLickPort  )-TRACKING.VideoGroomingTrial & 'trial>100' & 'lick_number_relative_to_lickport_entrance=-1','lick_peak_x','lickport_x');
+        x_tong_port_corr(end+1)=corr([T.lickport_x]',[T.lick_peak_x]','Rows','pairwise');
+
+  T= fetch((TRACKING.VideoNthLickTrial*EXP2.SessionTrial*TRACKING.VideoLickportPositionTrial*EXP2.TrialLickPort  )-TRACKING.VideoGroomingTrial & 'trial>100' & 'lick_number_relative_to_lickport_entrance=0','lick_peak_x','lickport_x');
+        x_tong_port_corr(end+1)=corr([T.lickport_x]',[T.lick_peak_x]','Rows','pairwise');
+        
+          T= fetch((TRACKING.VideoNthLickTrial*EXP2.SessionTrial*TRACKING.VideoLickportPositionTrial*EXP2.TrialLickPort  )-TRACKING.VideoGroomingTrial & 'trial>100' & 'lick_number_relative_to_lickport_entrance=1','lick_peak_x','lickport_x');
+        x_tong_port_corr(end+1)=corr([T.lickport_x]',[T.lick_peak_x]','Rows','pairwise');
+
+         T= fetch((TRACKING.VideoNthLickTrial*EXP2.SessionTrial*TRACKING.VideoLickportPositionTrial*EXP2.TrialLickPort  )-TRACKING.VideoGroomingTrial & 'trial>100' & 'lick_number_relative_to_lickport_entrance=2','lick_peak_x','lickport_x');
+        x_tong_port_corr(end+1)=corr([T.lickport_x]',[T.lick_peak_x]','Rows','pairwise');
+
+         T= fetch((TRACKING.VideoNthLickTrial*EXP2.SessionTrial*TRACKING.VideoLickportPositionTrial*EXP2.TrialLickPort  )-TRACKING.VideoGroomingTrial & 'trial>100' & 'lick_number_relative_to_lickport_entrance=3','lick_peak_x','lickport_x');
+        x_tong_port_corr(end+1)=corr([T.lickport_x]',[T.lick_peak_x]','Rows','pairwise');
+
+         T= fetch((TRACKING.VideoNthLickTrial*EXP2.SessionTrial*TRACKING.VideoLickportPositionTrial*EXP2.TrialLickPort  )-TRACKING.VideoGroomingTrial & 'trial>100' & 'lick_number_relative_to_lickport_entrance=4','lick_peak_x','lickport_x');
+        x_tong_port_corr(end+1)=corr([T.lickport_x]',[T.lick_peak_x]','Rows','pairwise');
+
+         T= fetch((TRACKING.VideoNthLickTrial*EXP2.SessionTrial*TRACKING.VideoLickportPositionTrial*EXP2.TrialLickPort  )-TRACKING.VideoGroomingTrial & 'trial>100' & 'lick_number_relative_to_lickport_entrance=5','lick_peak_x','lickport_x');
+        x_tong_port_corr(end+1)=corr([T.lickport_x]',[T.lick_peak_x]','Rows','pairwise');
+
+        
+        
+
+
+subplot(2,2,[1])
+hold on
+plot([-5:1:5],x_tong_port_corr)
+% plot(across_training{1}.within_block,'-','Color',[0.00,0.45,0.74])
+xlabel('Licks, relative to target entrance');
+ylabel(sprintf('Correlation in (tongue,target)\n horizontal position'));
+ylim([0,1])
+
+
+end

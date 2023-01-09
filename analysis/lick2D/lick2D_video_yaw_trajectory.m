@@ -14,9 +14,11 @@ key.subject_id = 462458; %AF17
 key.subject_id = 462455; 463192
 key.subject_id = 462458; %AF17
 key.subject_id = 463192;  %AF25
+key.subject_id = 462458; %AF17
 
 
 sessions_list = fetchn(EXP2.Session & TRACKING.VideoNthLickTrial & key, 'session');
+sessions_list=sessions_list(2);
 
 for i_s = 1:1:numel(sessions_list)
     
@@ -81,13 +83,16 @@ for i_s = 1:1:numel(sessions_list)
     for i_p=1:1:numel(post_list)
         k.lickport_pos_number = post_list(i_p);
         
-        T= fetch((TRACKING.VideoNthLickTrial*EXP2.SessionTrial*TRACKING.VideoLickportPositionTrial*EXP2.TrialLickPort & key & k)-TRACKING.VideoGroomingTrial & 'trial>100' & 'lick_touch_number>1','lick_peak_x','lick_peak_z','lickport_x','lickport_z','lick_yaw_lickbout');
+%         T= fetch((TRACKING.VideoNthLickTrial*EXP2.SessionTrial*TRACKING.VideoLickportPositionTrial*EXP2.TrialLickPort & key & k)-TRACKING.VideoGroomingTrial & 'trial>100' & 'lick_touch_number>=1' & 'lick_touch_number<10','lick_peak_x','lick_peak_z','lickport_x','lickport_z','lick_yaw_lickbout');
+              T= fetch((TRACKING.VideoNthLickTrial*EXP2.SessionTrial*TRACKING.VideoLickportPositionTrial*EXP2.TrialLickPort & key & k)-TRACKING.VideoGroomingTrial & 'trial>200' & 'lick_number_with_touch_relative_to_reward>=1','lick_peak_x','lick_peak_z','lickport_x','lickport_z','lick_yaw_lickbout');
+
+        
         % %                 T= fetch((TRACKING.VideoNthLickTrial*EXP2.SessionTrial*TRACKING.VideoLickportPositionTrial*EXP2.TrialLickPort & key & k)-TRACKING.VideoGroomingTrial & 'trial>100' & 'lick_touch_number>1','lick_touch_x','lick_touch_z','lickport_x','lickport_z');
         %         T= fetch((TRACKING.VideoNthLickTrial*EXP2.SessionTrial*TRACKING.VideoLickportPositionTrial*EXP2.TrialLickPort & key & k)-TRACKING.VideoGroomingTrial & 'trial>100' & 'lick_number_relative_to_lickport_entrance<0','lick_peak_x','lick_peak_z','lickport_x','lickport_z');
         
         
         
-        
+        roll=-20
         
         [pos_x, pos_z]=  fn_roll_correction(roll, [T.lickport_x],[T.lickport_z] );
         

@@ -1,0 +1,20 @@
+
+
+
+% Behavior data
+lick2D_behaviorperform
+lick2D_behaviorperform_numlicks
+lick2D_video_licking_stats
+lick2D_video_licking_stats_reward_increase_omission
+lick2D_video_yawmemory_across_blocks
+lick2D_video_yawmemory_across_blocks2 % that's what was shown in the original presentation
+lick2D_video_yaw_early_vs_nonearly % that's what was shown in the original presentation
+lick2D_video_yaw_early_vs_nonearly2
+lick2D_video_yaw_trajectory
+lick2D_video_yaw_learning
+lick2D_video_yaw_learning_correlation
+lick2D_video_yaw_learning_correlation2 %using  - X position
+lick2D_video_yaw_learning_correlation3 %using - Z position
+lick2D_video_yaw_learning_correlation4 
+
+lick2D_video_yaw_learning_across_block
