@@ -10,7 +10,7 @@ imaging_frame_rate        : double                # (Hz) Should  be removed in  
 %}
 
 
-classdef FOV < dj.Imported
+classdef FOV0ld < dj.Imported
     methods(Access=protected)
         function makeTuples(self, key)
             dir_data = fetchn(EXP2.SessionEpochDirectory &key,'local_path_session_epoch');

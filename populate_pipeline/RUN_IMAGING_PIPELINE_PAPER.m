@@ -70,6 +70,8 @@ populate_behavior_Lick2D(dir_behavioral_data, behavioral_protocol_name);
 
 % populate_Session_and_behavior (dir_behavioral_data, user_name, rig); % populate session with behavior
 
+populate(EXP2.SessionBehavioral) %it just tells if this is session is the first, sencond etc among behavioral sessions
+
 % should run after populate_behavior_Lick2D
 populate(EXP2.SessionEpoch); % reads info about FOV and trial duration from SI files. Also populates EXP2.SessionEpochDirectory, IMG.SessionEpochFrame, IMG.FrameTime, IMG.FrameStartFile
 
@@ -177,8 +179,9 @@ populate(LICK2D.ROILick2DPSTHSpikesResampledlikePoisson); % also populates LICK2
 
 populate(IMG.ROIExample);
 populate(LICK2D.ROILick2DPSTHSpikesExample); 
-populate(LICK2D.ROILick2DmapSpikesExample);  %also populates LICK2D.ROILick2DmapPSTHSpikesExample LICK2D.ROILick2DmapPSTHStabilitySpikesExample
+populate(LICK2D.ROILick2DmapSpikesExample);  %also populates LICK2D.ROILick2DmapPSTHSpikesExample LICK2D.ROILick2DmapPSTHStabilitySpikesExample LICK2D.ROILick2DmapStatsSpikesExample
 
+LICK2D.ROILick2DmapStatsSpikes
 
 populate(PLOTS.Cells2DTuningSpikes);
 populate(PLOTS.Cells2DTuningSpikesRewardSignif);
@@ -233,6 +236,9 @@ populate(PLOTS.MapsBodypartCorr);
 % Based on Spikes
 %--------------------------------
 populate(PLOTS.Population2DReward);
+populate(PLOTS.CellsPSTHTiming);
+populate(PLOTS.CellsPSTHTimingReward);
+populate(PLOTS.Cells2DTuningSpikesTop100);
 
 
 

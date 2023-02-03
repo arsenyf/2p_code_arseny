@@ -11,10 +11,10 @@ if isempty(roi_number)
 end
 
 %% Cells maps on grid
-horizontal_dist1=(1/(cells_in_column))*0.2;
-vertical_dist1=(1/(cells_in_row))*0.15;
-panel_width1=(1/(cells_in_row))*0.15;
-panel_height1=(1/(cells_in_column))*0.15;
+horizontal_dist1=(1/(cells_in_column))*0.16;
+vertical_dist1=(1/(cells_in_row))*0.12;
+panel_width1=(1/(cells_in_row))*0.12;
+panel_height1=(1/(cells_in_column))*0.12;
 
 for i=1:1:cells_in_column
     position_x_grid(end+1)=position_x_grid(end)+horizontal_dist1;
@@ -63,10 +63,12 @@ for i_y=1:1:cells_in_column
         set(gca,'YDir','normal');
         set(gca, 'FontSize',6);
         axis off
-        if i_roi==7
-            title(sprintf('Example session, Positional tuning of 100 neurons'), 'FontSize',6);
+        if i_roi==5
+            title(sprintf('Example session,\n Positional tuning of 100 neurons'), 'FontSize',6);
         end
-       
+       if i_roi==1
+            text(-4,17,sprintf('g'), 'FontWeight','bold','FontSize',12);
+        end
     end
 end
 

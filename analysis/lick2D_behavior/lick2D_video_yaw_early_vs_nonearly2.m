@@ -128,8 +128,8 @@ ylabel(sprintf('First contact time, \nrelative to target presentation (s)'));
 
 subplot(2,3,6)
 hold on
-h(1)=shadedErrorBar(1:1:numel(sessions_list),across_sessions.yaw_std_early.mean ,across_sessions.yaw_std_early.stem,'lineprops',{'-','Color',[0 0 1]})
-h(2)=shadedErrorBar(1:1:numel(sessions_list),across_sessions.yaw_std_late.mean ,across_sessions.yaw_std_late.stem,'lineprops',{'-','Color',[1 0 0]})
+h(1)=shadedErrorBar(1:1:numel(sessions_list),across_sessions.yaw_std_early.mean ,across_sessions.yaw_std_early.stem,'lineprops',{'-','Color',[0 0 1]});
+h(2)=shadedErrorBar(1:1:numel(sessions_list),across_sessions.yaw_std_late.mean ,across_sessions.yaw_std_late.stem,'lineprops',{'-','Color',[1 0 0]});
 % plot(across_training{1}.within_block,'-','Color',[0.00,0.45,0.74])
 legend([h(1).mainLine h(2).mainLine], 'early licks', 'non-early')
 xlabel('Session');

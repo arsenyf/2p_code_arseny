@@ -1,4 +1,4 @@
-function [psth_time] = fn_plot_single_cell_psth_by_position_example (rel_example, roi_number_uid, xlabel_flag, ylabel_flag, position_x1_grid, position_y1_grid)
+function [psth_time] = fn_plot_single_cell_psth_by_position_example (rel_example, roi_number_uid, xlabel_flag, ylabel_flag, position_x1_grid, position_y1_grid, cell_number2d)
 key_roi.roi_number_uid =roi_number_uid;
 P =fetch(rel_example & key_roi,'*');
 psth_time = P.psth_time;
@@ -8,16 +8,16 @@ pos_z_bins_centers =P.pos_z_bins_centers';
 
 
 P.psth_per_position_regular = fn_map_2D_legalize_by_neighboring_psth(P.psth_per_position_regular);
-
+field_size_regular = P.field_size_regular;
 
 panel_width_map=0.025;
 panel_height_map=0.025;
 
 
 horizontal_dist1=(1/(number_of_bins+2))*0.1;
-vertical_dist1=(1/(number_of_bins+2))*0.1;
+vertical_dist1=(1/(number_of_bins+2))*0.08;
 panel_width1=(1/(number_of_bins+6))*0.15;
-panel_height1=(1/(number_of_bins+6))*0.125;
+panel_height1=(1/(number_of_bins+6))*0.09;
 for i=1:1:number_of_bins-1
     position_x1_grid(end+1)=position_x1_grid(end)+horizontal_dist1;
     position_y1_grid(end+1)=position_y1_grid(end)+vertical_dist1;
@@ -45,17 +45,29 @@ for  i_x=1:1:number_of_bins
         plot([0,0],[0,1],'-k','linewidth',0.25)
         temp_mean=P.psth_per_position_regular{i_z,i_x}./psth_max_all;
         temp_stem=P.psth_per_position_regular_stem{i_z,i_x}./psth_max_all;
-%         try
-%             plot(psth_time,P.psth_per_position_regular_odd{i_z,i_x}./psth_max_all,'-','Color',[0.4 0.4 0.4],'linewidth',0.5);
-%             plot(psth_time,P.psth_per_position_regular_even{i_z,i_x}./psth_max_all,'-','Color',[0.1 0.1 0.1],'linewidth',0.5);
-%         end
-        shadedErrorBar(psth_time,temp_mean, temp_stem,'lineprops',{'-','Color',[ 0 0 0.8],'linewidth',0.75});
+        %         try
+        %             plot(psth_time,P.psth_per_position_regular_odd{i_z,i_x}./psth_max_all,'-','Color',[1 0 0],'linewidth',0.5);
+        %             plot(psth_time,P.psth_per_position_regular_even{i_z,i_x}./psth_max_all,'-','Color',[0 0 1],'linewidth',0.5);
+        %         end
+        %         shadedErrorBar(psth_time,temp_mean, temp_stem,'lineprops',{'-','Color',[ 0 0 0.8],'linewidth',0.75});
+        lineProps.col={[ 0 0 0.8]};
+        lineProps.style='-';
+        lineProps.width=0.5;
+        mseb(psth_time,temp_mean, temp_stem,lineProps);
+        
         ylims=[0,1+eps];
         ylim(ylims);
         xlim(xl);
         if current_plot ==1
-            text(-2,-1,'Time to lick (s)','HorizontalAlignment','left', 'FontSize',6);
-            text(-8,0,'Acitivity (norm.)','HorizontalAlignment','left','Rotation',90, 'FontSize',6);
+            %                             text(-2,8,sprintf('Cell %d field-size %.1f %%',cell_number2d, field_size_regular),'HorizontalAlignment','left', 'FontSize',6);
+            text(-2,8.2,sprintf('Cell %d',cell_number2d),'HorizontalAlignment','left', 'FontSize',6, 'fontweight', 'bold');
+            
+            if xlabel_flag==1
+                text(-2,-2.2,sprintf('Time to 1st tongue contact (s)'),'HorizontalAlignment','left', 'FontSize',6);
+            end
+            if ylabel_flag==1
+                text(-8,0,'Activity (norm.)','HorizontalAlignment','left','Rotation',90, 'FontSize',6);
+            end
             set(gca,'XTick',[0,xl(2)],'Ytick',ylims, 'FontSize',6,'TickLength',[0.1,0],'TickDir','out');
         else
             set(gca,'XTick',[0,xl(2)],'XtickLabel',[],'Ytick',ylims,'YtickLabel',[], 'FontSize',6,'TickLength',[0.1,0],'TickDir','out');
@@ -65,33 +77,33 @@ for  i_x=1:1:number_of_bins
 end
 
 
-%% Map regular reward stability
-
-ax6=axes('position',[position_x1_grid(1)+0.08,position_y1_grid(1)+0.03, panel_width_map, panel_height_map]);
-mmm=P.lickmap_fr_regular_odd;
-mmm=mmm./nanmax(mmm(:));
-imagescnan(mmm);
-max_map=max(mmm(:));
-caxis([0 max_map]); % Scale the lowest value (deep blue) to 0
-colormap(ax6,inferno)
-%     title(sprintf('Stability r = %.2f \n Odd trials\n', P.lickmap_regular_odd_vs_even_corr), 'FontSize',6);
-title(sprintf('Stability: \n Odd trials'), 'FontSize',6);
-axis equal;
-axis tight
-set(gca,'YDir','normal');
-%     colorbar
-axis off
-
-ax6=axes('position',[position_x1_grid(1)+0.08,position_y1_grid(1), panel_width_map, panel_height_map]);
-mmm=P.lickmap_fr_regular_even;
-mmm=mmm./nanmax(mmm(:));
-imagescnan(mmm);
-max_map=max(mmm(:));
-caxis([0 max_map]); % Scale the lowest value (deep blue) to 0
-colormap(ax6,inferno)
-title(sprintf('\nEven trials'), 'FontSize',6);
-axis equal;
-axis tight;
-set(gca,'YDir','normal');
-%     colorbar
-axis off
+% %% Map regular reward stability
+%
+% ax6=axes('position',[position_x1_grid(1)+0.08,position_y1_grid(1)+0.03, panel_width_map, panel_height_map]);
+% mmm=P.lickmap_fr_regular_odd;
+% mmm=mmm./nanmax(mmm(:));
+% imagescnan(mmm);
+% max_map=max(mmm(:));
+% caxis([0 max_map]); % Scale the lowest value (deep blue) to 0
+% colormap(ax6,inferno)
+% %     title(sprintf('Stability r = %.2f \n Odd trials\n', P.lickmap_regular_odd_vs_even_corr), 'FontSize',6);
+% title(sprintf('Stability: \n Odd trials'), 'FontSize',6);
+% axis equal;
+% axis tight
+% set(gca,'YDir','normal');
+% %     colorbar
+% axis off
+%
+% ax6=axes('position',[position_x1_grid(1)+0.08,position_y1_grid(1), panel_width_map, panel_height_map]);
+% mmm=P.lickmap_fr_regular_even;
+% mmm=mmm./nanmax(mmm(:));
+% imagescnan(mmm);
+% max_map=max(mmm(:));
+% caxis([0 max_map]); % Scale the lowest value (deep blue) to 0
+% colormap(ax6,inferno)
+% title(sprintf('\nEven trials'), 'FontSize',6);
+% axis equal;
+% axis tight;
+% set(gca,'YDir','normal');
+% %     colorbar
+% axis off

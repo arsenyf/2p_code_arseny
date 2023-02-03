@@ -1,4 +1,4 @@
-function fn_computer_Lick2DPSTH(key,self, rel_data, fr_interval,fr_interval_limit, flag_electric_video, time_resample_bin)
+function fn_computer_Lick2DPSTH(key,self, rel_data, fr_interval,fr_interval_limit, flag_electric_video, time_resample_bin, self2, self3, self4)
 
 smooth_window_sec=0.2; %frames for PSTH
 
@@ -27,23 +27,14 @@ S=fetch(rel_data,'*');
 if isfield(S,'spikes_trace') % to be able to run the code both on dff and on deconvulted "spikes" data
     [S.dff_trace] = S.spikes_trace;
     S = rmfield(S,'spikes_trace');
-    if isempty(time_resample_bin)
-        self2=LICK2D.ROILick2DPSTHStatsSpikes;
-        self3=LICK2D.ROILick2DPSTHBlockSpikes;
-        self4=LICK2D.ROILick2DPSTHBlockStatsSpikes;
-    else
-        self2=LICK2D.ROILick2DPSTHStatsSpikesResampledlikePoisson;
-        self3=LICK2D.ROILick2DPSTHBlockSpikesResampledlikePoisson;
-        self4=LICK2D.ROILick2DPSTHBlockStatsSpikesResampledlikePoisson;
-    end
 else
-%     self2=LICK2D.ROILick2DPSTHStatsSpikes;
-%     self3=LICK2D.ROILick2DPSTHBlockSpikes;
-%     self4=LICK2D.ROILick2DPSTHBlockStatsSpikes;
 end
 
 % num_trials = numel(TrialsStartFrame);
 [start_file, end_file ] = fn_parse_into_trials_and_get_lickrate (key, frame_rate, fr_interval, flag_electric_video);
+
+% we don't use the very last trial
+start_file(end)=NaN;   end_file(end)=NaN;
 
 num_trials =numel(start_file);
 idx_response = (~isnan(start_file));

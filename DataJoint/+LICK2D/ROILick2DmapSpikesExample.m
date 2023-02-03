@@ -27,7 +27,8 @@ classdef ROILick2DmapSpikesExample < dj.Computed
             % % also populates
             self2=LICK2D.ROILick2DmapPSTHSpikesExample;
             self3=LICK2D.ROILick2DmapPSTHStabilitySpikesExample;
-            
+            self4=LICK2D.ROILick2DmapStatsSpikesExample;
+
             k1 = fetch(LICK2D.ROILick2DmapSpikes & IMG.ROIExample & key,'*');
             insert(self,k1);
             
@@ -36,6 +37,9 @@ classdef ROILick2DmapSpikesExample < dj.Computed
             
             k3 = fetch(LICK2D.ROILick2DmapPSTHStabilitySpikes & IMG.ROIExample & key,'*');
             insert(self3,k3);
+            
+            k4 = fetch(LICK2D.ROILick2DmapStatsSpikes & IMG.ROIExample & key,'*');
+            insert(self4,k4);
         end
     end
 end

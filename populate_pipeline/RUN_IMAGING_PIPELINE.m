@@ -70,6 +70,8 @@ populate_behavior_Lick2D(dir_behavioral_data, behavioral_protocol_name);
 
 % populate_Session_and_behavior (dir_behavioral_data, user_name, rig); % populate session with behavior
 
+populate(EXP2.SessionBehavioral) %it just tells if this is session is the first, sencond etc among behavioral sessions
+
 % should run after populate_behavior_Lick2D
 populate(EXP2.SessionEpoch); % reads info about FOV and trial duration from SI files. Also populates EXP2.SessionEpochDirectory, IMG.SessionEpochFrame, IMG.FrameTime, IMG.FrameStartFile
 

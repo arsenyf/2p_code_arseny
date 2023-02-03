@@ -1,20 +1,25 @@
-
-
+%% Behavior main analysis
+lick2D_video_behavior_across_sessions 
+lick2D_video_behavior_across_sessions_z
+lick2D_video_behavior_across_blocks
+lick2D_electric_behavior_across_blocks %this is the same version as lick2D_video_behavior_across_blocks, but based on electric touch, and not video
+lick2D_video__behavior_across_trial_time
+lick2D_video_behavior_across_sessions_tongue_trajectories
 
 % Behavior data
 lick2D_behaviorperform
 lick2D_behaviorperform_numlicks
-lick2D_video_licking_stats
 lick2D_video_licking_stats_reward_increase_omission
-lick2D_video_yawmemory_across_blocks
-lick2D_video_yawmemory_across_blocks2 % that's what was shown in the original presentation
-lick2D_video_yaw_early_vs_nonearly % that's what was shown in the original presentation
-lick2D_video_yaw_early_vs_nonearly2
-lick2D_video_yaw_trajectory
-lick2D_video_yaw_learning
-lick2D_video_yaw_learning_correlation
-lick2D_video_yaw_learning_correlation2 %using  - X position
-lick2D_video_yaw_learning_correlation3 %using - Z position
-lick2D_video_yaw_learning_correlation4 
 
-lick2D_video_yaw_learning_across_block
+% Some other older analysis
+lick2D_video_yawmemory_across_blocks2 % consider reusing some analysis from here
+lick2D_video_yaw_early_vs_nonearly2 % consider reusing some analysis from here
+lick2D_video_yaw_trajectory
+lick2D_video_yaw_trajectory_no_goals %same as above but without the targets being plotted, only the centers of trajectories
+
+
+
+%% Additional analysis to do:
+% within trial variability (angle/x/z position) across blocks/days separately for before lickport appearence and after licport appearence
+% number of early licks as a function of block
+% all of these separate by naive (2 days) versus expert (2>days)

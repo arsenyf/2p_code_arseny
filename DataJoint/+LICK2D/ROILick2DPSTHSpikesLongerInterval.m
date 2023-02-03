@@ -23,7 +23,7 @@ psth_time                : longblob   # time vector
 %}
 
 
-classdef ROILick2DPSTHSpikesResampledlikePoisson < dj.Imported
+classdef ROILick2DPSTHSpikesLongerInterval < dj.Imported
     properties
         keySource = ((EXP2.SessionEpoch*IMG.FOV) & IMG.ROI & IMG.ROISpikes & EXP2.TrialLickPort & 'session_epoch_type="behav_only"' & EXP2.TrialLickBlock) - IMG.Mesoscope;
 %                 keySource = (EXP2.SessionEpoch*IMG.FOV)  & IMG.ROI & IMG.ROISpikes & EXP2.TrialLickPort & 'session_epoch_type="behav_only"' & EXP2.TrialLickBlock & IMG.Mesoscope;
@@ -37,16 +37,16 @@ classdef ROILick2DPSTHSpikesResampledlikePoisson < dj.Imported
                 fr_interval = [-2, 5]; % used it for the mesoscope
                 fr_interval_limit= [-2, 5]; % for comparing firing rates between conditions and computing firing-rate maps
             else  % if its not mesoscope data
-                fr_interval = [-1, 4];
-                fr_interval_limit= [0, 3]; % for comparing firing rates between conditions and computing firing-rate maps
+                fr_interval = [-1, 6];
+                fr_interval_limit= [0, 4]; % for comparing firing rates between conditions and computing firing-rate maps
             end
-            time_resample_bin=0.5;
+            time_resample_bin=[];
             
             %Also populates: 
-            self2=LICK2D.ROILick2DPSTHStatsSpikesResampledlikePoisson;
-            self3=LICK2D.ROILick2DPSTHBlockSpikesResampledlikePoisson;
-            self4=LICK2D.ROILick2DPSTHBlockStatsSpikesResampledlikePoisson;
-                        fn_computer_Lick2DPSTH(key,self, rel_data,fr_interval, fr_interval_limit, flag_electric_video, time_resample_bin, self2, self3, self4);
+            self2=LICK2D.ROILick2DPSTHStatsSpikesLongerInterval;
+            self3=LICK2D.ROILick2DPSTHBlockSpikesLongerInterval;
+            self4=LICK2D.ROILick2DPSTHBlockStatsSpikesLongerInterval;
+           fn_computer_Lick2DPSTH(key,self, rel_data,fr_interval, fr_interval_limit, flag_electric_video, time_resample_bin, self2, self3, self4);
 
         end
     end

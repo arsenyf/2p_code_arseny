@@ -30,7 +30,13 @@ classdef ROILick2DPSTH < dj.Imported
             rel_data = IMG.ROIdeltaF;
 %             fr_interval = [-1, 3]; %s
             fr_interval = [-2, 5]; % used it for the mesoscope
-            fn_computer_Lick2DPSTH(key,self, rel_data,fr_interval);
+            
+                  %Also populates: 
+            self2=LICK2D.ROILick2DPSTHStats;
+            self3=LICK2D.ROILick2DPSTHBlock;
+            self4=LICK2D.ROILick2DPSTHBlockStats;
+            
+            fn_computer_Lick2DPSTH(key,self, rel_data,fr_interval, self2, self3, self4);
             
         end
     end

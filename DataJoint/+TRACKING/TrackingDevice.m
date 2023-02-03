@@ -15,7 +15,7 @@ classdef TrackingDevice < dj.Lookup
         contents = {
             'imaging1' 'Camera' 0   'side view'   'Chameleon3 CM3-U3-13Y3M-CS (FLIR)' %these are on the photostim rig
             'imaging1' 'Camera' 1   'bottom view' 'Chameleon3 CM3-U3-13Y3M-CS (FLIR)'
-            'imaging1' 'Camera' 3   'side view'   'Blackfly BFS-U3-16S2M-CS	(FLIR)'  % these are on the mesoscope,but I mistakenly did not call the mesoscopea as a separate rig
+            'imaging1' 'Camera' 3   'side view'   'Blackfly BFS-U3-16S2M-CS	(FLIR)'  % these are on the mesoscope,but I mistakenly did not call the mesoscope as a separate rig
             'imaging1' 'Camera' 4   'front view'  'Blackfly BFS-U3-16S2M-CS	(FLIR)'
             }
     end
