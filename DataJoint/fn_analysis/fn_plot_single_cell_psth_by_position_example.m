@@ -1,19 +1,25 @@
 function [psth_time] = fn_plot_single_cell_psth_by_position_example (rel_example, roi_number_uid, xlabel_flag, ylabel_flag, position_x1_grid, position_y1_grid, cell_number2d)
 key_roi.roi_number_uid =roi_number_uid;
 P =fetch(rel_example & key_roi,'*');
+try
 psth_time = P.psth_time;
+catch
+    psth_time = P.psthmap_time;
+end
 number_of_bins =P.number_of_bins;
 pos_x_bins_centers =P.pos_x_bins_centers;
 pos_z_bins_centers =P.pos_z_bins_centers';
 
-
+% we do it for display purpose only only for those experiment for which there was no data in one of  the positions due to technical reasons
 P.psth_per_position_regular = fn_map_2D_legalize_by_neighboring_psth(P.psth_per_position_regular);
-field_size_regular = P.field_size_regular;
-
-panel_width_map=0.025;
-panel_height_map=0.025;
+P.psth_per_position_regular_stem = fn_map_2D_legalize_by_neighboring_psth(P.psth_per_position_regular_stem);
 
 
+
+% horizontal_dist1=(1/(number_of_bins+2))*0.1;
+% vertical_dist1=(1/(number_of_bins+2))*0.08;
+% panel_width1=(1/(number_of_bins+6))*0.15;
+% panel_height1=(1/(number_of_bins+6))*0.09;
 horizontal_dist1=(1/(number_of_bins+2))*0.1;
 vertical_dist1=(1/(number_of_bins+2))*0.08;
 panel_width1=(1/(number_of_bins+6))*0.15;
@@ -59,11 +65,12 @@ for  i_x=1:1:number_of_bins
         ylim(ylims);
         xlim(xl);
         if current_plot ==1
-            %                             text(-2,8,sprintf('Cell %d field-size %.1f %%',cell_number2d, field_size_regular),'HorizontalAlignment','left', 'FontSize',6);
-            text(-2,8.2,sprintf('Cell %d',cell_number2d),'HorizontalAlignment','left', 'FontSize',6, 'fontweight', 'bold');
-            
+            if ~isempty(cell_number2d)
+                %                             text(-2,8,sprintf('Cell %d field-size %.1f %%',cell_number2d, field_size_regular),'HorizontalAlignment','left', 'FontSize',6);
+                text(-2,7.8,sprintf('Cell %d',cell_number2d),'HorizontalAlignment','left', 'FontSize',6, 'fontweight', 'bold');
+            end
             if xlabel_flag==1
-                text(-2,-2.2,sprintf('Time to 1st tongue contact (s)'),'HorizontalAlignment','left', 'FontSize',6);
+                text(-2,-2.2,sprintf('Time to 1st contact-lick (s)'),'HorizontalAlignment','left', 'FontSize',6);
             end
             if ylabel_flag==1
                 text(-8,0,'Activity (norm.)','HorizontalAlignment','left','Rotation',90, 'FontSize',6);

@@ -11,13 +11,13 @@ if flag_spikes==0 % if based on dff
 else  % if based on spikes
     %     rel_rois=  (IMG.ROI& IMG.ROIGood - IMG.ROIBad) & (LICK2D.ROILick2DRewardStatsSpikes & 'reward_mean_pval_regular_small<=0.05 OR reward_mean_pval_regular_large<=0.05 ' ) & (LICK2D.ROILick2DmapStatsSpikes & 'lickmap_regular_odd_vs_even_corr>=0.75' & 'percent_2d_map_coverage_small>=75' & 'number_of_response_trials>=500') & key;
     %     rel_rois=  (IMG.ROI& IMG.ROIGood - IMG.ROIBad) & (LICK2D.ROILick2DRewardStatsSpikes & 'reward_mean_pval_regular_small<=0.05 OR reward_mean_pval_regular_large<=0.05 ' ) & (LICK2D.ROILick2DmapStatsSpikes & 'percent_2d_map_coverage_small>=75' & 'number_of_response_trials>=500') & (LICK2D.ROILick2DContactenatedSpikes2 & 'psth_position_concat_regular_odd_even_corr>=0.25') & key;
-   
+    
     rel_map_and_psth = LICK2D.ROILick2DmapSpikes *LICK2D.ROILick2DmapPSTHSpikes*LICK2D.ROILick2DmapPSTHStabilitySpikes *LICK2D.ROILick2DmapStatsSpikes * LICK2D.ROILick2DPSTHSpikes  & rel_rois;
     rel_angle = LICK2D.ROILick2DangleSpikes3bins*LICK2D.ROILick2DangleStatsSpikes3bins  & rel_rois;
     rel_stats = LICK2D.ROILick2DPSTHStatsSpikes *LICK2D.ROILick2DmapStatsSpikes & rel_rois;
     rel_poisson = LICK2D.ROILick2DPSTHSpikesPoisson*LICK2D.ROILick2DPSTHStatsSpikesPoisson & rel_rois;
     rel_resampled_likepoisson = LICK2D.ROILick2DPSTHSpikesResampledlikePoisson*LICK2D.ROILick2DPSTHStatsSpikesResampledlikePoisson & rel_rois;
-
+    
 end
 
 session_date = fetch1(EXP2.Session & key,'session_date');
@@ -217,20 +217,20 @@ for i_roi=1:plot_one_in_x_cell:numel(roi_number)
     % POISSON simulated tuning
     axes('position',[position_x2(2)+0.1,position_y2(1), panel_width2, panel_height2])
     hold on;
-            plot_legend_flag=0;
+    plot_legend_flag=0;
     fn_plot_psth_by_reward_size (M_poisson,psth_time_poisson,i_roi, plot_legend_flag)
     title(sprintf('Poisson \nReward Omission p = %.3f \nReward Increase p = %.3f\n\n', M_poisson.reward_mean_pval_regular_small(i_roi),M_poisson.reward_mean_pval_regular_large(i_roi)), 'FontSize',10);
-
+    
     % Real tuning resampled in timebins like POISSON
     axes('position',[position_x2(3)+0.1,position_y2(1), panel_width2, panel_height2])
     hold on;
     plot_legend_flag=0;
     fn_plot_psth_by_reward_size (M_resampled_likepoisson,psth_time_poisson,i_roi, plot_legend_flag)
     title(sprintf('Real resampled like Poisson \nReward Omission p = %.3f \nReward Increase p = %.3f\n\n', M_resampled_likepoisson.reward_mean_pval_regular_small(i_roi),M_resampled_likepoisson.reward_mean_pval_regular_large(i_roi)), 'FontSize',10);
-
     
     
-       
+    
+    
     %% Angular tuning
     axes('position',[position_x2(4)+0.1,position_y2(1), panel_width2, panel_height2])
     hold on;
@@ -239,7 +239,7 @@ for i_roi=1:plot_one_in_x_cell:numel(roi_number)
     yyy_stem=M_angle(i_roi).theta_tuning_regular_stem;
     yyy_odd=M_angle(i_roi).theta_tuning_regular_odd;
     yyy_even=M_angle(i_roi).theta_tuning_regular_even;
-
+    
     yyy_max = nanmax([yyy(:)+yyy_stem(:);yyy_odd(:);yyy_even(:)]);
     yyy=yyy./yyy_max;
     yyy_vnmises=(M_angle(i_roi).theta_tuning_regular_vmises)/yyy_max;
@@ -256,7 +256,7 @@ for i_roi=1:plot_one_in_x_cell:numel(roi_number)
     set(gca,'XTick',[-180,0,180],'Ytick',[0, 1], 'FontSize',10,'TickLength',[0.05,0]);
     
     
-   
+    
     
     xl = [floor(psthmap_time(1)) ceil(psthmap_time(end))];
     
@@ -271,7 +271,7 @@ for i_roi=1:plot_one_in_x_cell:numel(roi_number)
     end
     
     
-   M.psth_per_position_regular{i_roi} = fn_map_2D_legalize_by_neighboring_psth(M.psth_per_position_regular{i_roi});
+    M.psth_per_position_regular{i_roi} = fn_map_2D_legalize_by_neighboring_psth(M.psth_per_position_regular{i_roi});
     
     for  i_l=1:1:number_of_bins^2
         axes('position',[position_x1_grid(plots_order_mat_x(i_l)), position_y1_grid(plots_order_mat_y(i_l)), panel_width1, panel_height1]);
@@ -298,8 +298,8 @@ for i_roi=1:plot_one_in_x_cell:numel(roi_number)
     end
     
     %% 2 PSTH per position, for large reward
-       M.psth_per_position_large{i_roi} = fn_map_2D_legalize_by_neighboring_psth(M.psth_per_position_large{i_roi});
-
+    M.psth_per_position_large{i_roi} = fn_map_2D_legalize_by_neighboring_psth(M.psth_per_position_large{i_roi});
+    
     psth_max_large= cell2mat(reshape(M.psth_per_position_large{i_roi},[number_of_bins^2,1])) + cell2mat(reshape(M.psth_per_position_large_stem{i_roi},[number_of_bins^2,1]));
     try
         odd=cell2mat(reshape(M.psth_per_position_large_odd{i_roi},[number_of_bins^2,1]));
@@ -333,8 +333,8 @@ for i_roi=1:plot_one_in_x_cell:numel(roi_number)
     end
     
     %% 3 PSTH per position, for small reward
-           M.psth_per_position_small{i_roi} = fn_map_2D_legalize_by_neighboring_psth(M.psth_per_position_small{i_roi});
-
+    M.psth_per_position_small{i_roi} = fn_map_2D_legalize_by_neighboring_psth(M.psth_per_position_small{i_roi});
+    
     psth_max_small= cell2mat(reshape(M.psth_per_position_small{i_roi},[number_of_bins^2,1])) + cell2mat(reshape(M.psth_per_position_small_stem{i_roi},[number_of_bins^2,1]));
     try
         odd=cell2mat(reshape(M.psth_per_position_small_odd{i_roi},[number_of_bins^2,1]));

@@ -1,4 +1,4 @@
-function Figure1
+function Figure1_v2
 close all;
 
 rel_roi=(IMG.ROI& IMG.ROIGood-IMG.ROIBad) -IMG.Mesoscope;
@@ -42,10 +42,8 @@ panel_height1=0.15;
 horizontal_dist1=0.1;
 vertical_dist1=0.1;
 position_x1(1)=0.05;
-position_x1(end+1)=position_x1(end)+horizontal_dist1;
 
-position_y1(1)=0.745;
-position_y1(end+1)=position_y1(end)-vertical_dist1;
+position_y1(1)=0.76;
 
 %% fov
 panel_width1_fov=0.07;
@@ -191,7 +189,7 @@ fig1_a = imread([dir_embeded_graphics 'Figure1_behavior_cartoon.tif']);
 % fig1_a=flipdim(fig1_a,1);
 imagesc(fig1_a);
 set(gca,'Xlim',xl,'Ylim',yl);
-text(xl(1)+diff(xl)*0.2, yl(1)-diff(yl)*0.1, 'a', ...
+text(xl(1)+diff(xl)*0.2, yl(1)-diff(yl)*0.2, 'a', ...
     'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
 % text(xl(1)+diff(xl)*0.5, yl(1)+diff(yl)*1.1,'vS1','FontSize',8,'FontWeight','bold','Color',[0 1 0],'HorizontalAlignment','center');
 axis off;
@@ -199,151 +197,219 @@ axis tight;
 axis equal;
 
 
+%trial 0
+key_tongue_trial0.subject_id=463190;
+key_tongue_trial0.session=2;
+key_tongue_trial0.trial=218; %% 207 %33
+
+%trial 1
+key_tongue_trial1.subject_id=463190;
+key_tongue_trial1.session=2;
+key_tongue_trial1.trial=177; %% 218 207 %33
+
+key_tongue_trial2.subject_id=463190;
+key_tongue_trial2.session=2;
+key_tongue_trial2.trial=72; %% 207 %33
+
+key_tongue_session.subject_id=463190;
+key_tongue_session.session=2;
+
+% %trial 0
+% key_tongue_trial0.subject_id=462458;
+% key_tongue_trial0.session=5;
+% key_tongue_trial0.trial=288; %% 207 %33
+% 
+% %trial 1
+% key_tongue_trial1.subject_id=462458;
+% key_tongue_trial1.session=5;
+% key_tongue_trial1.trial=288; %% 218 207 %33
+% 
+% key_tongue_trial2.subject_id=462458;
+% key_tongue_trial2.session=5;
+% key_tongue_trial2.trial=757;% 863; %% 207 %33
+
+
+%z- motor
+% zaber_to_mm_z_motor = 1/1000; %1,000 in zaber motor units == 1 mm
+zaber_to_mm_z_motor = 1/10000; %1,000 in zaber motor units == 1 mm
+
+%x- motor, and y-motor
+zaber_to_mm_x_motor = 1.25/50000; %50,000 in zaber motor units ==1.25 mm
+
+[Xpix2mm, Zpix2mm]  =  fn_video_pixels_to_mm (key_tongue_session, zaber_to_mm_z_motor, zaber_to_mm_x_motor);
+
+% % from Zaber trial 0
+% lickport_pos_z0_zaber=fetchn(EXP2.TrialLickPort & key_tongue_trial0, 'lickport_pos_z')*zaber_to_mm_z_motor;
+% % from video trial 0
+% lickport_pos_z0_video=fetchn(TRACKING.VideoLickportPositionTrial & key_tongue_trial0, 'lickport_z');
+
+% lickport_pos_z0_video*pixels_z_to_mm_slope + pixels_z_to_mm_offset;
+
 %% Lick trial
 axes('position',[position_lick_x1(1),position_lick_y1(1), panel_lick_width1, panel_lick_height1])
 hold on;
-key_tongue.subject_id=463190;
-key_tongue.session=2;
-key_tongue.trial=218; %% 207 %33
-key_tongue.bodypart_name='tongue';
-rel_behavior_trial = (EXP2.BehaviorTrialEvent & key_tongue & 'trial_event_type="go"') - TRACKING.TrackingTrialBad ;
+
+key_tongue_trial0.bodypart_name='tongue';
+rel_behavior_trial = (EXP2.BehaviorTrialEvent & key_tongue_trial0 & 'trial_event_type="go"') - TRACKING.TrackingTrialBad ;
 
 %get time
-[t,idx_lick_contact_time, idx_licks_time_onset, idx_licks_time_ends ] = fn_lick_time_alignment (rel_behavior_trial, key_tongue);
-traj_z_tongue=fetch1(TRACKING.VideoBodypartTrajectTrial & key_tongue,'traj_z');
-traj_lickport_z=fetch1(TRACKING.VideoLickportPositionTrajectTrial  & key_tongue, 'lickport_z_traj');
-plot(t ,traj_lickport_z ,'-k')
+[t,idx_lick_contact_time, idx_licks_time_onset, idx_licks_time_ends ] = fn_lick_time_alignment (rel_behavior_trial, key_tongue_trial0);
+traj_z_tongue=(fetch1(TRACKING.VideoBodypartTrajectTrial & key_tongue_trial0,'traj_z').*Zpix2mm.slope)+Zpix2mm.intercept;
+traj_lickport_z=(fetch1(TRACKING.VideoLickportPositionTrajectTrial  & key_tongue_trial0, 'lickport_z_traj').*Zpix2mm.slope)+Zpix2mm.intercept;
+
+z_offset = nanmin(traj_z_tongue);
+traj_z_tongue =  traj_z_tongue - z_offset;
+traj_lickport_z =  traj_lickport_z- z_offset;
+
+plot(t ,traj_lickport_z ,'-b')
 yl = [nanmin([traj_z_tongue,0]), ceil(1.2*(nanmax(traj_z_tongue)))];
 xl = [-0.5,2];
-text(xl(1)-diff(xl)*0.1,yl(1)+diff(yl)*0.8,sprintf('Position \n (mm)'),'Rotation',90, 'FontSize',6,'VerticalAlignment','bottom');
-text(xl(1)+diff(xl)*0.5,yl(1)+diff(yl)*1.5,sprintf('Time to 1st tongue contact (s)'), 'FontSize',6,'HorizontalAlignment','center');
-text(xl(1)+diff(xl)*0.5,yl(1)-diff(yl)*0.25,sprintf('Tongue position, vertical '), 'FontSize',6,'HorizontalAlignment','center','FontWeight','bold');
-text(xl(1)-diff(xl)*0.4, yl(1)-diff(yl)*0.5, 'b', 'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
+text(xl(1)-diff(xl)*0.1,yl(1)+diff(yl)*1.3,sprintf('Dorso-Ventral \n        (mm)'),'Rotation',90, 'FontSize',6,'VerticalAlignment','bottom');
+text(xl(1)+diff(xl)*0.5,yl(1)+diff(yl)*1.6,sprintf('Time to 1st tongue \ncontact (s)'), 'FontSize',6,'HorizontalAlignment','center');
+text(xl(1)+diff(xl)*0.5,yl(1)-diff(yl)*0.25,sprintf('Tongue position'), 'FontSize',6,'HorizontalAlignment','center','FontWeight','bold');
+text(xl(1)-diff(xl)*0.4, yl(1)-diff(yl)*0.6, 'b', 'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
 xlim(xl);
 ylim(yl);
 set(gca,'XTick',[ 0, xl(2)],'Ytick',[0, yl(2)],'TickLength',[0.05,0], 'FontSize',6);
 box off;
  set(gca,'YDir', 'reverse');
 
- colormap_g=winter(numel(idx_licks_time_onset));
+%  colormap_g=winter(numel(idx_licks_time_onset));
+ colormap_g=pink(numel(idx_licks_time_onset)*2);
  for i_l=1:1:numel(idx_licks_time_onset)
      idx_current_lick = idx_licks_time_onset(i_l):1: idx_licks_time_ends (i_l);
      plot(t(idx_current_lick),traj_z_tongue(idx_current_lick),'-','Color',[colormap_g(i_l,:)])
  end
- plot(t(idx_lick_contact_time),traj_z_tongue(idx_lick_contact_time),'.r','MarkerSize',10);
+ plot(t(idx_lick_contact_time),traj_z_tongue(idx_lick_contact_time),'.c','MarkerSize',10);
 
 %% Lick trial 2D Example 1
 % Lick trial trajectory Z-Y1
 axes('position',[position_lick_x2(1),position_lick_y2(1), panel_lick_width2, panel_lick_height2])
 hold on;
-key_tongue.subject_id=463190;
-key_tongue.session=2;
-key_tongue.trial=177; %% 218 207 %33
-key_tongue.bodypart_name='tongue';
-rel_behavior_trial = (EXP2.BehaviorTrialEvent & key_tongue & 'trial_event_type="go"') - TRACKING.TrackingTrialBad ;
-tongue_z_traj=fetch1(TRACKING.VideoBodypartTrajectTrial & key_tongue,'traj_z');
-tongue_y1_traj=fetch1(TRACKING.VideoBodypartTrajectTrial & key_tongue,'traj_y1');
-lickport_y1_center=fetch1(TRACKING.VideoLickportPositionTrial  & key_tongue, 'lickport_y1');
-lickport_z_center=fetch1(TRACKING.VideoLickportPositionTrial  & key_tongue, 'lickport_z');
-plot(lickport_y1_center,lickport_z_center,'o','MarkerSize',10);
+key_tongue_trial1.bodypart_name='tongue';
+rel_behavior_trial = (EXP2.BehaviorTrialEvent & key_tongue_trial1 & 'trial_event_type="go"') - TRACKING.TrackingTrialBad ;
+tongue_z_traj=fetch1(TRACKING.VideoBodypartTrajectTrial & key_tongue_trial1,'traj_z').*Zpix2mm.slope + Zpix2mm.intercept;
+tongue_y1_traj=fetch1(TRACKING.VideoBodypartTrajectTrial & key_tongue_trial1,'traj_y1');
+lickport_y1_center=fetch1(TRACKING.VideoLickportPositionTrial  & key_tongue_trial1, 'lickport_y1');
+lickport_z_center=fetch1(TRACKING.VideoLickportPositionTrial  & key_tongue_trial1, 'lickport_z').*Zpix2mm.slope + Zpix2mm.intercept;
 
-[t,idx_lick_contact_time, idx_licks_time_onset, idx_licks_time_ends ] = fn_lick_time_alignment (rel_behavior_trial, key_tongue);
-set(gca,'YDir', 'reverse');
-xl=[0,30];
-xlim(xl);
-yl=[0,40];
-ylim(yl);
-% plot(tongue_y1_traj,tongue_z_traj);
+z_offset = nanmin(tongue_z_traj);
+tongue_z_traj =  tongue_z_traj - z_offset;
+lickport_z_center =  lickport_z_center- z_offset;
 
- colormap_g=winter(numel(idx_licks_time_onset));
+
+% lickport_y1_center=fetchn(TRACKING.VideoLickportPositionTrial  & key_tongue_session, 'lickport_y1');
+% lickport_z_center=fetchn(TRACKING.VideoLickportPositionTrial  & key_tongue_session, 'lickport_z');
+
+plot(lickport_y1_center,lickport_z_center,'ob','MarkerSize',10);
+
+[t,idx_lick_contact_time, idx_licks_time_onset, idx_licks_time_ends ] = fn_lick_time_alignment (rel_behavior_trial, key_tongue_trial1);
+%  colormap_g=winter(numel(idx_licks_time_onset));
+  colormap_g=pink(numel(idx_licks_time_onset)*2);
  for i_l=1:1:numel(idx_licks_time_onset)
      idx_current_lick = idx_licks_time_onset(i_l):1: idx_licks_time_ends (i_l);
 %      plot(tongue_y1_traj(idx_current_lick),tongue_z_traj(idx_current_lick),'.','Color',[colormap_g(i_l,:)],'MarkerSize',2)
-      plot(tongue_y1_traj(idx_current_lick),tongue_z_traj(idx_current_lick),'-','Color',[colormap_g(i_l,:)],'LineWidth',0.5)
+      plot(tongue_y1_traj(idx_current_lick),tongue_z_traj(idx_current_lick),'-','Color',[colormap_g(i_l,:)],'LineWidth',1)
  end
- plot(tongue_y1_traj(idx_lick_contact_time),tongue_z_traj(idx_lick_contact_time),'.r','MarkerSize',5);
-
+ plot(tongue_y1_traj(idx_lick_contact_time),tongue_z_traj(idx_lick_contact_time),'.c','MarkerSize',5);
+set(gca,'YDir', 'reverse');
+% xl=[0,35];
+% xlim(xl);
+% yl=[0,45];
+% ylim(yl);
+% set(gca,'XTick',[ 0, xl(2)],'Ytick',[0, yl(2)],'TickLength',[0.05,0], 'FontSize',6);
+box off;
 
 % Lick trial trajectory X-Y2
 axes('position',[position_lick_x2(2),position_lick_y2(1), panel_lick_width2, panel_lick_height2])
 hold on;
-tongue_x_traj=fetch1(TRACKING.VideoBodypartTrajectTrial & key_tongue,'traj_x');
-tongue_y2_traj =fetch1(TRACKING.VideoBodypartTrajectTrial & key_tongue,'traj_y2');
-lickport_y2_center=fetch1(TRACKING.VideoLickportPositionTrial  & key_tongue, 'lickport_y2');
-lickport_x_center=fetch1(TRACKING.VideoLickportPositionTrial  & key_tongue, 'lickport_x');
+tongue_x_traj=fetch1(TRACKING.VideoBodypartTrajectTrial & key_tongue_trial1,'traj_x').*Xpix2mm.slope + Xpix2mm.intercept;
+tongue_y2_traj =fetch1(TRACKING.VideoBodypartTrajectTrial & key_tongue_trial1,'traj_y2');
+lickport_y2_center=fetch1(TRACKING.VideoLickportPositionTrial  & key_tongue_trial1, 'lickport_y2');
+lickport_x_center=fetch1(TRACKING.VideoLickportPositionTrial  & key_tongue_trial1, 'lickport_x').*Xpix2mm.slope + Xpix2mm.intercept;
+
+x_offset = nanmin(tongue_x_traj);
+tongue_x_traj =  tongue_x_traj - x_offset;
+lickport_x_center =  lickport_x_center- x_offset;
+
+
 % plot(tongue_x_traj,tongue_y2_traj);
-plot(lickport_x_center,lickport_y2_center,'o','MarkerSize',10);
-  set(gca,'YDir', 'reverse');
-xl=[-15,15];
-xlim(xl);
-yl=[0,50];
-ylim(yl);
-colormap_g=winter(numel(idx_licks_time_onset));
+plot(lickport_x_center,lickport_y2_center,'ob','MarkerSize',10);
+% colormap_g=winter(numel(idx_licks_time_onset));
+ colormap_g=pink(numel(idx_licks_time_onset)*2);
  for i_l=1:1:numel(idx_licks_time_onset)
      idx_current_lick = idx_licks_time_onset(i_l):1: idx_licks_time_ends (i_l);
 %      plot(tongue_x_traj(idx_current_lick),tongue_y2_traj(idx_current_lick),'.','Color',[colormap_g(i_l,:)],'MarkerSize',2)
- plot(tongue_x_traj(idx_current_lick),tongue_y2_traj(idx_current_lick),'-','Color',[colormap_g(i_l,:)],'LineWidth',0.5)
+ plot(tongue_x_traj(idx_current_lick),tongue_y2_traj(idx_current_lick),'-','Color',[colormap_g(i_l,:)],'LineWidth',1)
  end
- plot(tongue_x_traj(idx_lick_contact_time),tongue_y2_traj(idx_lick_contact_time),'.r','MarkerSize',5);
+ plot(tongue_x_traj(idx_lick_contact_time),tongue_y2_traj(idx_lick_contact_time),'.c','MarkerSize',5);
+xl=[-2,2];
+xlim(xl);
+yl=[0,50];
+ylim(yl);
+set(gca,'YDir', 'reverse');
+set(gca,'XTick',[xl(1) 0, xl(2)],'Ytick',[0, yl(2)],'TickLength',[0.05,0], 'FontSize',6);
+box off;
+
 
 %% Lick trial 2D Example 2
 % Lick trial trajectory Z-Y1
 axes('position',[position_lick_x2(1),position_lick_y2(2), panel_lick_width2, panel_lick_height2])
 hold on;
-key_tongue.subject_id=463190;
-key_tongue.session=2;
-key_tongue.trial=72; %% 207 %33
-key_tongue.bodypart_name='tongue';
-rel_behavior_trial = (EXP2.BehaviorTrialEvent & key_tongue & 'trial_event_type="go"') - TRACKING.TrackingTrialBad ;
-tongue_z_traj=fetch1(TRACKING.VideoBodypartTrajectTrial & key_tongue,'traj_z');
-tongue_y1_traj=fetch1(TRACKING.VideoBodypartTrajectTrial & key_tongue,'traj_y1');
-lickport_y1_center=fetch1(TRACKING.VideoLickportPositionTrial  & key_tongue, 'lickport_y1');
-lickport_z_center=fetch1(TRACKING.VideoLickportPositionTrial  & key_tongue, 'lickport_z');
-plot(lickport_y1_center,lickport_z_center,'o','MarkerSize',10);
+key_tongue_trial2.bodypart_name='tongue';
+rel_behavior_trial = (EXP2.BehaviorTrialEvent & key_tongue_trial2 & 'trial_event_type="go"') - TRACKING.TrackingTrialBad ;
+tongue_z_traj=fetch1(TRACKING.VideoBodypartTrajectTrial & key_tongue_trial2,'traj_z');
+tongue_y1_traj=fetch1(TRACKING.VideoBodypartTrajectTrial & key_tongue_trial2,'traj_y1');
+lickport_y1_center=fetch1(TRACKING.VideoLickportPositionTrial  & key_tongue_trial2, 'lickport_y1');
+lickport_z_center=fetch1(TRACKING.VideoLickportPositionTrial  & key_tongue_trial2, 'lickport_z');
+plot(lickport_y1_center,lickport_z_center,'ob','MarkerSize',10);
 
-[t,idx_lick_contact_time, idx_licks_time_onset, idx_licks_time_ends ] = fn_lick_time_alignment (rel_behavior_trial, key_tongue);
-set(gca,'YDir', 'reverse');
-xl=[0,30];
-xlim(xl);
-yl=[0,40];
-ylim(yl);
-% plot(tongue_y1_traj,tongue_z_traj);
+[t,idx_lick_contact_time, idx_licks_time_onset, idx_licks_time_ends ] = fn_lick_time_alignment (rel_behavior_trial, key_tongue_trial2);
 
- colormap_g=winter(numel(idx_licks_time_onset));
+%  colormap_g=winter(numel(idx_licks_time_onset));
+ colormap_g=pink(numel(idx_licks_time_onset)*2);
  for i_l=1:1:numel(idx_licks_time_onset)
      idx_current_lick = idx_licks_time_onset(i_l):1: idx_licks_time_ends (i_l);
 %      plot(tongue_y1_traj(idx_current_lick),tongue_z_traj(idx_current_lick),'.','Color',[colormap_g(i_l,:)],'MarkerSize',2)
-      plot(tongue_y1_traj(idx_current_lick),tongue_z_traj(idx_current_lick),'-','Color',[colormap_g(i_l,:)],'LineWidth',0.5)
+      plot(tongue_y1_traj(idx_current_lick),tongue_z_traj(idx_current_lick),'-','Color',[colormap_g(i_l,:)],'LineWidth',1)
  end
- plot(tongue_y1_traj(idx_lick_contact_time),tongue_z_traj(idx_lick_contact_time),'.r','MarkerSize',5);
-
+ plot(tongue_y1_traj(idx_lick_contact_time),tongue_z_traj(idx_lick_contact_time),'.c','MarkerSize',5);
+xl=[0,35];
+xlim(xl);
+yl=[0,45];
+ylim(yl);
+set(gca,'YDir', 'reverse');
+set(gca,'XTick',[ 0, xl(2)],'Ytick',[0, yl(2)],'TickLength',[0.05,0], 'FontSize',6);
+box off;
 
 % Lick trial trajectory X-Y2
 axes('position',[position_lick_x2(2),position_lick_y2(2), panel_lick_width2, panel_lick_height2])
 hold on;
-tongue_x_traj=fetch1(TRACKING.VideoBodypartTrajectTrial & key_tongue,'traj_x');
-tongue_y2_traj =fetch1(TRACKING.VideoBodypartTrajectTrial & key_tongue,'traj_y2');
-lickport_y2_center=fetch1(TRACKING.VideoLickportPositionTrial  & key_tongue, 'lickport_y2');
-lickport_x_center=fetch1(TRACKING.VideoLickportPositionTrial  & key_tongue, 'lickport_x');
+tongue_x_traj=fetch1(TRACKING.VideoBodypartTrajectTrial & key_tongue_trial2,'traj_x');
+tongue_y2_traj =fetch1(TRACKING.VideoBodypartTrajectTrial & key_tongue_trial2,'traj_y2');
+lickport_y2_center=fetch1(TRACKING.VideoLickportPositionTrial  & key_tongue_trial2, 'lickport_y2');
+lickport_x_center=fetch1(TRACKING.VideoLickportPositionTrial  & key_tongue_trial2, 'lickport_x');
 % plot(tongue_x_traj,tongue_y2_traj);
-plot(lickport_x_center,lickport_y2_center,'o','MarkerSize',10);
-  set(gca,'YDir', 'reverse');
+plot(lickport_x_center,lickport_y2_center,'ob','MarkerSize',10);
+% colormap_g=winter(numel(idx_licks_time_onset));
+ colormap_g=pink(numel(idx_licks_time_onset)*2);
+ for i_l=1:1:numel(idx_licks_time_onset)
+     idx_current_lick = idx_licks_time_onset(i_l):1: idx_licks_time_ends (i_l);
+%      plot(tongue_x_traj(idx_current_lick),tongue_y2_traj(idx_current_lick),'.','Color',[colormap_g(i_l,:)],'MarkerSize',2)
+ plot(tongue_x_traj(idx_current_lick),tongue_y2_traj(idx_current_lick),'-','Color',[colormap_g(i_l,:)],'LineWidth',1)
+ end
+ plot(tongue_x_traj(idx_lick_contact_time),tongue_y2_traj(idx_lick_contact_time),'.c','MarkerSize',5);
 xl=[-15,15];
 xlim(xl);
 yl=[0,50];
 ylim(yl);
-colormap_g=winter(numel(idx_licks_time_onset));
- for i_l=1:1:numel(idx_licks_time_onset)
-     idx_current_lick = idx_licks_time_onset(i_l):1: idx_licks_time_ends (i_l);
-%      plot(tongue_x_traj(idx_current_lick),tongue_y2_traj(idx_current_lick),'.','Color',[colormap_g(i_l,:)],'MarkerSize',2)
- plot(tongue_x_traj(idx_current_lick),tongue_y2_traj(idx_current_lick),'-','Color',[colormap_g(i_l,:)],'LineWidth',0.5)
- end
- plot(tongue_x_traj(idx_lick_contact_time),tongue_y2_traj(idx_lick_contact_time),'.r','MarkerSize',5);
-
+ set(gca,'YDir', 'reverse');
+set(gca,'XTick',[ 0, xl(2)],'Ytick',[0, yl(2)],'TickLength',[0.05,0], 'FontSize',6);
+box off;
 
  
  %% FOV
-tax1=axes('position',[position_x1_fov(4),position_y1_fov(4), panel_width1_fov, panel_height1_fov]);
+ax1=axes('position',[position_x1_fov(4),position_y1_fov(4), panel_width1_fov, panel_height1_fov]);
 plane4=fetch1(IMG.Plane & key_fov_example & 'plane_num=4','mean_img');
 imagesc(flip(plane4));
 xl=[0,size(plane4,1)];

@@ -1,5 +1,5 @@
-function [axial_distance_bins, distance_corr_2d, distance_corr_lateral, distance_corr_axial_columns] ...
-    = fn_correlation_vs_distance_shuffled (x_all,y_all,z_all, rho, lateral_distance_bins, min_distance_in_xy, column_inner_radius, column_outer_radius)
+function [axial_distance_bins, distance_corr_2d, distance_corr_lateral,distance_corr_eucledian, distance_corr_axial_columns] ...
+    = fn_correlation_vs_distance_shuffled (x_all,y_all,z_all, rho, lateral_distance_bins,eucledian_distance_bins, min_distance_in_xy, column_inner_radius, column_outer_radius)
 
 %% Distance between all pairs, shuffled
 x_all = x_all(randperm(numel(x_all)));
@@ -15,12 +15,13 @@ parfor iROI=1:1:numel(x_all)
     z=z_all(iROI);
     dXY(iROI,:)= sqrt((x_all-x).^2 + (y_all-y).^2); % in um
     dZ(iROI,:)= abs(z_all-z); % in um
-    % d3D(iROI,:) = sqrt((x_all-x).^2 + (y_all-y).^2 + (z_all-z).^2); % in um
+    d3D(iROI,:) = sqrt((x_all-x).^2 + (y_all-y).^2 + (z_all-z).^2); % in um
 end
 
 idx_lower_triangle=logical(tril(dXY));
 dZ = dZ(idx_lower_triangle);
 dXY = dXY(idx_lower_triangle);
+d3D = d3D(idx_lower_triangle);
 
 axial_distance_bins = unique(dZ)';
 
@@ -40,6 +41,11 @@ for i_l=1:1:numel(lateral_distance_bins)-1
     end
 end
 
+for i_e=1:1:numel(eucledian_distance_bins)-1
+    idx_eucledian = d3D>eucledian_distance_bins(i_e) & d3D<=eucledian_distance_bins(i_e+1) & dXY>=min_distance_in_xy;
+    rho_eucledian=rho(idx_eucledian);
+    distance_corr_eucledian(i_e)=nanmean(rho_eucledian);
+end
 
 % axial within column
 for i_c=1:1:numel(column_inner_radius)

@@ -12,20 +12,29 @@ lickport_z_traj       =null             : longblob                    # Dorso-Ve
 
 classdef VideoLickportPositionTrajectTrial < dj.Computed
     properties
-        keySource = (EXP2.Session  & TRACKING.VideoFiducialsTrial) & 'subject_id=463190' 
+        keySource = (EXP2.Session  & TRACKING.VideoFiducialsTrial) & 'subject_id=462458' 
     end
     methods(Access=protected)
         
         function makeTuples(self, key)
             
-            % Rig specific settings
-            %--------------------------------------------------------------
+            rel_mesoscope = IMG.Mesoscope & key;
+            
+            if rel_mesoscope.count()>0
             k_camera1.tracking_device_id = 3; %side camera
             k_camera2.tracking_device_id = 4; %bottom (or top/front) camera
             side_camera_facing = 'left'; %'left' or 'right' mouse-facing direction as seen from the side view camera
             bottom_or_front_camera_facing = 'up'; %'up' or 'down' mouse-facing direction as seen from the front/bottom view camera
             % For the Mesoscope (Camera tracking_device_id =4, front) we set mouse-facing direction to 'up', because after intital clockwise 90 rotation in TRACKING.VideoFiducialsTrial the mouse appears to face 'up'
             reverse_cam2_x = -1; % '-1' left/right flip along the midline' '1' - no flip
+            else
+                  k_camera1.tracking_device_id = 0; %side camera
+            k_camera2.tracking_device_id = 1; %bottom (or top/front) camera
+            side_camera_facing = 'right'; %'left' or 'right' mouse-facing direction as seen from the side view camera
+            bottom_or_front_camera_facing = 'up'; %'up' or 'down' mouse-facing direction as seen from the front/bottom view camera
+            % For the Mesoscope (Camera tracking_device_id =4, front) we set mouse-facing direction to 'up', because after intital clockwise 90 rotation in TRACKING.VideoFiducialsTrial the mouse appears to face 'up'
+            reverse_cam2_x = -1; % '-1' left/right flip along the midline' '1' - no flip
+            end
             
             camera1_pixels_to_mm = 1; %% UPDATE
             camera2_pixels_to_mm=1; %% UPDATE

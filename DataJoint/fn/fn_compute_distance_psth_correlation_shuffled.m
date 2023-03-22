@@ -6,6 +6,8 @@ column_inner_radius =[10 10 10 10 10 10 10 10  10  10  10  10  25 25 25  30 30 3
 column_outer_radius =[25 30 40 50 60 75 90 100 120 150 200 250 50 40 100 50 60 75 100 120 60  70 100 100 250 250 100 250 120 250 250 500]; % microns
 
 lateral_distance_bins=[0,10,20,30:10:500];
+eucledian_distance_bins=[0,10,20,30:10:500];
+
 % lateral_distance_bins=[5,15,25:10:255];
 
 
@@ -102,15 +104,17 @@ end
 
 %% Shuffling distances
 for i_sh=1:1:num_shuffles
-    [axial_distance_bins, distance_corr_2d_shuffled, distance_corr_lateral_shuffled, distance_corr_axial_columns_shuffled] ...
-        = fn_correlation_vs_distance_shuffled (x_all,y_all,z_all, rho, lateral_distance_bins, min_distance_in_xy, column_inner_radius, column_outer_radius);
+    [axial_distance_bins, distance_corr_2d_shuffled, distance_corr_lateral_shuffled,distance_corr_eucledian_shuffled, distance_corr_axial_columns_shuffled] ...
+        = fn_correlation_vs_distance_shuffled (x_all,y_all,z_all, rho, lateral_distance_bins,eucledian_distance_bins, min_distance_in_xy, column_inner_radius, column_outer_radius);
     distance_corr_2d (i_sh,:,:) = distance_corr_2d_shuffled;
     distance_corr_lateral (i_sh,:) = distance_corr_lateral_shuffled;
+    distance_corr_eucledian (i_sh,:) = distance_corr_eucledian_shuffled;
     distance_corr_axial_columns (i_sh,:,:) = distance_corr_axial_columns_shuffled;
 end
 
 distance_corr_2d = squeeze(nanmean(distance_corr_2d,1));
 distance_corr_lateral = nanmean(distance_corr_lateral,1);
+distance_corr_eucledian = nanmean(distance_corr_eucledian,1);
 distance_corr_axial_columns = squeeze(nanmean(distance_corr_axial_columns,1));
 
 key.axial_distance_bins=axial_distance_bins;
@@ -122,9 +126,11 @@ catch
 end
 
 key.lateral_distance_bins=lateral_distance_bins;
+key.eucledian_distance_bins=eucledian_distance_bins;
 key.num_cells_included = numel(roi_list);
 key.distance_corr_2d=distance_corr_2d;
 key.distance_corr_lateral=distance_corr_lateral;
+key.distance_corr_eucledian=distance_corr_eucledian;
 key.distance_corr_axial_columns  = distance_corr_axial_columns;
 key.column_inner_radius = column_inner_radius;
 key.column_outer_radius = column_outer_radius;

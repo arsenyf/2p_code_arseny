@@ -30,9 +30,10 @@ classdef ROIInfluence2 < dj.Computed
         
     end
     methods(Access=protected)
-        function makeTuples(self, key)
+        function makeTuples(self, key) 
             
-            distance_to_exclude_all=50; %microns
+            distance_to_exclude_all=50; %microns; Excluding all frames during stimulation of other targets in the vicinity (distance_to_exclude_all) of the potentially connected cell
+
             minimal_number_of_clean_trials=20; %to include; trials that are not affected by random stimulations of nearby targets
             
             num_svd_components_removed_vector = [0];

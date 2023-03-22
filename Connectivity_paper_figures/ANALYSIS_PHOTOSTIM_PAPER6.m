@@ -8,12 +8,17 @@ STIMANAL.SessionEpochsIncludedFinal %% manually update session info here
 
 % XYZ coordinate correction of ETL abberations based on ETL callibration
 populate(STIM.ROIInfluence2)
+populate(STIM.ROIInfluenceNoZscore);
 populate(STIM.ROIResponseDirect2);
 populate(STIM.ROIResponseDirectUnique);
 populate(STIMANAL.NeuronOrControl);
 populate(STIMANAL.NeuronOrControlNumber);
+populate(STIMANAL.ConnectivityBetweenDirectlyStimulatedOnly);
+populate(STIMANAL.ControlTargetsIntermingled);
+populate(STIMANAL.InfluenceDistanceIngermingledControl);
 
 populate(STIMANAL.InfluenceDistance);
+populate(STIMANAL.InfluenceDistanceNoZscore);
 populate(STIMANAL.ROIGraphAll) % ETL corrected
 populate(STIMANAL.OutDegree)
 populate(POP.ROICorrLocalPhoto2); %spikes
@@ -21,13 +26,25 @@ populate(POP.ROICorrLocalPhoto); %delta F
 
 
 
-PLOT_InfluenceDistance()
+
 PLOT_ConnectionProbabilityDistance()
+PLOT_ConnectionProbabilityDistance_short_distance_included
+PLOT_ConnectionProbabilityDistance_control_intermingled
+PLOT_Control_targets_distribution
+
+PLOT_InfluenceDistance()
+PLOT_InfluenceDistanceShort_Distance_Included()
+
+STIMANAL.InfluenceDistanceIngermingledControl
 
 % PLOT_Network_Degree_vs_tuning_ETL__final_with_shuffle() %directional, temporal, and reward tuning -- this is what I show in presentations
 PLOT_Network_Degree_vs_tuning_ETL__final_with_shuffle2() %directional, temporal, and reward tuning -- this is what I show in presentations
 
 PLOT_Network_Degree_vs_tuning_ETL__final_with_shuffle2_temp() %directional, temporal, and reward tuning -- this is what I show in presentations
+
+PLOT_Network_Degree_InOutCorr
+
+fn_analysis_connectivity_versus_outdegree
 
 %% Influence versus noise correlations 
 populate(STIMANAL.Target2AllCorrTraceSpont);%based on spikes

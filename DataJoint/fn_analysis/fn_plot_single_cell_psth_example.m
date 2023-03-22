@@ -23,7 +23,7 @@ xlim(xl);
 yl=[0,1];
 ylim(yl);
 if xlabel_flag ==1
-    text(xl(1)-diff(xl)*0.2,yl(1)-diff(yl)*0.5,sprintf('Time to 1st contact-lick (s)'),'HorizontalAlignment','left', 'FontSize',6);
+    text(xl(1)-diff(xl)*0.5,yl(1)-diff(yl)*0.5,sprintf('Time to 1st contact-lick (s)'),'HorizontalAlignment','left', 'FontSize',6);
     set(gca,'XTick',[0,5],'TickLength',[0.05,0], 'FontSize',6);
 else
     set(gca,'XTick',[],'TickLength',[0.05,0], 'FontSize',6);

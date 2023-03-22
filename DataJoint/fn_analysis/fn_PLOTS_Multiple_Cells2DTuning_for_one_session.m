@@ -67,7 +67,7 @@ for i_y=1:1:cells_in_column
             title(sprintf('Example session,\n Positional tuning of 100 neurons'), 'FontSize',6);
         end
        if i_roi==1
-            text(-4,17,sprintf('g'), 'FontWeight','bold','FontSize',12);
+            text(-3.5,17,sprintf('i'), 'FontWeight','bold','FontSize',12);
         end
     end
 end

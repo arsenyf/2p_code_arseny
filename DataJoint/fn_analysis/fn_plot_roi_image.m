@@ -1,4 +1,4 @@
-function fn_plot_roi_image(plane,color_max_factor, R, axx)
+function [xl,yl] = fn_plot_roi_image(plane,color_max_factor, R, axx)
 
 radius_pixels=20;
 % plane1=fetch1(IMG.Plane & key_fov_example & 'plane_num=1','mean_img_enhanced');

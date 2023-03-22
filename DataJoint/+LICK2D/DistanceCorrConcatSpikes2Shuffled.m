@@ -48,7 +48,7 @@ classdef DistanceCorrConcatSpikes2Shuffled < dj.Computed
                 rel_roi_xy = IMG.ROIPositionETL & rel_roi;
                 rel_data = LICK2D.ROILick2DmapPSTHSpikes3bins & rel_roi & key;
                 key.odd_even_corr_threshold = psth_position_concat_regular_odd_even_corr(i_c);
-                fn_compute_distance_psth_correlation_shuffled(rel_roi, rel_data, key,self, dir_save_fig, rel_roi_xy, mesoscope_flag);
+                fn_compute_distance_psth_correlation_shuffled2(rel_roi, rel_data, key,self, dir_save_fig, rel_roi_xy, mesoscope_flag);
             end
             
         end

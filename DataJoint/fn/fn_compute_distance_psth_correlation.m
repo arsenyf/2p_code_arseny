@@ -6,6 +6,8 @@ column_inner_radius =[10 10 10 10 10 10 10 10  10  10  10  10  25 25 25  30 30 3
 column_outer_radius =[25 30 40 50 60 75 90 100 120 150 200 250 50 40 100 50 60 75 100 120 60  70 100 100 250 250 100 250 120 250 250 500]; % microns
 
 lateral_distance_bins=[0,10,20,30:10:500];
+eucledian_distance_bins=[0,10,20,30:10:500];
+
 % lateral_distance_bins=[5,15,25:10:255];
 
 
@@ -129,7 +131,7 @@ parfor iROI=1:1:numel(x_all)
     z=z_all(iROI);
     dXY(iROI,:)= sqrt((x_all-x).^2 + (y_all-y).^2); % in um
     dZ(iROI,:)= abs(z_all-z); % in um
-    %                 d3D(iROI,:) = sqrt((x_all-x).^2 + (y_all-y).^2 + (z_all-z).^2); % in um
+    d3D(iROI,:) = sqrt((x_all-x).^2 + (y_all-y).^2 + (z_all-z).^2); % in um
 end
 
 % temp=logical(tril(dXY));
@@ -140,6 +142,7 @@ end
 idx_lower_triangle=logical(tril(dXY));
 dZ = dZ(idx_lower_triangle);
 dXY = dXY(idx_lower_triangle);
+d3D = d3D(idx_lower_triangle);
 
 axial_distance_bins = unique(dZ)';
 key.axial_distance_bins=axial_distance_bins;
@@ -173,6 +176,11 @@ for i_l=1:1:numel(lateral_distance_bins)-1
     end
 end
 
+for i_e=1:1:numel(eucledian_distance_bins)-1
+    idx_eucledian = d3D>eucledian_distance_bins(i_e) & d3D<=eucledian_distance_bins(i_e+1) & dXY>=min_distance_in_xy;
+    rho_eucledian=rho(idx_eucledian);
+    distance_corr_eucledian(i_e)=nanmean(rho_eucledian);
+end
 
 % axial within column
 for i_c=1:1:numel(column_inner_radius)
@@ -264,6 +272,14 @@ plot(bins_lateral_center,distance_corr_lateral,'.-k')
 xlabel('Lateral Distance (um)');
 ylabel('Correlation');
 
+%Eucledian marginal
+bins_eucledian_center = eucledian_distance_bins(1:end-1) + mean(diff(eucledian_distance_bins))/2;
+axes('position',[0.1, 0.7, panel_width2, panel_height2]);
+plot(bins_eucledian_center,distance_corr_eucledian,'.-k')
+xlabel('Lateral Distance (um)');
+ylabel('Correlation');
+
+
 %Axial marginal, in various column sizes
 column_id=2;
 axes('position',[position_x2(2), position_y1(2), panel_width2, panel_height2]);
@@ -324,6 +340,7 @@ key.lateral_distance_bins=lateral_distance_bins;
 key.num_cells_included = numel(roi_list);
 key.distance_corr_2d=distance_corr_2d;
 key.distance_corr_lateral=distance_corr_lateral;
+key.distance_corr_eucledian=distance_corr_eucledian;
 key.distance_corr_axial_columns  = distance_corr_axial_columns;
 key.column_inner_radius = column_inner_radius;
 key.column_outer_radius = column_outer_radius;

@@ -25,7 +25,7 @@ psth_time                : longblob   # time vector
 
 classdef ROILick2DPSTHSpikesLongerInterval < dj.Imported
     properties
-        keySource = ((EXP2.SessionEpoch*IMG.FOV) & IMG.ROI & IMG.ROISpikes & EXP2.TrialLickPort & 'session_epoch_type="behav_only"' & EXP2.TrialLickBlock) - IMG.Mesoscope;
+        keySource = ((EXP2.SessionEpoch*IMG.FOV) & IMG.ROI & IMG.ROISpikes & EXP2.TrialLickPort & 'session_epoch_type="behav_only"' & EXP2.TrialLickBlock) & IMG.Mesoscope;
 %                 keySource = (EXP2.SessionEpoch*IMG.FOV)  & IMG.ROI & IMG.ROISpikes & EXP2.TrialLickPort & 'session_epoch_type="behav_only"' & EXP2.TrialLickBlock & IMG.Mesoscope;
     end
     methods(Access=protected)
@@ -34,8 +34,8 @@ classdef ROILick2DPSTHSpikesLongerInterval < dj.Imported
             rel_data = IMG.ROISpikes;
             rel_temp = IMG.Mesoscope & key;
             if rel_temp.count>0 % if its mesoscope data
-                fr_interval = [-2, 5]; % used it for the mesoscope
-                fr_interval_limit= [-2, 5]; % for comparing firing rates between conditions and computing firing-rate maps
+                fr_interval = [-1, 6]; % used it for the mesoscope
+                fr_interval_limit= [0, 4]; % for comparing firing rates between conditions and computing firing-rate maps
             else  % if its not mesoscope data
                 fr_interval = [-1, 6];
                 fr_interval_limit= [0, 4]; % for comparing firing rates between conditions and computing firing-rate maps

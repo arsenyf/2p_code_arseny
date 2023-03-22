@@ -102,7 +102,7 @@ percent_2d_map_coverage_end_even=null       : double   #
 classdef ROILick2DmapStatsSpikes3bins < dj.Computed
     methods(Access=protected)
         function makeTuples(self, key)
-            % Computed in Lick2D.ROILick2DmapSpikes
+            % Computed in Lick2D.ROILick2DmapSpikes3bins
         end
     end
 end

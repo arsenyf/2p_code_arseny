@@ -12,10 +12,12 @@ tracking_start_time=ttt.tracking_start_time;
 t_relative_trial_start = [0:(1/frame_rate): (num_frames-1)/frame_rate] + tracking_start_time;
 t  =t_relative_trial_start- time_go; % relative to Go cue. We will set it later relative to lickport move onset, in case of moving lickport
 t  =t- (lick_time_electric_1st_contact_lick + lickport_t_entrance); % relative to Go cue. We will set it later relative to lickport move onset, in case of moving lickport
-lick_time_electric_all_aligned = lick_time_electric_all-lick_time_electric_all(1);
+% lick_time_electric_all_aligned = lick_time_electric_all-lick_time_electric_all(1);
+lick_time_electric_all_aligned = lick_time_electric_all-lick_time_electric_1st_contact_lick;
 
 TT=fetch(TRACKING.VideoTongueTrial & key_tongue,'*');
-licks_time_onset = TT.licks_time_onset - lick_time_electric_all(1);
+% licks_time_onset = TT.licks_time_onset - lick_time_electric_all(1);
+licks_time_onset = TT.licks_time_onset - lick_time_electric_1st_contact_lick;
 licks_time_ends = licks_time_onset + TT.licks_duration_total;
 
 for i_l=1:1:numel(lick_time_electric_all_aligned)
@@ -23,7 +25,7 @@ for i_l=1:1:numel(lick_time_electric_all_aligned)
     [~, idx_licks_time_onset(i_l)] = min(abs(t - licks_time_onset(i_l)));
     [~, idx_licks_time_ends(i_l)] = min(abs(t - licks_time_ends(i_l)));
 end
-idx_lick_contact_time(isnan(lick_time_electric_all_aligned))=[];
+% idx_lick_contact_time(isnan(lick_time_electric_all_aligned))=[];
 
 
 

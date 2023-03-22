@@ -16,7 +16,7 @@ elseif flag_electric_video==2 %We  try to align based on video, if it exists.
 end
 
 %% We align to the first detected lick after Go cue (there is some lag between GO cue and lickport movement). Detection can be based on either video or electric-lickport detection.
-% Even if video detection optio is chosen, but there is no video, we align based on electric lickport contact.  
+% Even if video detection option is chosen, but there is no video, we align based on electric lickport contact.  
 go_time=fetchn(((EXP2.BehaviorTrialEvent & key) - TRACKING.VideoGroomingTrial) & 'trial_event_type="go"','trial_event_time');
 LICK_ELECTRIC=fetch(((EXP2.ActionEvent & key) - TRACKING.VideoGroomingTrial),'*');
 
