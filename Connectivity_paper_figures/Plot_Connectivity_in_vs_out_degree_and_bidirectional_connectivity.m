@@ -1,5 +1,42 @@
-function fn_analysis_connectivity_versus_outdegree
+function Plot_in_out_degree_and_bidirectional_connectivity()
 close;
+
+
+dir_base = fetch1(IMG.Parameters & 'parameter_name="dir_root_save"', 'parameter_value');
+dir_current_fig = [dir_base  '\Photostim\Connectivity\'];
+filename = 'In_out_degree_and_bidirectional_connectivity';
+DefaultFontSize =6;
+
+
+%Graphics
+%---------------------------------
+figure;
+set(gcf,'DefaultAxesFontName','helvetica');
+set(gcf,'PaperUnits','centimeters','PaperPosition',[0 0 23 30]);
+set(gcf,'PaperOrientation','portrait');
+set(gcf,'Units','centimeters','Position',get(gcf,'paperPosition')+[3 0 0 0]);
+set(gcf,'color',[1 1 1]);
+left_color=[0 0 0];
+right_color=[0 0 0];
+set(gcf,'defaultAxesColorOrder',[left_color; right_color]);
+
+
+horizontal_dist=0.25;
+vertical_dist=0.22;
+
+panel_width1=0.12;
+panel_height1=0.12;
+
+position_x1(1)=0.07;
+position_x1(end+1)=position_x1(end)+horizontal_dist;
+position_x1(end+1)=position_x1(end)+horizontal_dist;
+position_x1(end+1)=position_x1(end)+horizontal_dist;
+
+position_y1(1)=0.75;
+position_y1(end+1)=position_y1(end)-vertical_dist;
+position_y1(end+1)=position_y1(end)-vertical_dist;
+position_y1(end+1)=position_y1(end)-vertical_dist;
+
 min_outdegree=[0,1,2,3,4,5,6,7,8,9,10,15,20];
 
 rel1= STIMANAL.ConnectivityBetweenDirectlyStimulatedOnlyOverconnected   &  (STIMANAL.SessionEpochsIncludedFinal & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' );
@@ -48,47 +85,65 @@ for i_m=1:1:numel(min_outdegree)
     
 end
 
-subplot(3,3,1)
+axes('position',[position_x1(1), position_y1(1), panel_width1, panel_height1]);
 lineProps.col={[0 0 0]};
 lineProps.style='-';
 lineProps.width=0.25;
 mseb(min_outdegree,smooth(in_out_degree_corr_mean,5)',smooth(in_out_degree_corr_stem,5)',lineProps);
 title('In out degree corr')
-xlabel('Out-degree')
+xlabel('Minimal Out-degree')
+ylabel('Corr, In vs. Out degree')
 
-subplot(3,3,2)
+
+axes('position',[position_x1(2), position_y1(1), panel_width1, panel_height1]);
+temp=fetchn (rel & sprintf('min_outdegree=%d',0) & 'unidirectional_connect_number>10','in_out_degree_corr');
+% temp=fetchn (rel & sprintf('min_outdegree=%d',0) & 'unidirectional_connect_number>10','in_out_degree_corr');
+histogram(temp,8)
+xlim([-0.7,0.7])
+title('In out degree corr')
+xlabel('Corr, In vs. Out degree')
+ylabel('Counts (sessions)')
+
+
+axes('position',[position_x1(3), position_y1(1), panel_width1, panel_height1]);
 lineProps.col={[0 0 0]};
 lineProps.style='-';
 lineProps.width=0.25;
 mseb(min_outdegree,smooth(bidirectional_proportion_mean,5)',smooth(bidirectional_proportion_stem,5)',lineProps);
-title('Bidirectional connection proportion')
-xlabel('Out-degree')
+title('Bidirectional connectivity')
+ylabel('Bidirectional connection proportion')
+xlabel('Minimal Out-degree')
 
-subplot(3,3,3)
-temp=fetchn (rel & sprintf('min_outdegree=%d',0) & 'unidirectional_connect_number>10','in_out_degree_corr');
-histogram(temp,8)
-xlim([-0.7,0.7])
-title('In out degree corr')
-xlabel('Out-degree')
-
-subplot(3,3,4)
+axes('position',[position_x1(1), position_y1(2), panel_width1, panel_height1]);
 temp=1-fetchn (rel & sprintf('min_outdegree=%d',0) & 'unidirectional_connect_number>10','unidirectional_proportion');
 histogram(temp,8)
 xlim([0,0.5])
 title('Bidirectional connection proportion')
 xlabel('Out-degree')
 
-subplot(3,3,5)
+axes('position',[position_x1(2), position_y1(2), panel_width1, panel_height1]);
 lineProps.col={[0 0 0]};
 lineProps.style='-';
 lineProps.width=0.25;
 mseb(min_outdegree,smooth(unidirectional_observed_to_expected_mean,5)',smooth(unidirectional_observed_to_expected_stem,5)',lineProps);
 title('Unidirectional observed/expected')
 
-subplot(3,3,6)
+axes('position',[position_x1(3), position_y1(3), panel_width1, panel_height1]);
 lineProps.col={[0 0 0]};
 lineProps.style='-';
 lineProps.width=0.25;
 mseb(min_outdegree,smooth(bidirectional_observed_to_expected_mean,5)',smooth(bidirectional_observed_to_expected_stem,5)',lineProps);
 title('Bidirectional observed/expected')
+
+fig = gcf;    %or one particular figure whose handle you already know, or 0 to affect all figures
+set( findall(fig, '-property', 'fontsize'), 'fontsize', DefaultFontSize)
+
+
+if isempty(dir(dir_current_fig))
+    mkdir (dir_current_fig)
+end
+%
+figure_name_out=[ dir_current_fig filename];
+eval(['print ', figure_name_out, ' -dpdf -r300']);
+eval(['print ', figure_name_out, ' -dtiff  -r300']);
 

@@ -77,6 +77,12 @@ for i_l=1:1:numel(distance_eucledian_bins)-1
     else
         key.response_eucledian_inhibition(i_l) =NaN;
     end
+    
+          key.counts_eucledian(i_l)=single(sum(ix_l));
+        key.counts_eucledian_excitation(i_l) =single(sum(ix_l & ix_excit));
+        key.counts_eucledian_inhibition(i_l) =single(sum(ix_l & ix_inhbit));
+
+    
 end
 % fff=fetch1(IMG.PhotostimDATfile & key,'dat_file')
 key.response_p_val=p_val;

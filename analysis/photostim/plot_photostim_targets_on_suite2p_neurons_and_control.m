@@ -5,8 +5,12 @@ dir_base = fetch1(IMG.Parameters & 'parameter_name="dir_root_save"', 'parameter_
 dir_current_fig = [dir_base  '\Photostim\Photostim_targets_map_neurons_and_control\'];
 % key.subject_id = 447990;
 % key.session =1;
+% key.subject_id = 480483;
+% key.session = 3;
+
 key.subject_id = 463192;
 key.session=1;
+
 key.plane_num= 1;
 
 epoch_list = fetchn(EXP2.SessionEpoch & 'session_epoch_type="spont_photo"' & key, 'session_epoch_number','ORDER BY session_epoch_number');
@@ -30,10 +34,10 @@ filename=['distance_session_' num2str(key.session) '_' session_date ];
 
 
 % G=fetch(IMG.PhotostimGroupROI & key  & 'flag_neuron_or_control=1' & 'distance_to_closest_neuron<15','*');
-rel_neurons=IMG.PhotostimGroupROI & key & ( STIMANAL.NeuronOrControl2 & 'neurons_or_control=1');
+rel_neurons=IMG.PhotostimGroupROI & key & ( STIMANAL.NeuronOrControl & 'neurons_or_control=1');
 G_neurons=fetch(rel_neurons,'*');
 
-rel_controls=IMG.PhotostimGroupROI & key & ( STIMANAL.NeuronOrControl2 & 'neurons_or_control=0');
+rel_controls=IMG.PhotostimGroupROI & key & ( STIMANAL.NeuronOrControl & 'neurons_or_control=0');
 G_controls=fetch(rel_controls,'*');
 
 R=fetch((IMG.ROI) & key & IMG.ROIGood,'*');
@@ -47,18 +51,18 @@ hold on
 for i_f=1:1:numel(R)
     x=R(i_f).roi_centroid_x;
     y=R(i_f).roi_centroid_y;
-    plot(x,y,'og','MarkerSize',5)
+    plot(x,y,'og','MarkerSize',2)
 end
 title(sprintf('anm%d session%d %s',key.subject_id,  key.session, session_date ));
 for i_f=1:1:numel(G_neurons)
     x=G_neurons(i_f).photostim_center_x;
     y=G_neurons(i_f).photostim_center_y;
-    plot(x,y,'*m','MarkerSize',5)
+    plot(x,y,'*m','MarkerSize',2)
 end
 for i_f=1:1:numel(G_controls)
     x=G_controls(i_f).photostim_center_x;
     y=G_controls(i_f).photostim_center_y;
-    plot(x,y,'*','MarkerSize',5,'Color',[0 0 1])
+    plot(x,y,'*','MarkerSize',2,'Color',[0 0 1])
 end
 axis equal
 axis tight;

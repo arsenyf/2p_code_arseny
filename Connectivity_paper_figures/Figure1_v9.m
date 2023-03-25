@@ -29,7 +29,7 @@ dir_embeded_graphics=dir_current_fig;
 
 filename=[sprintf('Figure1_v1')];
 
-PAPER_graphics_definition
+PAPER_graphics_definition_Figure1
 
 %% Behavior cartoon
 axes('position',[position_x1(1),position_y1(1), panel_width1, panel_height1])
@@ -322,7 +322,7 @@ key_fov_example_roi.roi_number=2224;
 R=fetch(IMG.ROI & key_fov_example  & key_fov_example_roi,'*');
 [xl,yl] = fn_plot_roi_image(plane4, 0.2, R, ax4_roi);
 
-scalebar=10/pix2dist; %100 microns
+scalebar=10/pix2dist; %10 microns
 plot([xl(1)+5,xl(1)+scalebar+5],[yl(1)+5,yl(1)+5,],'-w','LineWidth',1)
 % text((xl(1)+5+scalebar)*1,yl(1)+10,['10 \mum'],'FontSize',6, 'fontweight', 'bold','Color',[1 1 1])
 

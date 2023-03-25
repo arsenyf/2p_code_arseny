@@ -7,10 +7,10 @@ dir_embeded_graphics=dir_current_fig;
 
 DefaultFontSize =6;
 
-key_fov.subject_id = 463192;
-key_fov.session=1;
-% key_fov.subject_id = 496916;
-% key_fov.session=3;
+% key_fov.subject_id = 463192;
+% key_fov.session=2;
+key_fov.subject_id = 496916;
+key_fov.session=3;
 epoch_list = fetchn(EXP2.SessionEpoch & 'session_epoch_type="spont_photo"' & key_fov, 'session_epoch_number','ORDER BY session_epoch_number');
 key_fov.session_epoch_number = epoch_list(end); % to take the photostim groups from
 key_fov.plane_num=1;
@@ -188,28 +188,31 @@ set(gca,'YTick',[0 60 120],'XTick',[25,100:100:500]);
 ylabel([sprintf('Axial      \nDistance ') '(\mum)        ']);
 xlim(xl)
 
-%colorbar positive values
-ax2=axes('position',[position_x2(1)+0.1, position_y2(2)+0.03+0.02, panel_width2*0.2, panel_height2*0.15]);
+%colorbar
+ax2=axes('position',[position_x2(1)+0.01, position_y2(2)-0.07, panel_width2*0.2, panel_height2*0.35]);
 % imagesc(OUT1.distance_lateral_bins_centers, distance_axial_bins_plot,  OUT1.map)
 cmp = bluewhitered(512); %
 colormap(ax2, cmp)
 caxis([OUT1.minv max(max(OUT1.map(:,1:end)))]);
 ccc=colorbar;
-% ccc.Location='SouthOutside';
-text(5, -1, ['Connection stength' newline '(\Delta z-score activity)'],'Rotation',0);
+ccc.Location='SouthOutside';
+text(1, 0.1, ['Connection stength' newline '(\Delta z-score activity)'],'Rotation',0);
 axis off
 
-%colorbar negative values
-ax3=axes('position',[10,10, panel_width2*0.2, panel_height2*0.35]);
+%colorbar
+ax3=axes('position',[position_x2(1)-0.03, position_y2(2)-0.07, panel_width2*0.2, panel_height2*0.35]);
+OUT1.map(OUT1.map>=0)=0;
+imagesc(OUT1.distance_lateral_bins_centers, distance_axial_bins_plot,  OUT1.map)
+
+%colorbar
+ax3=axes('position',[position_x2(1)-0.03, position_y2(2)-0.07, panel_width2*0.2, panel_height2*0.35]);
 OUT1.map(OUT1.map>=0)=0;
 imagesc(OUT1.distance_lateral_bins_centers, distance_axial_bins_plot,  OUT1.map)
 cmp = bluewhitered(512); %
-%colorbar negative values
-ax4=axes('position',[position_x2(1)+0.1, position_y2(2)+0.015+0.02, panel_width2*0.2, panel_height2*0.15]);
-colormap(ax4, cmp)
+colormap(ax3, cmp)
 caxis([OUT1.minv 0]);
 ccc=colorbar;
-% ccc.Location='SouthOutside';
+ccc.Location='SouthOutside';
 % text(6, 0.1, ['Connection stength' newline '(\Delta z-score activity)'],'Rotation',0);
 axis off
 
@@ -238,8 +241,10 @@ OUT2=fn_PLOT_CoupledResponseDistance_averaging(D2,distance_axial_bins,flag_respo
 axes('position',[position_x2(1), position_y2(1), panel_width2, panel_height2*0.75]);
 hold on
 plot(xl, [0 0],'-k')
-shadedErrorBar(OUT1.distance_lateral_bins_centers(1:end),OUT2.marginal_lateral_mean(1:end),OUT2.marginal_lateral_stem(1:end),'lineprops',{'-','Color',[0 1 1]})
 shadedErrorBar(OUT1.distance_lateral_bins_centers(1:end),OUT1.marginal_lateral_mean(1:end),OUT1.marginal_lateral_stem(1:end),'lineprops',{'-','Color',[1 0 1]})
+shadedErrorBar(OUT1.distance_lateral_bins_centers(1:end),OUT2.marginal_lateral_mean(1:end),OUT2.marginal_lateral_stem(1:end),'lineprops',{'-','Color',[0 1 1]})
+% yl(1)=-2*abs(min([OUT1.marginal_lateral_mean,OUT2.marginal_lateral_mean]));
+% yl(2)=abs(max([OUT1.marginal_lateral_mean,OUT2.marginal_lateral_mean]));
 yl(1)=-0.05;
 yl(2)=1.2;
 ylim(yl)
@@ -256,8 +261,10 @@ set(gca,'YTick',[0,0.5,1]);
 axes('position',[position_x2(1)+0.03, position_y2(1)+0.02, panel_width2*0.75, panel_height2*0.5]);
 hold on
 plot(xl, [0 0],'-k')
-shadedErrorBar(OUT1.distance_lateral_bins_centers(1:end),OUT2.marginal_lateral_mean(1:end),OUT2.marginal_lateral_stem(1:end),'lineprops',{'-','Color',[0 1 1]})
 shadedErrorBar(OUT1.distance_lateral_bins_centers(1:end),OUT1.marginal_lateral_mean(1:end),OUT1.marginal_lateral_stem(1:end),'lineprops',{'-','Color',[1 0 1]})
+shadedErrorBar(OUT1.distance_lateral_bins_centers(1:end),OUT2.marginal_lateral_mean(1:end),OUT2.marginal_lateral_stem(1:end),'lineprops',{'-','Color',[0 1 1]})
+% yl(1)=1.2*min([OUT1.marginal_lateral_mean,OUT2.marginal_lateral_mean]);
+% yl(2)=1.21*abs(min([OUT1.marginal_lateral_mean,OUT2.marginal_lateral_mean]));
 yl=[-0.008 0.002];
 ylim(yl)
 set(gca,'XLim',xl);

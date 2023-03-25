@@ -30,6 +30,7 @@ populate(POP.ROICorrLocalPhoto); %delta F
 PLOT_ConnectionProbabilityDistance()
 PLOT_ConnectionProbabilityDistance_short_distance_included
 PLOT_ConnectionProbabilityDistance_control_intermingled
+PLOT_ConnectionProbabilityDistance_Eucledian()
 PLOT_Control_targets_distribution
 
 PLOT_InfluenceDistance()
@@ -45,6 +46,8 @@ PLOT_Network_Degree_vs_tuning_ETL__final_with_shuffle2_temp() %directional, temp
 PLOT_Network_Degree_InOutCorr
 
 fn_analysis_connectivity_versus_outdegree
+
+Plot_in_out_degree_and_bidirectional_connectivity
 
 %% Influence versus noise correlations 
 populate(STIMANAL.Target2AllCorrTraceSpont);%based on spikes
@@ -103,10 +106,14 @@ PLOT_InfluenceVsCorrConcatShuffledDiff();
 %% Influence versus signal correlations (based on 2D map concatenated)
 populate(STIMANAL.Target2AllCorrMap); 
 
-populate(STIMANAL.InfluenceVsCorrMap); 
-populate(STIMANAL.InfluenceVsCorrMapShuffled); 
+populate(STIMANAL.InfluenceVsCorrMap); %lickmap_regular_odd_vs_even_corr>0
+populate(STIMANAL.InfluenceVsCorrMapShuffled);  %lickmap_regular_odd_vs_even_corr>0
 
 PLOT_InfluenceVsCorrMapShuffledDiff(); 
+
+populate(STIMANAL.InfluenceVsCorrMap2);  %lickmap_regular_odd_vs_even_corr>0.25
+populate(STIMANAL.InfluenceVsCorrMapShuffled2);  %lickmap_regular_odd_vs_even_corr>0.25
+PLOT_InfluenceVsCorrMapShuffledDiff2(); 
 
 %% Correlations 
 PLOT_CorrPairwiseDistanceVoxels()

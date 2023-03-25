@@ -1,12 +1,12 @@
  %{
-# ROI responses to each photostim group
+# Pairwise Correlations
 -> EXP2.SessionEpoch
 ---
-mat_roi_corr                : longblob               # pearson coeff
-mat_roi_corr_pval                : longblob               # signif of pearson coeff
-mat_distance                : longblob               # pixels
+mat_roi_corr         : longblob               # pearson coeff
+mat_roi_corr_pval    : longblob               # signif of pearson coeff
+mat_distance         : longblob               # pixels
 
-roi_number_list            : longblob                # list of ROIs used
+roi_number_list      : longblob                # list of ROIs used
 roi_pos_x            : longblob                # pixels
 roi_pos_y            : longblob                # pixels
 
