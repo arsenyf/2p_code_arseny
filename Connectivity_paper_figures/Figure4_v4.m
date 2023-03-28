@@ -138,7 +138,7 @@ y_mean2 = nanmean(y2,1);
 y_stem2 = nanstd(y2,1)./sqrt(size(DATA_controls_spont,1));
 shadedErrorBar(bins_influence_centers,y_mean2,y_stem2,'lineprops',{'-','Color',[0 0.75 0.75], 'LineWidth',1})
 text(xl(1)-diff(xl)*0.4,yl(1)-diff(yl)*0.2,[sprintf('''Noise'' correlations,') newline '    {residual \it r}'], 'FontSize',6,'VerticalAlignment','middle','Rotation',90);
-text(xl(1)+diff(xl)*1.1,yl(1)-diff(yl)*0.25,['Connection stength'  ' (\Delta z-score activity)'], 'FontSize',6,'HorizontalAlignment','center');
+text(xl(1)+diff(xl)*0.5,yl(1)-diff(yl)*0.5,['Connection stength' newline ' (\Delta z-score activity)'], 'FontSize',6,'HorizontalAlignment','center');
 box off
 text(xl(1)+diff(xl)*0.5,yl(1)+diff(yl)*1.3,sprintf('Spontaneous activity'), 'FontSize',6,'HorizontalAlignment','center', 'fontweight', 'bold');
 text(xl(1)+diff(xl)*0.8,yl(1)+diff(yl)*0.8,'Neuron targets','Color',[1 0 1], 'FontSize',6);
@@ -193,7 +193,7 @@ y_mean4 = nanmean(y4,1);
 y_stem4 = nanstd(y4,1)./sqrt(size(DATA_controls_behav,1));
 shadedErrorBar(bins_influence_centers,y_mean4,y_stem4,'lineprops',{'-','Color',[0 0.75 0.75], 'LineWidth',1})
 % ylabel('Trace Correlation, \itr');
-text(xl(1)+diff(xl)*1.1,yl(1)-diff(yl)*0.25,['Connection stength'  ' (\Delta z-score activity)'], 'FontSize',6,'HorizontalAlignment','center');
+text(xl(1)+diff(xl)*0.5,yl(1)-diff(yl)*0.5,['Connection stength' newline ' (\Delta z-score activity)'], 'FontSize',6,'HorizontalAlignment','center');
 box off
 text(xl(1)+diff(xl)*0.5,yl(1)+diff(yl)*1.3,sprintf('Behavioral activity'), 'FontSize',6,'HorizontalAlignment','center', 'fontweight', 'bold');
 % text(0.01,-1.4,'Neuron targets','Color',[1 0 1]);
@@ -223,6 +223,35 @@ axis off;
 box off
 
 
+%% Tuning
+
+key.neurons_or_control=1;
+key.response_p_val=1;
+rel_data = STIMANAL.InfluenceVsCorrMap*EXP2.SessionID  & 'num_pairs>=0' & 'num_targets>=50' ...
+    &  (STIMANAL.SessionEpochsIncludedFinal & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' & 'session_epoch_number=2')   ...;
+
+rel_shuffled = STIMANAL.InfluenceVsCorrMapShuffled*EXP2.SessionID & 'num_pairs>=0' & 'num_targets>=50' ...
+    &  (STIMANAL.SessionEpochsIncludedFinal & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' & 'session_epoch_number=2')   ...;
+  
+title_string = 'Positional tuning';
+ax5=axes('position',[position_x1(5)+0.01,position_y1(1), panel_width1, panel_height1])
+
+num_svd_components_removed_vector_corr =[0]; % this is relevant if we remove  SVD  components of the ongoing dynamics from the connectivity response, to separate the evoked resposne from ongoing activity
+% colormap=viridis(numel(num_svd_components_removed_vector_corr));
+colormap=[1 0 1];
+for i_c = 1:1:numel(num_svd_components_removed_vector_corr)
+    key.num_svd_components_removed_corr=num_svd_components_removed_vector_corr(i_c);
+    [xl] = fn_plot_tuning_vs_connectivity_figure4(rel_data, rel_shuffled, key,title_string, colormap, i_c, ax5);
+end
+yl=[-0.005, 0.03]
+ylim(yl)
+text(xl(1)+diff(xl)*0.5,yl(1)-diff(yl)*0.5,['Connection stength' newline ' (\Delta z-score activity)'], 'FontSize',6,'HorizontalAlignment','center');
+text(xl(1)-diff(xl)*0.4,yl(1)-diff(yl)*0.2,[sprintf('Tuning correlations,') newline '    {residual \it r}'], 'FontSize',6,'VerticalAlignment','middle','Rotation',90);
+
+set(gca,'XTick',[0,1],'Ytick',[0, 0.03],'TickLength',[0.05,0.05], 'FontSize',6);
+text(xl(1)-diff(xl)*0.6, yl(1)+diff(yl)*1.35, 'c', ...
+        'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
+text(xl(1)+diff(xl)*0.5,yl(1)+diff(yl)*1.3,sprintf('Positional tuning'), 'FontSize',6,'HorizontalAlignment','center', 'fontweight', 'bold');
 
 
 fig = gcf;    %or one particular figure whose handle you already know, or 0 to affect all figures
