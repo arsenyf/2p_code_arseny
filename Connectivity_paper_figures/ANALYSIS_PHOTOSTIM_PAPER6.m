@@ -24,7 +24,8 @@ populate(STIMANAL.OutDegree)
 populate(POP.ROICorrLocalPhoto2); %spikes
 populate(POP.ROICorrLocalPhoto); %delta F
 
-
+populate(STIMANAL.ROIResponseDirectVariability);
+populate(STIMANAL.ROIInfluenceVariability);
 
 
 PLOT_ConnectionProbabilityDistance()
@@ -39,9 +40,9 @@ PLOT_InfluenceDistanceShort_Distance_Included()
 STIMANAL.InfluenceDistanceIngermingledControl
 
 % PLOT_Network_Degree_vs_tuning_ETL__final_with_shuffle() %directional, temporal, and reward tuning -- this is what I show in presentations
-PLOT_Network_Degree_vs_tuning_ETL__final_with_shuffle2() %directional, temporal, and reward tuning -- this is what I show in presentations
-
-PLOT_Network_Degree_vs_tuning_ETL__final_with_shuffle2_temp() %directional, temporal, and reward tuning -- this is what I show in presentations
+% PLOT_Network_Degree_vs_tuning_ETL__final_with_shuffle2() %directional, temporal, and reward tuning -- this is what I show in presentations
+% PLOT_Network_Degree_vs_tuning_ETL__final_with_shuffle2_temp() %directional, temporal, and reward tuning -- this is what I show in presentations
+PLOT_Network_Degree_vs_tuning_final()
 
 PLOT_Network_Degree_InOutCorr
 

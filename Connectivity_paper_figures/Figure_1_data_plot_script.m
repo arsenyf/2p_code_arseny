@@ -185,7 +185,7 @@ A2=numel([D_tuned_positional.psth_corr_across_position_regular]);
 I1=numel([D_tuned_temporal_and_positional.lickmap_regular_odd_vs_even_corr]);
 
 A = [A1 A2]; I = I1;
-[h,v]=venn(A,I,'FaceColor',{[1 0.5 0],[0 0.7 0.2]});
+[h,v]=venn(A,I,'FaceColor',{[0 0 1],[1 0 0]});
 
 %by itself plots circles with total areas A, and intersection area(s) I. 
 % A is a three element vector [c1 c2 c3], and I is a four element vector [i12 i13 i23 i123], specifiying the two-circle intersection areas i12, i13, i23, and the three-circle intersection i123.
@@ -202,8 +202,8 @@ box off
 ff=gca;
 xl=ff.XLim;
 yl=ff.YLim;
-text(v.Position(1,1)-v.Radius(1)*0.2,v.Position(1,2)+v.Radius(1)*1.3,sprintf('Temporally tuned'),'Color',[1 0.5 0],'FontSize',6,'HorizontalAlignment','Center');
-text(v.Position(2,1)-v.Radius(1)*0.2,v.Position(2,2)-v.Radius(2)*1.65,sprintf('Positionally tuned'),'Color',[0 0.7 0.2],'FontSize',6,'HorizontalAlignment','Center');
+text(v.Position(1,1)-v.Radius(1)*0.2,v.Position(1,2)+v.Radius(1)*1.3,sprintf('Temporally tuned'),'Color',[0 0 1],'FontSize',6,'HorizontalAlignment','Center');
+text(v.Position(2,1)-v.Radius(1)*0.2,v.Position(2,2)-v.Radius(2)*1.65,sprintf('Positionally tuned'),'Color',[1 0 0],'FontSize',6,'HorizontalAlignment','Center');
 
 text(xl(1)+diff(xl)*0.5, yl(1)+diff(yl)*1.3, sprintf('%d cells',count_total), 'fontsize', 6, 'fontname', 'helvetica', 'fontweight', 'bold','HorizontalAlignment','Center');
 

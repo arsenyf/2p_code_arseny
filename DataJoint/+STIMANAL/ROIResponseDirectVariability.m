@@ -13,7 +13,7 @@ time_vector            : blob                # response amlitude at each trial
 classdef ROIResponseDirectVariability < dj.Imported
     properties
         %         keySource = IMG.PhotostimGroup;
-        keySource = EXP2.SessionEpoch & 'flag_photostim_epoch =1' & (IMG.FOV & STIM.ROIInfluence5) & IMG.Volumetric;
+        keySource = EXP2.SessionEpoch & 'flag_photostim_epoch =1' & (IMG.FOV & STIM.ROIInfluence2) & IMG.Volumetric;
     end
     methods(Access=protected)
         function makeTuples(self, key)
@@ -46,7 +46,7 @@ classdef ROIResponseDirectVariability < dj.Imported
             
             
             
-            G=fetch(IMG.PhotostimGroupROI & STIM.ROIResponseDirect & key,'*');
+            G=fetch(IMG.PhotostimGroupROI & STIM.ROIResponseDirectUnique & key,'*');
             
             
             
@@ -64,7 +64,7 @@ classdef ROIResponseDirectVariability < dj.Imported
                 
                 
                 f_trace = fetch1(IMG.ROITrace & k1,'f_trace');
-                photostim_start_frame = fetch1(IMG.PhotostimGroup &  STIM.ROIResponseDirect & k1,'photostim_start_frame');
+                photostim_start_frame = fetch1(IMG.PhotostimGroup &  STIM.ROIResponseDirectUnique & k1,'photostim_start_frame');
                 %         global_baseline=mean(movmin(f_trace_direct(i_epoch,:),1009));
                 global_baseline=mean( f_trace);
                 
@@ -76,7 +76,7 @@ classdef ROIResponseDirectVariability < dj.Imported
                 [StimStat,StimTrace] = fn_compute_photostim_response_variability (f_trace , photostim_start_frame, timewind_response, timewind_baseline1,timewind_baseline2,timewind_baseline3, flag_baseline_trial_or_avg, global_baseline, time);
                 
                 
-                kk = fetch( STIM.ROIResponseDirect & key);
+                kk = fetch( STIM.ROIResponseDirectUnique & key);
                 kk.response_mean_trials = StimStat.response_trials;
                 kk.response_peak_trials = StimStat.response_peak_trials;
                 kk.response_trace_trials = StimTrace.response_trace_trials;

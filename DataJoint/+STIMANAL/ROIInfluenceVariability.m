@@ -35,7 +35,7 @@ classdef ROIInfluenceVariability < dj.Computed
         function makeTuples(self, key)
             
             dir_base = fetch1(IMG.Parameters & 'parameter_name="dir_root_save"', 'parameter_value');
-            dir_current_fig = [dir_base  '\Photostim\photostim_traces\coupled_analysis_for_ilan\'];
+            dir_current_fig = [dir_base  '\Photostim\photostim_traces\coupled_analysis_for_ilan_paper\'];
             
             session_date = fetch1(EXP2.Session & key,'session_date');
             dir_current_fig = [dir_current_fig '\anm' num2str(key.subject_id) '\session_' num2str(key.session) '_' session_date  '\epoch' num2str(key.session_epoch_number) '\'];
@@ -59,7 +59,7 @@ classdef ROIInfluenceVariability < dj.Computed
             end
             min_distance_to_closest_target_pixels=min_distance_to_closest_target/pix2dist;
             
-            rel=STIM.ROIInfluence5 & 'response_p_value1<=0.001' & sprintf('response_distance_lateral_um >%.2f', min_distance_to_closest_target_pixels) & 'response_mean>0';
+            rel=STIM.ROIInfluence2 & 'response_p_value1<=0.001' & sprintf('response_distance_lateral_um >%.2f', min_distance_to_closest_target_pixels) & 'response_mean>0';
             
             if flag_baseline_trial_or_avg==0 %baseline averaged across trials
                 dir_suffix= 'baseline_avg';
@@ -101,7 +101,7 @@ classdef ROIInfluenceVariability < dj.Computed
             position_y(end+1)=position_y(end) - vertical_distance;
             
             
-            G=fetch(IMG.PhotostimGroupROI & (STIM.ROIResponseDirect & 'response_p_value1<=0.0001') & key ,'*','ORDER BY photostim_group_num');
+            G=fetch(IMG.PhotostimGroupROI & (STIM.ROIResponseDirectUnique & 'response_p_value1<=0.0001') & key ,'*','ORDER BY photostim_group_num');
             
             group_list=[G.photostim_group_num];
             

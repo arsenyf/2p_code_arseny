@@ -255,7 +255,7 @@ text(xl(1)+diff(xl)*0.5,yl(1)+diff(yl)*1.3,sprintf('Positional tuning'), 'FontSi
 
 
 fig = gcf;    %or one particular figure whose handle you already know, or 0 to affect all figures
-set( findall(fig, '-property', 'fontsize'), 'fontsize', DefaultFontSize)
+% set( findall(fig, '-property', 'fontsize'), 'fontsize', DefaultFontSize)
 
 
 if isempty(dir(dir_current_fig))
