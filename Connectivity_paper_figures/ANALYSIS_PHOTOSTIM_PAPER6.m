@@ -50,6 +50,10 @@ fn_analysis_connectivity_versus_outdegree
 
 Plot_in_out_degree_and_bidirectional_connectivity
 
+Supplementary_Figure_6
+Supplementary_Figure_7
+
+
 %% Influence versus noise correlations 
 populate(STIMANAL.Target2AllCorrTraceSpont);%based on spikes
 populate(STIMANAL.InfluenceVsCorrTraceSpont);

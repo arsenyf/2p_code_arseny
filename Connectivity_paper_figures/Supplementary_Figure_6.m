@@ -1,7 +1,8 @@
-function PLOT_InfluenceDistanceShort_Distance_Included()
+function Supplementary_Figure_6()
 dir_base = fetch1(IMG.Parameters & 'parameter_name="dir_root_save"', 'parameter_value');
-dir_current_fig = [dir_base  '\Photostim\Connectivity\'];
-filename = 'Distance_Influence_short_distance_included_150';
+dir_current_fig = [dir_base  'Connectivity_paper_figures\plots\'];
+
+filename=[sprintf('Supplementary_Figure_6_v1')];
 
 clf;
 
@@ -71,6 +72,7 @@ xlabel([sprintf('Lateral Distance ') '(\mum)']);
 set(gca,'YTick',[0 60 120],'XTick',[25,100:100:500]);
 ylabel([sprintf('Axial      \nDistance ') '(\mum)        ']);
 xlim(xl)
+title('Directly photostimulated','Color',[1 0 1]);
 
 ax2=axes('position',[position_x1(1)+0.2, position_y1(1)+0.07, panel_width1*0.2, panel_height1*0.35]);
 % imagesc(OUT1.distance_lateral_bins_centers, distance_axial_bins_plot,  OUT1.map)
@@ -87,10 +89,7 @@ rel_control = rel_data & rel_sessions_neurons & key & sprintf('response_p_val=%.
 D2=fetch(rel_control ,'*');  % response p-value for inclusion. 1 means we take all pairs
 OUT2=fn_PLOT_CoupledResponseDistance_averaging(D2,distance_axial_bins,flag_response);
 
-
-
-
-ax2=axes('position',[position_x1(1), position_y1(2), panel_width1, panel_height1]);
+ax2=axes('position',[position_x1(1), position_y1(2)+0.2, panel_width1, panel_height1]);
 imagesc(OUT2.distance_lateral_bins_centers,  distance_axial_bins_plot, OUT2.map)
 axis tight
 axis equal
@@ -101,13 +100,14 @@ xlabel([sprintf('Lateral Distance ') '(\mum)']);
 ylabel([sprintf('Axial Distance ') '(\mum)']);
 set(gca,'YTick',[0 60 90 120],'XTick',[25,100:100:500]);
 ylabel([sprintf('Axial \nDistance\n ') '(\mum)']);
+title('Control targets','Color',[0 0.75 0.75]);
 
 %% Marginal distribution - lateral
 axes('position',[position_x1(1), position_y1(1)+0.25, panel_width1, panel_height1*0.5]);
 hold on
 plot(xl, [0 0],'-k')
 shadedErrorBar(OUT1.distance_lateral_bins_centers(1:end),OUT1.marginal_lateral_mean(1:end),OUT1.marginal_lateral_stem(1:end),'lineprops',{'-','Color',[1 0 1]})
-shadedErrorBar(OUT1.distance_lateral_bins_centers(1:end),OUT2.marginal_lateral_mean(1:end),OUT2.marginal_lateral_stem(1:end),'lineprops',{'-','Color',[0.5 0.5 0.5]})
+shadedErrorBar(OUT1.distance_lateral_bins_centers(1:end),OUT2.marginal_lateral_mean(1:end),OUT2.marginal_lateral_stem(1:end),'lineprops',{'-','Color',[0 0.75 0.75]})
 % yl(1)=-2*abs(min([OUT1.marginal_lateral_mean,OUT2.marginal_lateral_mean]));
 % yl(2)=abs(max([OUT1.marginal_lateral_mean,OUT2.marginal_lateral_mean]));
 yl(1)=-0.05;
@@ -120,48 +120,51 @@ ylabel (['Connection stength' newline '(\Delta z-score activity)']);
 set(gca,'YTick',[0,0.5,1]);
 xlabel([sprintf('Lateral Distance ') '(\mum)']);
 
-%% Marginal distribution - lateral (zoom)
-axes('position',[position_x1(1)+0.06, position_y1(1)+0.3, panel_width1*0.75, panel_height1*0.5]);
-hold on
-plot(xl, [0 0],'-k')
-shadedErrorBar(OUT1.distance_lateral_bins_centers(1:end),OUT1.marginal_lateral_mean(1:end),OUT1.marginal_lateral_stem(1:end),'lineprops',{'-','Color',[1 0 1]})
-shadedErrorBar(OUT1.distance_lateral_bins_centers(1:end),OUT2.marginal_lateral_mean(1:end),OUT2.marginal_lateral_stem(1:end),'lineprops',{'-','Color',[0.5 0.5 0.5]})
-% yl(1)=1.2*min([OUT1.marginal_lateral_mean,OUT2.marginal_lateral_mean]);
-% yl(2)=1.21*abs(min([OUT1.marginal_lateral_mean,OUT2.marginal_lateral_mean]));
-yl=[-0.008 0.002];
-ylim(yl)
-set(gca,'XLim',xl);
-box off
-set(gca,'YTick',[-0.005  0 yl(2)],'XTick',[100 250 500],'XTickLabel',{'100' '     250' '500'},'TickLength',[0.05 0.05]);
-text(200,0.005,'Neuron targets','Color',[1 0 1]);
-text(200,0.003,sprintf('Control targets'),'Color',[0.5 0.5 0.5]);
+text(200,1,'Directly photostimulated','Color',[1 0 1]);
+text(200,0.8,sprintf('Control targets'),'Color',[0 0.75 0.75]);
+
+% %% Marginal distribution - lateral (zoom)
+% axes('position',[position_x1(1)+0.06, position_y1(1)+0.3, panel_width1*0.75, panel_height1*0.5]);
+% hold on
+% plot(xl, [0 0],'-k')
+% shadedErrorBar(OUT1.distance_lateral_bins_centers(1:end),OUT1.marginal_lateral_mean(1:end),OUT1.marginal_lateral_stem(1:end),'lineprops',{'-','Color',[1 0 1]})
+% shadedErrorBar(OUT1.distance_lateral_bins_centers(1:end),OUT2.marginal_lateral_mean(1:end),OUT2.marginal_lateral_stem(1:end),'lineprops',{'-','Color',[0 0.75 0.75]})
+% % yl(1)=1.2*min([OUT1.marginal_lateral_mean,OUT2.marginal_lateral_mean]);
+% % yl(2)=1.21*abs(min([OUT1.marginal_lateral_mean,OUT2.marginal_lateral_mean]));
+% yl=[-0.008 0.002];
+% ylim(yl)
+% set(gca,'XLim',xl);
+% box off
+% set(gca,'YTick',[-0.005  0 yl(2)],'XTick',[100 250 500],'XTickLabel',{'100' '     250' '500'},'TickLength',[0.05 0.05]);
+% text(200,0.005,'Directly photostimulated','Color',[1 0 1]);
+% text(200,0.003,sprintf('Control targets'),'Color',[0 0.75 0.75]);
 
 
 
 
-%% Marginal distribution - axial NEAR
-axm=axes('position',[position_x1(2), position_y1(1)+0.05, panel_width1*0.4, panel_height1*0.4]);
-hold on
-plot([distance_axial_bins(1),distance_axial_bins(end)],[0 0],'-k')
-shadedErrorBar(distance_axial_bins,OUT1.marginal_axial_in_column_mean,OUT1.marginal_axial_in_column_stem,'lineprops',{'.-','Color',[1 0 1]})
-shadedErrorBar(distance_axial_bins,OUT2.marginal_axial_in_column_mean,OUT2.marginal_axial_in_column_stem,'lineprops',{'.-','Color',[0.5 0.5 0.5]})
-axm.View = [90 90]
-xlabel([sprintf('Axial \nDistance ') '(\mum)']);
-ylabel (['Connection stength' newline '(\Delta z-score activity)']);
-set(gca,'XTick',[0 60 120]);
-title([sprintf('25< Lateral <=100            \n') '(\mum)'],'FontSize',6)
-
-%% Marginal distribution - axial FAR
-axm=axes('position',[position_x1(2)+0.12, position_y1(1)+0.05, panel_width1*0.4, panel_height1*0.4]);
-hold on
+% %% Marginal distribution - axial NEAR
+% axm=axes('position',[position_x1(2), position_y1(1)+0.05, panel_width1*0.4, panel_height1*0.4]);
+% hold on
 % plot([distance_axial_bins(1),distance_axial_bins(end)],[0 0],'-k')
-shadedErrorBar(distance_axial_bins,OUT1.marginal_axial_out_column_mean,OUT1.marginal_axial_out_column_stem,'lineprops',{'.-','Color',[1 0 1]})
-shadedErrorBar(distance_axial_bins,OUT2.marginal_axial_out_column_mean,OUT2.marginal_axial_out_column_stem,'lineprops',{'.-','Color',[0.5 0.5 0.5]})
-axm.View = [90 90]
-% xlabel([sprintf('Axial Distance ') '(\mum)']);
-set(gca,'XTick',[0 60 120],'XTickLabel',[]);
-title([sprintf('            100< Lateral <=250\n ') '(\mum)'],'FontSize',6)
-
+% shadedErrorBar(distance_axial_bins,OUT1.marginal_axial_in_column_mean,OUT1.marginal_axial_in_column_stem,'lineprops',{'.-','Color',[1 0 1]})
+% shadedErrorBar(distance_axial_bins,OUT2.marginal_axial_in_column_mean,OUT2.marginal_axial_in_column_stem,'lineprops',{'.-','Color',[0 0.75 0.75]})
+% axm.View = [90 90]
+% xlabel([sprintf('Axial \nDistance ') '(\mum)']);
+% ylabel (['Connection stength' newline '(\Delta z-score activity)']);
+% set(gca,'XTick',[0 60 120]);
+% title([sprintf('25< Lateral <=100            \n') '(\mum)'],'FontSize',6)
+% 
+% %% Marginal distribution - axial FAR
+% axm=axes('position',[position_x1(2)+0.12, position_y1(1)+0.05, panel_width1*0.4, panel_height1*0.4]);
+% hold on
+% % plot([distance_axial_bins(1),distance_axial_bins(end)],[0 0],'-k')
+% shadedErrorBar(distance_axial_bins,OUT1.marginal_axial_out_column_mean,OUT1.marginal_axial_out_column_stem,'lineprops',{'.-','Color',[1 0 1]})
+% shadedErrorBar(distance_axial_bins,OUT2.marginal_axial_out_column_mean,OUT2.marginal_axial_out_column_stem,'lineprops',{'.-','Color',[0 0.75 0.75]})
+% axm.View = [90 90]
+% % xlabel([sprintf('Axial Distance ') '(\mum)']);
+% set(gca,'XTick',[0 60 120],'XTickLabel',[]);
+% title([sprintf('            100< Lateral <=250\n ') '(\mum)'],'FontSize',6)
+% 
 % plot( distance_axial_bins_plot, OUT1.marginal_axial_mean, '-b')
 % plot( distance_axial_bins_plot, OUT2.marginal_axial_mean,'-m')
 % set(gca,'Ydir','reverse')

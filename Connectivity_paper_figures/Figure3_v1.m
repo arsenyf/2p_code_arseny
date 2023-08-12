@@ -7,10 +7,10 @@ dir_embeded_graphics=dir_current_fig;
 
 DefaultFontSize =6;
 
-key_fov.subject_id = 463192;
-key_fov.session=1;
-% key_fov.subject_id = 496916;
-% key_fov.session=3;
+% key_fov.subject_id = 463192;
+% key_fov.session=1;
+key_fov.subject_id = 496916;
+key_fov.session=3;
 epoch_list = fetchn(EXP2.SessionEpoch & 'session_epoch_type="spont_photo"' & key_fov, 'session_epoch_number','ORDER BY session_epoch_number');
 key_fov.session_epoch_number = epoch_list(end); % to take the photostim groups from
 key_fov.plane_num=1;
@@ -39,8 +39,8 @@ colormap(ax1,gray)
 text(xl(1)-diff(xl)*0.2, yl(1)+diff(yl)*1.1, 'e', ...
     'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
 text(xl(1)-diff(xl)*0.05,yl(1)+diff(yl)*1.1,sprintf('Photostimulation targets'),'FontSize',6, 'fontweight', 'bold')
-text(xl(1)-diff(xl)*0.15,yl(1)-diff(yl)*0.05,sprintf('Neuron targets'), 'FontSize',6,'HorizontalAlignment','left','Color',[1 0 1]);
-text(xl(1)+diff(xl)*0.5,yl(1)-diff(yl)*0.05,sprintf('Control targets'), 'FontSize',6,'HorizontalAlignment','left','Color',[0 1 1]);
+text(xl(1)-diff(xl)*0.05,yl(1)-diff(yl)*0.05,sprintf('Directly photostimulated'), 'FontSize',6,'HorizontalAlignment','left','Color',[1 0 1]);
+text(xl(1)+diff(xl)*0.05,yl(1)-diff(yl)*0.15,sprintf('Control targets'), 'FontSize',6,'HorizontalAlignment','left','Color',[0 0.75 0.75]);
 
 % G=fetch(IMG.PhotostimGroupROI & key  & 'flag_neuron_or_control=1' & 'distance_to_closest_neuron<15','*');
 rel_neurons=IMG.PhotostimGroupROI & key_fov & ( STIMANAL.NeuronOrControl & 'neurons_or_control=1');
@@ -63,7 +63,7 @@ end
 for i_f=1:1:numel(G_controls)
     x=G_controls(i_f).photostim_center_x;
     y=G_controls(i_f).photostim_center_y;
-    plot(x,y,'.','MarkerSize',3,'Color',[0 1 1])
+    plot(x,y,'.','MarkerSize',3,'Color',[0 0.75 0.75])
 end
 
 axis off;
@@ -125,7 +125,7 @@ xl=[25,250];
 hold on
 % plot(xl, [0 0],'-k')
 shadedErrorBar(OUT1.distance_eucledian_bins_centers(1:end),smooth(OUT1.marginal_eucledian_mean(1:end),7),smooth(OUT1.marginal_eucledian_stem(1:end),7),'lineprops',{'-','Color',[1 0 1]})
-shadedErrorBar(OUT1.distance_eucledian_bins_centers(1:end),smooth(OUT2.marginal_eucledian_mean(1:end),7),smooth(OUT2.marginal_eucledian_stem(1:end),7),'lineprops',{'-','Color',[0 1 1]})
+shadedErrorBar(OUT1.distance_eucledian_bins_centers(1:end),smooth(OUT2.marginal_eucledian_mean(1:end),7),smooth(OUT2.marginal_eucledian_stem(1:end),7),'lineprops',{'-','Color',[0 0.75 0.75]})
 % yl(1)=-2*abs(min([OUT1.marginal_eucledian_mean,OUT2.marginal_eucledian_mean]));
 % yl(2)=abs(max([OUT1.marginal_eucledian_mean,OUT2.marginal_eucledian_mean]));
 yl(1)=0;
@@ -238,7 +238,7 @@ OUT2=fn_PLOT_CoupledResponseDistance_averaging(D2,distance_axial_bins,flag_respo
 axes('position',[position_x2(1), position_y2(1), panel_width2, panel_height2*0.75]);
 hold on
 plot(xl, [0 0],'-k')
-shadedErrorBar(OUT1.distance_lateral_bins_centers(1:end),OUT2.marginal_lateral_mean(1:end),OUT2.marginal_lateral_stem(1:end),'lineprops',{'-','Color',[0 1 1]})
+shadedErrorBar(OUT1.distance_lateral_bins_centers(1:end),OUT2.marginal_lateral_mean(1:end),OUT2.marginal_lateral_stem(1:end),'lineprops',{'-','Color',[0 0.75 0.75]})
 shadedErrorBar(OUT1.distance_lateral_bins_centers(1:end),OUT1.marginal_lateral_mean(1:end),OUT1.marginal_lateral_stem(1:end),'lineprops',{'-','Color',[1 0 1]})
 yl(1)=-0.05;
 yl(2)=1.2;
@@ -256,15 +256,15 @@ set(gca,'YTick',[0,0.5,1]);
 axes('position',[position_x2(1)+0.03, position_y2(1)+0.02, panel_width2*0.75, panel_height2*0.5]);
 hold on
 plot(xl, [0 0],'-k')
-shadedErrorBar(OUT1.distance_lateral_bins_centers(1:end),OUT2.marginal_lateral_mean(1:end),OUT2.marginal_lateral_stem(1:end),'lineprops',{'-','Color',[0 1 1]})
+shadedErrorBar(OUT1.distance_lateral_bins_centers(1:end),OUT2.marginal_lateral_mean(1:end),OUT2.marginal_lateral_stem(1:end),'lineprops',{'-','Color',[0 0.75 0.75]})
 shadedErrorBar(OUT1.distance_lateral_bins_centers(1:end),OUT1.marginal_lateral_mean(1:end),OUT1.marginal_lateral_stem(1:end),'lineprops',{'-','Color',[1 0 1]})
 yl=[-0.008 0.002];
 ylim(yl)
 set(gca,'XLim',xl);
 box off
 set(gca,'YTick',[-0.005  0 yl(2)],'XTick',[100 250 500],'XTickLabel',{'100' '     250' '500'},'TickLength',[0.05 0.05]);
-text(200,0.005,'Neuron targets','Color',[1 0 1]);
-text(200,0.003,sprintf('Control targets'),'Color',[0 1 1]);
+text(200,0.005,'Directly photostimulated','Color',[1 0 1]);
+text(200,0.003,sprintf('Control targets'),'Color',[0 0.75 0.75]);
 
 
 
@@ -274,7 +274,7 @@ axm=axes('position',[position_x2(2), position_y2(1)+0.02, panel_width2*0.4, pane
 hold on
 plot([distance_axial_bins(1),distance_axial_bins(end)],[0 0],'-k')
 shadedErrorBar(distance_axial_bins,OUT1.marginal_axial_in_column_mean,OUT1.marginal_axial_in_column_stem,'lineprops',{'.-','Color',[1 0 1]})
-shadedErrorBar(distance_axial_bins,OUT2.marginal_axial_in_column_mean,OUT2.marginal_axial_in_column_stem,'lineprops',{'.-','Color',[0 1 1]})
+shadedErrorBar(distance_axial_bins,OUT2.marginal_axial_in_column_mean,OUT2.marginal_axial_in_column_stem,'lineprops',{'.-','Color',[0 0.75 0.75]})
 axm.View = [90 90]
 xlabel([sprintf('Axial \nDistance ') '(\mum)']);
 ylabel (['Connection stength' newline '(\Delta z-score activity)']);
@@ -286,7 +286,7 @@ axm=axes('position',[position_x2(2)+0.07, position_y2(1)+0.02, panel_width2*0.4,
 hold on
 % plot([distance_axial_bins(1),distance_axial_bins(end)],[0 0],'-k')
 shadedErrorBar(distance_axial_bins,OUT1.marginal_axial_out_column_mean,OUT1.marginal_axial_out_column_stem,'lineprops',{'.-','Color',[1 0 1]})
-shadedErrorBar(distance_axial_bins,OUT2.marginal_axial_out_column_mean,OUT2.marginal_axial_out_column_stem,'lineprops',{'.-','Color',[0 1 1]})
+shadedErrorBar(distance_axial_bins,OUT2.marginal_axial_out_column_mean,OUT2.marginal_axial_out_column_stem,'lineprops',{'.-','Color',[0 0.75 0.75]})
 axm.View = [90 90]
 % xlabel([sprintf('Axial Distance ') '(\mum)']);
 set(gca,'XTick',[0 60 120],'XTickLabel',[]);

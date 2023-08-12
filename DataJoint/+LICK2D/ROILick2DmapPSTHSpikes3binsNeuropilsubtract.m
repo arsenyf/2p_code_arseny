@@ -23,12 +23,12 @@ psthmap_time                            : blob       #
 %}
 
 
-classdef ROILick2DmapPSTHSpikes3bins < dj.Computed
+classdef ROILick2DmapPSTHSpikes3binsNeuropilsubtract < dj.Computed
     properties
     end
     methods(Access=protected)
         function makeTuples(self, key)
-            % Computed in Lick2D.ROILick2DmapSpikes3bins
+            % Computed in Lick2D.ROILick2DmapSpikes3binsNeuropilsubtract
         end
     end
 end

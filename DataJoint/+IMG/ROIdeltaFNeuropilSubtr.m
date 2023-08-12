@@ -9,7 +9,7 @@ dff_trace      : longblob   # (s) delta f over f
 
 classdef ROIdeltaFNeuropilSubtr < dj.Imported
     properties
-        keySource = EXP2.SessionEpoch & IMG.ROI & IMG.ROITrace & IMG.ROITraceNeuropil;
+        keySource = (EXP2.SessionEpoch & 'session_epoch_type="behav_only"') & IMG.ROI & IMG.ROITrace & IMG.ROITraceNeuropil - IMG.Mesoscope;
     end
     methods(Access=protected)
         function makeTuples(self, key)
@@ -40,7 +40,7 @@ classdef ROIdeltaFNeuropilSubtr < dj.Imported
                 smooth_window_multiply_factor =1;
             end
             
-            
+         
             %Graphics
             %---------------------------------
             figure;
@@ -61,12 +61,15 @@ classdef ROIdeltaFNeuropilSubtr < dj.Imported
             Fall=cell2mat(fetchn(IMG.ROITrace &key,'f_trace','ORDER BY roi_number'));
             Fall_neuropil=cell2mat(fetchn(IMG.ROITraceNeuropil &key,'f_trace','ORDER BY roi_number'));
             
-            
-            Fall =Fall - neuropil_substraction_factor*Fall_neuropil; % Neuropil subtraction
+            Fall_subtract =Fall - neuropil_substraction_factor*Fall_neuropil; % Neuropil subtraction
+
+%             Fall =Fall - neuropil_substraction_factor*Fall_neuropil; % Neuropil subtraction
             
             
             for iROI=1:1:size(Fall,1)
                 iROI;
+                
+                %dF/F usual
                 F=Fall(iROI,:);
                 Fs=smoothdata(F,'gaussian',running_window*smooth_window_multiply_factor); % for baseline estimation only
                 
@@ -76,43 +79,67 @@ classdef ROIdeltaFNeuropilSubtr < dj.Imported
                 dFF = (F-baseline2)./baseline2; %deltaF over F
                 
                 
+                %dF/F neuropil subtracted
+                F=Fall_subtract(iROI,:);
+                Fs=smoothdata(F,'gaussian',running_window*smooth_window_multiply_factor); % for baseline estimation only
+                
+                running_min=movmin(Fs,[running_window*frame_rate running_window*frame_rate],'Endpoints','fill');
+                baseline=movmax(running_min,[running_window*frame_rate running_window*frame_rate],'Endpoints','fill'); %running max of the running min
+                baseline2=smoothdata(baseline,'gaussian',running_window*frame_rate);
+                dFF_subtract = (F-baseline2)./baseline2; %deltaF over F
+                
+                
                 k2=key_ROITrace(iROI);
-                k2.dff_trace = dFF;
+                k2.dff_trace = dFF_subtract;
                 k2.session_epoch_type = key.session_epoch_type;
                 k2.session_epoch_number = key.session_epoch_number;
                 
                 insert(self,k2);
                 
                 
+                plot_recording_length= min(floor(numel(dFF)/frame_rate),5000);
+                
                 %save every 1 in 100 rois
-                if mod(iROI,100)==0
-                    subplot(3,1,1)
+                if mod(iROI,50)==0
+                    subplot(4,1,1)
                     hold on
-                    plot(Fall(iROI,:),'g')
-                    plot(Fall_neuropil(iROI,:),'b')
+                    plot(Fall(iROI,1:plot_recording_length),'g')
+                    plot(Fall_neuropil(iROI,1:plot_recording_length),'b')
                     xlabel('Frames')
                     ylabel('F')
-                    legend({'F', 'Neuropil','Corrected'});
+                    legend({'F', 'Neuropil'});
                     title(sprintf('anm %d %s s%d %s ROI = %d',key.subject_id,session_date,key.session,key.session_epoch_type, iROI));
                     
-                    subplot(3,1,2)
+                    subplot(4,1,2)
                     hold on
-                    plot(Fall(iROI,:) - neuropil_substraction_factor*Fall_neuropil(iROI,:),'k')
-                    title(sprintf('F, Neuropil subtracted, factor = %.2f',neuropil_substraction_factor));
+                    plot(Fall(iROI,1:plot_recording_length),'g')
+                    plot(Fall_subtract(iROI,1:plot_recording_length),'k')
+                    legend({'F','F neuropil subtract'});
+%                   plot(Fall(iROI,:) - neuropil_substraction_factor*Fall_neuropil(iROI,:),'k')
+                    title(sprintf('F, with and without Neuropil subtracted, factor = %.2f',neuropil_substraction_factor));
                     xlabel('Frames')
                     ylabel('F')
                     
-                    subplot(3,1,3)
+                    
+                    subplot(4,1,3)
                     hold on
-                    plot(dFF,'k')
-                    title(sprintf('dFF, Neuropil subtracted, factor = %.2f',neuropil_substraction_factor));
+                    plot(dFF_subtract(1:plot_recording_length),'k')
+                    plot(dFF(1:plot_recording_length),'g')
+                    legend({'dFF neuropil subtract','dFF'});
+                    title(sprintf('dFF, with and without neuropil subtraction'));
                     xlabel('Frames')
                     ylabel('dFF')
                     
+                    subplot(4,1,4)
+                    hold on
+                    plot(dFF_subtract(1:plot_recording_length),'k')
+                    title(sprintf('dFF, with neuropil subtraction'));
+                    xlabel('Frames')
+                    ylabel('dFF')
                     
                     filename=['roi' num2str(iROI) '_epoch' num2str(key.session_epoch_number)];
                     figure_name_out=[ dir_current_fig filename];
-                    eval(['print ', figure_name_out, ' -dtiff  -r50']);
+                    eval(['print ', figure_name_out, ' -dtiff  -r100']);
                     clf
                 end
             end
