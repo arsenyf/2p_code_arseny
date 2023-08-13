@@ -18,7 +18,7 @@ pos_z_bins_centers                      : blob   # binning used for the 2D tunin
 %}
 
 
-classdef ROILick2DmapSpikes3binsNeuropilsubtract < dj.Computed
+classdef ROILick2Dmap3binsNeuropilsubtract < dj.Computed
     properties
 % keySource = (EXP2.SessionEpoch*IMG.FOV) & IMG.ROISpikes & IMG.ROI & EXP2.TrialLickPort & 'session_epoch_type="behav_only"' & EXP2.TrialLickBlock & IMG.Mesoscope;
 keySource = ((EXP2.SessionEpoch*IMG.FOV) & IMG.ROI & IMG.ROIdeltaFNeuropilSubtr  & EXP2.TrialLickPort & 'session_epoch_type="behav_only"' & EXP2.TrialLickBlock) - IMG.Mesoscope;
@@ -40,11 +40,7 @@ keySource = ((EXP2.SessionEpoch*IMG.FOV) & IMG.ROI & IMG.ROIdeltaFNeuropilSubtr 
             fn_compute_Lick2D_map_and_selectivity2_3bins_neuropil_subtract (key,self, rel_data, fr_interval, fr_interval_limit, flag_electric_video);
             
             % % also populates
-            self2=LICK2D.ROILick2DmapPSTHSpikes3binsNeuropilsubtract;
-            %     self2=LICK2D.ROILick2DmapPSTHStabilitySpikes3bins;
-            %     self3=LICK2D.ROILick2DmapStatsSpikes3bins;
-            %     self4=LICK2D.ROILick2DSelectivitySpikes3bins;
-            %     self5=LICK2D.ROILick2DSelectivityStatsSpikes;
+            self2=LICK2D.ROILick2DmapPSTH3binsNeuropilsubtract;
 
         end
     end

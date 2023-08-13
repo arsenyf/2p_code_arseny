@@ -110,10 +110,11 @@ if isfield(S,'spikes_trace') % to be able to run the code both on dff and on dec
     self5=LICK2D.ROILick2DSelectivitySpikes3bins;
     self6=LICK2D.ROILick2DSelectivityStatsSpikes3bins;
 else
-    %     self2=LICK2D.ROILick2DmapPSTH;
-    %     self3=LICK2D.ROILick2DmapStats;
-    %     self4=LICK2D.ROILick2DSelectivity;
-    %     self5=LICK2D.ROILick2DSelectivityStats;
+    self2=LICK2D.ROILick2DmapPSTH3bins;
+    self3=LICK2D.ROILick2DmapPSTHStability3bins;
+    self4=LICK2D.ROILick2DmapStats3bins;
+    self5=LICK2D.ROILick2DSelectivity3bins;
+    self6=LICK2D.ROILick2DSelectivityStats3bins;
 end
 
 % num_trials = numel(TrialsStartFrame);

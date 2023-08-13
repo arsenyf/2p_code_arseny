@@ -110,7 +110,7 @@ if isfield(S,'spikes_trace') % to be able to run the code both on dff and on dec
 %     self5=LICK2D.ROILick2DSelectivitySpikes3bins;
 %     self6=LICK2D.ROILick2DSelectivityStatsSpikes3bins;
 else
-    self2=LICK2D.ROILick2DmapPSTHSpikes3binsNeuropilsubtract;
+    self2=LICK2D.ROILick2DmapPSTH3binsNeuropilsubtract;
 %         self3=LICK2D.ROILick2DmapStats;
 %         self4=LICK2D.ROILick2DSelectivity;
 %         self5=LICK2D.ROILick2DSelectivityStats;
