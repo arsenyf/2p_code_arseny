@@ -23,13 +23,17 @@ rel2= (STIMANAL.NeuronOrControlNumber & 'num_targets_neurons>=25' & 'num_targets
 D=fetch(rel2,'*')
 mean([D.num_targets_neurons])
 mean([D.num_targets_controls])
-max([D.num_targets_neurons])
 
+median([D.num_targets_neurons])
+median([D.num_targets_controls])
 
-rel_inf=STIM.ROIInfluence2  & (STIMANAL.SessionEpochsIncludedFinal& IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' ) & (STIMANAL.NeuronOrControl  & 'neurons_or_control=1');
-rel_inf=STIM.ROIInfluence2 ;% & (STIMANAL.SessionEpochsIncludedFinal& IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' ) & (STIMANAL.NeuronOrControl  & 'neurons_or_control=1');
+rel_inf=STIM.ROIInfluence2  & (STIMANAL.SessionEpochsIncludedFinal& IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' ) & (IMG.PhotostimGroup & (STIMANAL.NeuronOrControl  & 'neurons_or_control=1'));
+% rel_inf=STIM.ROIInfluence2 ;% & (STIMANAL.SessionEpochsIncludedFinal& IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' ) & (STIMANAL.NeuronOrControl  & 'neurons_or_control=1');
 
 rel_inf.count()
+
+(IMG.ROI-IMG.ROIBad)& (STIMANAL.SessionEpochsIncludedFinal& IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' ) & (IMG.PhotostimGroup & (STIMANAL.NeuronOrControl  & 'neurons_or_control=1'))
+
 
 if isempty(dir(dir_current_fig))
     mkdir (dir_current_fig)

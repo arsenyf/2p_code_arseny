@@ -111,7 +111,8 @@ text(xl(1)-diff(xl)*0.8, yl(1)+diff(yl)*1.5, 'j', ...
 
 %% Field size
 axes('position',[position_x4(2),position_y4(1), panel_width4, panel_height4])
-[hhh2,edges]=histcounts([D_tuned_positional.field_size_without_baseline_regular],linspace(0,100,10));
+[hhh2,edges]=histcounts([D_tuned_positional_4bins.field_size_without_baseline_regular],linspace(0,100,10));
+% [hhh2,edges]=histcounts([D_tuned_positional.field_size_without_baseline_regular],linspace(0,100,10));
 hhh2=100*hhh2/sum(hhh2);
 bar(edges(1:end-1),hhh2,'FaceColor',[0 0 0],'EdgeColor',[0 0 0])
 yl = [0, max(hhh2)];
@@ -176,7 +177,7 @@ text(xl(1)-diff(xl)*0.9, yl(1)+diff(yl)*1.35, 'm', ...
     'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
 
 
-%% Temporal tuning similarity,\nacross positions
+%% Venn diagram
 axes('position',[position_x4(3)+0.03,position_y4(1)-0.013, panel_width4*1.5, panel_height4*1.25])
 count_total=numel([D_all.psth_corr_across_position_regular]);
 

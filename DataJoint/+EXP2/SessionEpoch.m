@@ -83,13 +83,13 @@ classdef SessionEpoch < dj.Imported
                 if isempty(num_planes) %debug, not sure why this is happening
                     num_planes=1;
                 end
-                             
+                
                 % in case of multiplane imaging we take only the first frame of each volume as the timestamp. Not all frames within this volume will have the "same" timestamp
                 frames_timestamps = all_frames_timestamps(1:num_planes:end);
                 
-%                 load([dir_data2 '_registered\suite2p\plane0\Fall.mat'],'ops'); % we take the first plane in suite2p to check how many 'volumetric frames' are there
-%                 number_of_frames_in_suite2p = ops.frames_per_folder(jDir) -1;  % we discard the last 'volumetric frame' to ensture that all planes have the same number of frames
-%                 frames_timestamps = frames_timestamps(1:1:number_of_frames_in_suite2p);
+                %                 load([dir_data2 '_registered\suite2p\plane0\Fall.mat'],'ops'); % we take the first plane in suite2p to check how many 'volumetric frames' are there
+                %                 number_of_frames_in_suite2p = ops.frames_per_folder(jDir) -1;  % we discard the last 'volumetric frame' to ensture that all planes have the same number of frames
+                %                 frames_timestamps = frames_timestamps(1:1:number_of_frames_in_suite2p);
                 
                 session_frames_timestamps = [session_frames_timestamps, frames_timestamps+ session_start_time];
                 
@@ -126,8 +126,8 @@ classdef SessionEpoch < dj.Imported
                 timeline_file = {allFiles(~[allFiles.isdir]).name}; %gets only the names of all files
                 idx_timeline_file = contains(timeline_file,'Timeline');
                 if sum(idx_timeline_file)>0
-                timeline_file_name =timeline_file{idx_timeline_file};
-                else 
+                    timeline_file_name =timeline_file{idx_timeline_file};
+                else
                     timeline_file_name=[];
                 end
                 if ~isempty(timeline_file_name) && contains(k2.session_epoch_type,'behav')
@@ -190,9 +190,9 @@ classdef SessionEpoch < dj.Imported
                 %% POPULATE EXP2.SessionEpochFrame
                 k3.session_epoch_start_frame = 1 + session_start_frame;
                 k3.session_epoch_end_frame = numel(frames_timestamps) + session_start_frame;
-%                 if jDir ==numel (subDirNames)
-%                     k3.session_epoch_end_frame= k3.session_epoch_end_frame -5; % in case of accumulating frame mismatch due to volumetric imaging
-%                 end
+                %                 if jDir ==numel (subDirNames)
+                %                     k3.session_epoch_end_frame= k3.session_epoch_end_frame -5; % in case of accumulating frame mismatch due to volumetric imaging
+                %                 end
                 insert(IMG.SessionEpochFrame, k3 );
                 session_start_frame = k3.session_epoch_end_frame;
                 

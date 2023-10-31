@@ -5,7 +5,7 @@
 number_of_bins            : int   #
 ---
 number_of_response_trials                 : int      # number of trials with responses
-lickmap_regular_odd_vs_even_corr          : double   # 2D map correlation across odd vs even regular trials
+lickmap_regular_odd_vs_even_corr=null          : double   # 2D map correlation across odd vs even regular trials
 lickmap_regular_vs_small_corr=null        : double   # 2D map correlation across regular reward versus no reward trials
 lickmap_regular_vs_large_corr=null        : double   # 2D map correlation across regular reward versus large reward trials
 
@@ -16,7 +16,7 @@ lickmap_begin_vs_end_corr=null            : double   #
 lickmap_begin_vs_mid_corr=null            : double   #
 lickmap_mid_vs_end_corr=null              : double   #
 
-psth_position_concat_regular_odd_even_corr    : double   # correlation of the PSTH concatenated across all positions, across trials with typical reward
+psth_position_concat_regular_odd_even_corr=null    : double   # correlation of the PSTH concatenated across all positions, across trials with typical reward
 psth_position_concat_small_odd_even_corr=null : double   #
 psth_position_concat_large_odd_even_corr=null : double   #
 psth_position_concat_first_odd_even_corr=null : double   #

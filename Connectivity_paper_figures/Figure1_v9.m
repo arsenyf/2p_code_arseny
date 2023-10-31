@@ -1,7 +1,7 @@
 function Figure1_v9
 close all;
 
-DATA=fetch1(PAPER.ConnectivityPaperFigure1datav3,'figure_data');
+DATA=fetch1(PAPER.ConnectivityPaperFigure1datav4,'figure_data');
 lickmap_regular_odd_vs_even_corr_threshold=0.25; % will only affect panel m
 %             information_per_spike_regular_threshold=0.02; % will only affect panel m
 D_tuned_temporal=DATA.D_tuned_temporal;
@@ -439,7 +439,7 @@ d_lateral_mean_shuffled =  nanmean(distance_lateral_all_shuffled,1);
 d_lateral_stem_shuffled =  nanstd(distance_lateral_all_shuffled,1)/sqrt(size(D_shuffled,1));
 
 %axial
-idx_column_radius=1; %10 to 30 microns
+idx_column_radius=10; %10 to 30 microns
 distance_axial_all=[];
 distance_axial_all_shuffled=[];
 for i_s=1:1:size(D,1)

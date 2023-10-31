@@ -46,7 +46,7 @@ classdef ROILick2DPSTHSpikesResampledlikePoisson < dj.Imported
             self2=LICK2D.ROILick2DPSTHStatsSpikesResampledlikePoisson;
             self3=LICK2D.ROILick2DPSTHBlockSpikesResampledlikePoisson;
             self4=LICK2D.ROILick2DPSTHBlockStatsSpikesResampledlikePoisson;
-                        fn_computer_Lick2DPSTH(key,self, rel_data,fr_interval, fr_interval_limit, flag_electric_video, time_resample_bin, self2, self3, self4);
+            fn_computer_Lick2DPSTH(key,self, rel_data,fr_interval, fr_interval_limit, flag_electric_video, time_resample_bin, self2, self3, self4);
 
         end
     end

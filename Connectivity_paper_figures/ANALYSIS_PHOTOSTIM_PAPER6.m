@@ -26,7 +26,7 @@ populate(POP.ROICorrLocalPhoto); %delta F
 
 populate(STIMANAL.ROIResponseDirectVariability);
 populate(STIMANAL.ROIInfluenceVariability);
-
+populate(STIMANAL.ConnectivityBetweenDirectlyStimulatedOnlyOverconnected);
 
 PLOT_ConnectionProbabilityDistance()
 PLOT_ConnectionProbabilityDistance_short_distance_included
@@ -44,11 +44,12 @@ STIMANAL.InfluenceDistanceIngermingledControl
 % PLOT_Network_Degree_vs_tuning_ETL__final_with_shuffle2_temp() %directional, temporal, and reward tuning -- this is what I show in presentations
 PLOT_Network_Degree_vs_tuning_final()
 
-PLOT_Network_Degree_InOutCorr
+% PLOT_Network_Degree_InOutCorr
 
 fn_analysis_connectivity_versus_outdegree
 
 Plot_in_out_degree_and_bidirectional_connectivity
+
 
 Supplementary_Figure_6
 Supplementary_Figure_7

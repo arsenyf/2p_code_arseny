@@ -304,7 +304,9 @@ hist_bins(end-2:end-1)=[];
 [hist_bins_centers, y_binned_mean,y_binned_stem, y_binned_shuffled_mean, y_binned_shuffled_stem] =fn_bin_and_shuffle (hist_bins, num_shuffles, k, y);
 shadedErrorBar(hist_bins_centers,y_binned_mean,y_binned_stem,'lineprops',{'.-','Color',[0 0 1]})
 shadedErrorBar(hist_bins_centers,y_binned_shuffled_mean,y_binned_shuffled_stem,'lineprops',{'.-','Color',[0 0 0]})
-ylim([min(y_binned_mean-y_binned_stem),max(y_binned_mean+y_binned_stem)])
+% ylim([min(y_binned_mean-y_binned_stem),max(y_binned_mean+y_binned_stem)])
+ylim([0,max(y_binned_mean+y_binned_stem)])
+
 xlabel(sprintf('Causal Connections\n out-degree')) 
 ylabel(sprintf('Mean DeltaF/F \n'))
 title(sprintf('Flourescence \n'));

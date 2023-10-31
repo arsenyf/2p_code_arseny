@@ -119,11 +119,11 @@ panel_width5=0.04;
 panel_height5=0.04;
 horizontal_dist5=0.065;
 vertical_dist5=0.09;
-position_x5(1)=0.66;
+position_x5(1)=0.1;
 position_x5(end+1)=position_x5(end)+horizontal_dist5;
 position_x5(end+1)=position_x5(end)+horizontal_dist5;
 
-position_y5(1)=0.67;
+position_y5(1)=0.8;
 position_y5(end+1)=position_y5(end)-vertical_dist5;
 position_y5(end+1)=position_y5(end)-vertical_dist5;
 position_y5(end+1)=position_y5(end)-vertical_dist5;

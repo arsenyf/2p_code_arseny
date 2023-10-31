@@ -1,4 +1,4 @@
-function   fn_compute_graph_and_connectivity_stats_min_out_degree(key, p_val_threshold,min_outdegree, minimal_distance, dir_save_figure, self)
+function   fn_compute_graph_and_connectivity_stats_min_out_degree(key, p_val_threshold,min_outdegree, minimal_distance,maximal_distance, dir_save_figure, self)
 close
 %Graphics
 %---------------------------------
@@ -45,7 +45,7 @@ group_num=  fetchn( (STIMANAL.NeuronOrControl & 'neurons_or_control=1') & key ,'
 group_roi_num=  fetchn( STIM.ROIResponseDirectUnique & key & (STIMANAL.NeuronOrControl & 'neurons_or_control=1'),'roi_number','ORDER BY photostim_group_num');
 roi_centroid_x=  fetchn( rel_roi  & key,'roi_centroid_x_corrected','ORDER BY roi_number')*pix2dist;
 roi_centroid_y=  fetchn(  rel_roi & key,'roi_centroid_y_corrected','ORDER BY roi_number')*pix2dist;
-F=(fetch( STIM.ROIInfluence2 & rel_roi &  key & 'response_mean>0' & sprintf('response_distance_lateral_um>=%.2f', minimal_distance) &  sprintf('response_p_value1<=%.5f', p_val_threshold),'*'));
+F=(fetch( STIM.ROIInfluence2 & rel_roi &  key & 'response_mean>0' & sprintf('response_distance_lateral_um>=%.2f', minimal_distance) & sprintf('response_distance_lateral_um<%.2f', maximal_distance) &  sprintf('response_p_value1<=%.5f', p_val_threshold),'*'));
 
 [~,temp_idx]=setdiff(roi_num,group_roi_num);
 if ~isempty(temp_idx)

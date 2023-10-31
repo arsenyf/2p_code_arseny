@@ -29,7 +29,7 @@ reward_peak_pval_small_large_poisson=null           : float   #
 
 classdef ROILick2DPSTHStatsSpikesPoisson < dj.Computed
     properties(SetAccess=protected)
-        master=LICK2D.ROILick2DPSTHSpikes
+        master=LICK2D.ROILick2DPSTHSpikesPoisson
     end
     methods(Access=protected)
         function makeTuples(self, key)

@@ -74,6 +74,9 @@ for i_th = 1:1:numel(threshold_for_event_vector)
     VT= gather(VT);
     
     
+    
+    
+    
     %% Populating POP.ROISVD
     key_ROIs= fetch(rel_data1 & key, 'ORDER BY roi_number');
     parfor i=1:1:size(key_ROIs,1)

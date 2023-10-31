@@ -66,7 +66,7 @@ IMG.Parameters; %configure the path to your data folder here
 %% STEP 1 - could be run independelty of suite2p
 populate_Session_without_behavior (user_name, rig); % populate session without behavior
 % populate_behavior_WaterCue (dir_behavioral_data, behavioral_protocol_name);
-populate_behavior_Lick2D(dir_behavioral_data, behavioral_protocol_name);
+populate_behavior_Lick2D(dir_behavioral_data, behavioral_protocol_name); %also EXP2.SessionTrial
 
 % populate_Session_and_behavior (dir_behavioral_data, user_name, rig); % populate session with behavior
 

@@ -1,4 +1,4 @@
-%{
+ %{
 # Photostim Group
 
 -> EXP2.SessionEpoch

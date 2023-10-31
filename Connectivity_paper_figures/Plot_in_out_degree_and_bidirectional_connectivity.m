@@ -86,6 +86,15 @@ for i_m=1:1:numel(min_outdegree)
 end
 
 axes('position',[position_x1(1), position_y1(1), panel_width1, panel_height1]);
+temp=fetchn (rel & sprintf('min_outdegree=%d',0) & 'unidirectional_connect_number>10','in_out_degree_corr');
+% temp=fetchn (rel & sprintf('min_outdegree=%d',0) & 'unidirectional_connect_number>10','in_out_degree_corr');
+histogram(temp,8)
+xlim([-0.7,0.7])
+title('In out degree corr')
+xlabel('Corr, In vs. Out degree')
+ylabel('Counts (sessions)')
+
+axes('position',[position_x1(2), position_y1(1), panel_width1, panel_height1]);
 lineProps.col={[0 0 0]};
 lineProps.style='-';
 lineProps.width=0.25;
@@ -95,14 +104,7 @@ xlabel('Minimal Out-degree')
 ylabel('Corr, In vs. Out degree')
 
 
-axes('position',[position_x1(2), position_y1(1), panel_width1, panel_height1]);
-temp=fetchn (rel & sprintf('min_outdegree=%d',0) & 'unidirectional_connect_number>10','in_out_degree_corr');
-% temp=fetchn (rel & sprintf('min_outdegree=%d',0) & 'unidirectional_connect_number>10','in_out_degree_corr');
-histogram(temp,8)
-xlim([-0.7,0.7])
-title('In out degree corr')
-xlabel('Corr, In vs. Out degree')
-ylabel('Counts (sessions)')
+
 
 
 axes('position',[position_x1(3), position_y1(1), panel_width1, panel_height1]);

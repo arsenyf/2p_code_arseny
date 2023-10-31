@@ -34,7 +34,7 @@ licks_time_electric_large =[L_large.action_event_time]  - [L_large.trial_event_t
 licks_time_electric_omission =[L_omission.action_event_time]  - [L_omission.trial_event_time];
 
 time_bin_size=0.5;
-time_bins=-1:time_bin_size:4;
+time_bins=-1:time_bin_size:5;
 
 subplot(2,2,1)
 time_bins_centers=time_bins(1:end-1)+mean(diff(time_bins))/2;
@@ -42,13 +42,13 @@ h1=histogram(licks_time_electric_regular,time_bins);
 y1 =(h1.BinCounts/T_regular)/time_bin_size;
 h2=histogram(licks_time_electric_large,time_bins);
 y2 =(h2.BinCounts/T_large)/time_bin_size;
-bar(time_bins_centers,y1,'FaceColor',[0 0 0.8],'EdgeColor',[0 0 0.8],'BarWidth',1);
+bar(time_bins_centers,y1,'FaceColor',[0 0 0],'EdgeColor',[0 0 0],'BarWidth',1);
 hold on;
 bar(time_bins_centers,y2,'FaceColor',[1 0.5 0],'EdgeColor',[1 0.5 0],'BarWidth',1,'FaceAlpha',0.6);
 
 % title(sprintf('Response time of tuned neurons'));
 xlim([time_bins(1),time_bins(end)]);
-ylim([0 4.5]);
+ylim([0 3]);
 ylabel(sprintf('Lick rate (licks/s)'));
 xlabel('Lick time relative to lickport ascend (s)');
 title(sprintf('Reward-increase trials\n %.1f licks/trial vs. %.1f on regular trials',sum(y2),sum(y1)),'Color',[1 0.5 0]);
@@ -60,7 +60,7 @@ h1=histogram(licks_time_electric_regular,time_bins);
 y1 =(h1.BinCounts/T_regular)/time_bin_size;
 h2=histogram(licks_time_electric_omission,time_bins);
 y2 =(h2.BinCounts/T_omission)/time_bin_size;
-bar(time_bins_centers,y1,'FaceColor',[0 0 0.8],'EdgeColor',[0 0 0.8],'BarWidth',1);
+bar(time_bins_centers,y1,'FaceColor',[0 0 0],'EdgeColor',[0 0 0],'BarWidth',1);
 hold on;
 bar(time_bins_centers,y2,'FaceColor',[0 0.7 0.2],'EdgeColor',[0 0.7 0.2],'BarWidth',1,'FaceAlpha',0.6);
 
