@@ -1,5 +1,5 @@
-function fn_plot_tuning_vs_connectivity(rel_data, rel_shuffled, key,title_string, colormap, i_c,  min_pairs_in_influence_bin, min_pairs_in_corr_bin)
-min_session_per_bin=10;
+function fn_plot_connectivity_vs_corr_Figure4(rel_data, rel_shuffled, key,title_string, colormap, i_c,  min_pairs_in_influence_bin, min_pairs_in_corr_bin)
+min_session_per_bin=5;
 
 DATA=struct2table(fetch(rel_data & key,'*', 'ORDER BY session_uid'));
 DATA_SHUFFLED=struct2table(fetch(rel_shuffled & key,'*', 'ORDER BY session_uid'));
@@ -35,8 +35,7 @@ y_shuf(:,idx_bins_exclude)=NaN;
 
 
 y_mean = nanmean(y,1);
-% y_stem = nanstd(y,1)./sqrt(size(DATA,1));
-y_stem = nanstd(y,1)./sqrt(sum(~isnan(y)));
+y_stem = nanstd(y,1)./sqrt(size(DATA,1));
 y_mean_shuf = nanmean(y_shuf,1);
 y_stem_shuf = nanstd(y_shuf,1)./sqrt(size(DATA_SHUFFLED,1));
 %     y_min_max=[min([y_mean,y_mean_shuf]), max([y_mean,y_stem_shuf])];
@@ -73,9 +72,7 @@ idx_bins_exclude = sum(~isnan(y_shuf))<min_session_per_bin;
 y_shuf(:,idx_bins_exclude)=NaN;
 
 y_mean = nanmean(y,1);
-y_stem = nanstd(y,1)./sqrt(sum(~isnan(y)));
-%y_stem = nanstd(y,1)./sqrt(size(DATA,1));
-
+y_stem = nanstd(y,1)./sqrt(size(DATA,1));
 y_mean_shuf = nanmean(y_shuf,1);
 y_stem_shuf = nanstd(y_shuf,1)./sqrt(size(DATA_SHUFFLED,1));
 y_min_max=[min([y_mean,y_mean_shuf]), max([y_mean,y_stem_shuf])];
@@ -113,9 +110,7 @@ idx_bins_exclude = sum(~isnan(y))<min_session_per_bin;
 y(:,idx_bins_exclude)=NaN;
 
 y_mean = nanmean(y,1);
-y_stem = nanstd(y,1)./sqrt(sum(~isnan(y)));
-%y_stem = nanstd(y,1)./sqrt(size(DATA,1));
-
+y_stem = nanstd(y,1)./sqrt(size(DATA,1));
 if i_c ==1
     plot([bins_influence_centers(1),bins_influence_centers(end)],[0,0],'-k');
     plot([0,0],[min(y_mean-y_stem),max(y_mean+y_stem)],'-k');
@@ -140,9 +135,7 @@ idx_bins_exclude = sum(~isnan(y))<min_session_per_bin;
 y(:,idx_bins_exclude)=NaN;
 
 y_mean = nanmean(y,1);
-y_stem = nanstd(y,1)./sqrt(sum(~isnan(y)));
-%y_stem = nanstd(y,1)./sqrt(size(DATA,1));
-
+y_stem = nanstd(y,1)./sqrt(size(DATA,1));
 % y_min_max=[-0.006, 0.02];
 % y_min_max_tick=[-0.005, 0.02];
 if i_c ==1

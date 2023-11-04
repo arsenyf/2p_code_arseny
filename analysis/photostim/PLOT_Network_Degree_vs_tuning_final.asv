@@ -111,7 +111,7 @@ for i_s = 1:1:rel_session.count
     
     DATA_SIGNAL_ALL1 =[DATA_SIGNAL_ALL1; DATA_SIGNAL1(idx,:)];
     DATA_SIGNAL_ALL2 =[DATA_SIGNAL_ALL2; DATA_SIGNAL2(idx,:)];
-    DATA_SIGNAL_ALL3 =[DATA_SIGNAL_ALL3; DATA_SIGNAL3(idx,:)];
+%     DATA_SIGNAL_ALL3 =[DATA_SIGNAL_ALL3; DATA_SIGNAL3(idx,:)];
     DATA_SIGNAL_ALL4 =[DATA_SIGNAL_ALL4; DATA_SIGNAL4(idx,:)];
 %     DATA_SIGNAL_ALL5 =[DATA_SIGNAL_ALL5; DATA_SIGNAL5(idx,:)];
 
@@ -126,7 +126,6 @@ signal1.psth_concat_stability = DATA_SIGNAL_ALL1.psth_position_concat_regular_od
 
 signal2.psth_stability = DATA_SIGNAL_ALL2.psth_regular_odd_vs_even_corr;
 
-signal3.map_modulation = DATA_SIGNAL_ALL3.lickmap_fr_regular_modulation;
 
 
 % reward_large = DATA_SIGNAL_ALL2.reward_peak_large; % the peak version looks better!
@@ -164,8 +163,7 @@ number_of_bins2=9;
 %% Connectivity vs Positional tuning (information)
 axes('position',[position_x1(1), position_y1(1), panel_width1, panel_height1]);
 hold on
-% y=signal1.map_information ;
-y=signal3.map_modulation;
+y=signal1.map_information ;
 % excitatory
 k =out_degree_excitatory;
 hist_bins = linspace(0,ceil(max(k)),number_of_bins);

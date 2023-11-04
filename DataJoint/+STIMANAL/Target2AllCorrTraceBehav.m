@@ -44,7 +44,7 @@ classdef Target2AllCorrTraceBehav < dj.Computed
             counter=0;
             for i_chunk=1:chunk_size:roi_list(end)
                 roi_interval = [i_chunk, i_chunk+chunk_size];
-                temp_F=cell2mat(fetchn(rel_data & key & sprintf('roi_number>=%d',roi_interval(1)) & sprintf('roi_number<%d',roi_interval(2)),'spikes_trace','ORDER BY roi_number'));
+                temp_F=cell2mat(fetchn(rel_data & key_spont & sprintf('roi_number>=%d',roi_interval(1)) & sprintf('roi_number<%d',roi_interval(2)),'spikes_trace','ORDER BY roi_number'));
                 temp_count=(counter+1):1: (counter + size(temp_F,1));
                 Fall(temp_count,:)=temp_F;
                 counter = counter + size(temp_F,1);

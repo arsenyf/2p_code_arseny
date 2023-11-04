@@ -145,7 +145,7 @@ axis off
 box off
 text(v.Position(1,1)-v.Radius(1)*1.9,v.Position(1,2)-v.Radius(1)*1.4,sprintf('Reward-increase\n modulated'),'Color',[1 0.5 0],'FontSize',6);
 text(v.Position(2,1)-v.Radius(1)*0.3,v.Position(2,2)-v.Radius(2)*1.6,sprintf('Reward-omission\n modulated'),'Color',[0 0.7 0.2],'FontSize',6);
-text(v.Position(3,1)-v.Radius(1)*1.3,v.Position(3,2)+v.Radius(3)*1.2,sprintf('Positionally tuned'),'Color',[1 0 0],'FontSize',6);
+text(v.Position(3,1)-v.Radius(1)*1.3,v.Position(3,2)+v.Radius(3)*1.2,sprintf('Location tuned'),'Color',[1 0 0],'FontSize',6);
 ff=gca;
 xl=ff.XLim;
 yl=ff.YLim;
@@ -176,7 +176,7 @@ bar(bins2_centers,y,'FaceColor',[1 0.5 0],'EdgeColor',[1 0.5 0]);
 ff=gca;
 xl=ff.XLim;
 yl=ff.YLim;
-text(xl(1)+diff(xl)*0.5,yl(1)-diff(yl)*0.5,sprintf('Activity change (%%)\n [Large reward - Regular reward] '), 'FontSize',6,'HorizontalAlignment','center')
+text(xl(1)+diff(xl)*0.5,yl(1)-diff(yl)*0.5,sprintf('Activity change (%%)\n [Reward increase - Regular reward] '), 'FontSize',6,'HorizontalAlignment','center')
 text(xl(1)+diff(xl)*0.5,yl(1)+diff(yl)*1.3,sprintf('Reward-increase\n neurons (%%)'), 'FontSize',6,'HorizontalAlignment','center', 'fontweight', 'bold','Color',[1 0.5 0]);
 text(xl(1)-diff(xl)*0.1,yl(1)-diff(yl)*0.2,sprintf('Neurons modulated\n by reward increase (%%)\n'),'Rotation',90, 'FontSize',6,'VerticalAlignment','bottom','Color',[1 0.5 0]);
 % set(gca,'Ycolor',[0.5 0.5 0.5],'TickLength',[0.05,0]);
@@ -202,7 +202,7 @@ plot(bins2_centers,smooth(tuned_in_change_bins,5)'+tuned_in_change_bins*0,'.-','
 ff=gca;
 xl=ff.XLim;
 yl=ff.YLim;
-text(xl(1)+diff(xl)*1.5,yl(1)-diff(yl)*0.75,sprintf('Positionally tuned\n neurons (%%)'),'Rotation',90, 'FontSize',6,'VerticalAlignment','middle','Color',[1 0 0]);
+text(xl(1)+diff(xl)*1.5,yl(1)-diff(yl)*0.75,sprintf('Location tuned\n neurons (%%)'),'Rotation',90, 'FontSize',6,'VerticalAlignment','middle','Color',[1 0 0]);
 % ylabel(sprintf('Positionally tuned\n neurons (%%)'),'Color',[1 0 0],'FontSize',6);
 set(gca,'Xtick',[-100,0,100],'Ytick',[25,50],'TickLength',[0.05,0.05],'TickDir','in');
 box off
@@ -252,7 +252,7 @@ plot(bins2_centers,smooth(tuned_in_change_bins,5)'+tuned_in_change_bins*0,'.-','
 ff=gca;
 xl=ff.XLim;
 yl=ff.YLim;
-text(xl(1)+diff(xl)*1.5,yl(1)-diff(yl)*0.5,sprintf('Positionally tuned\n neurons (%%)'),'Rotation',90, 'FontSize',6,'VerticalAlignment','middle','Color',[1 0 0]);
+text(xl(1)+diff(xl)*1.5,yl(1)-diff(yl)*0.5,sprintf('Location tuned\n neurons (%%)'),'Rotation',90, 'FontSize',6,'VerticalAlignment','middle','Color',[1 0 0]);
 set(gca,'Xtick',[-100,0,100],'Ytick',[25,50],'TickLength',[0.05,0.05],'TickDir','in');
 box off
 xlim([-100,100]);
@@ -301,7 +301,7 @@ yl = [0, max(hhh3)];
 yl(2)=25;
 xl = [-1,1];
 text(xl(1)+diff(xl)*0.5,yl(1)-diff(yl)*0.5, [sprintf('Tuning corr.,') '{\it r}'  newline 'across reward conditions'], 'FontSize',6,'HorizontalAlignment','center')
-text(xl(1)+diff(xl)*0.5,yl(1)+diff(yl)*1.3,sprintf('Positional tuning\nsimilarity'), 'FontSize',6,'HorizontalAlignment','center', 'fontweight', 'bold');
+text(xl(1)+diff(xl)*0.5,yl(1)+diff(yl)*1.3,sprintf('Location tuning\nsimilarity'), 'FontSize',6,'HorizontalAlignment','center', 'fontweight', 'bold');
 text(xl(1)-diff(xl)*0.25,yl(1)+diff(yl)*0,sprintf('Percentage'),'Rotation',90, 'FontSize',6,'VerticalAlignment','bottom');
 xlim(xl);
 ylim(yl)
@@ -318,8 +318,8 @@ bar(edges(1:end-1),hhh3,'FaceColor',[0 0 0],'EdgeColor',[0 0 0])
 yl = [0, max(hhh3)];
 yl(2)=25;
 xl = [-1,1];
-text(xl(1)+diff(xl)*0.5,yl(1)-diff(yl)*0.5, [sprintf('Field size,') '{changes}'  newline 'across reward conditions'], 'FontSize',6,'HorizontalAlignment','center')
-text(xl(1)+diff(xl)*0.5,yl(1)+diff(yl)*1.3,sprintf('Positional tuning\nsimilarity'), 'FontSize',6,'HorizontalAlignment','center', 'fontweight', 'bold');
+text(xl(1)+diff(xl)*0.5,yl(1)-diff(yl)*0.5, [sprintf('Peak width change') newline 'across reward conditions'], 'FontSize',6,'HorizontalAlignment','center')
+text(xl(1)+diff(xl)*0.5,yl(1)+diff(yl)*1.3,sprintf('Location tuning\nsimilarity'), 'FontSize',6,'HorizontalAlignment','center', 'fontweight', 'bold');
 text(xl(1)-diff(xl)*0.25,yl(1)+diff(yl)*0,sprintf('Percentage'),'Rotation',90, 'FontSize',6,'VerticalAlignment','bottom');
 xlim(xl);
 ylim(yl)

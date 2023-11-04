@@ -39,7 +39,7 @@ colormap(ax1,gray)
 text(xl(1)-diff(xl)*0.2, yl(1)+diff(yl)*1.1, 'e', ...
     'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
 text(xl(1)-diff(xl)*0.05,yl(1)+diff(yl)*1.1,sprintf('Photostimulation targets'),'FontSize',6, 'fontweight', 'bold')
-text(xl(1)-diff(xl)*0.05,yl(1)-diff(yl)*0.05,sprintf('Directly photostimulated'), 'FontSize',6,'HorizontalAlignment','left','Color',[1 0 1]);
+text(xl(1)+diff(xl)*0.05,yl(1)-diff(yl)*0.05,sprintf('Target neurons'), 'FontSize',6,'HorizontalAlignment','left','Color',[1 0 1]);
 text(xl(1)+diff(xl)*0.05,yl(1)-diff(yl)*0.15,sprintf('Control targets'), 'FontSize',6,'HorizontalAlignment','left','Color',[0 0.75 0.75]);
 
 % G=fetch(IMG.PhotostimGroupROI & key  & 'flag_neuron_or_control=1' & 'distance_to_closest_neuron<15','*');
@@ -172,13 +172,14 @@ OUT1=fn_PLOT_CoupledResponseDistance_averaging(D1,distance_axial_bins,flag_respo
 
 xl=[OUT1.distance_lateral_bins_centers(1),OUT1.distance_lateral_bins_centers(end)];
 xl=[0,500];
-
+yl=[0 120]
 imagesc(OUT1.distance_lateral_bins_centers(1:end), distance_axial_bins_plot,  OUT1.map(:,1:end))
 axis tight
 axis equal
 cmp = bluewhitered(512); %
 colormap(ax1, cmp)
-caxis([OUT1.minv max(max(OUT1.map(:,1:end)))]);
+% caxis([OUT1.minv max(max(OUT1.map(:,1:end)))]);
+caxis([-0.01 max(max(OUT1.map(:,1:end)))]);
 % set(gca,'XTick',OUT1.distance_lateral_bins_centers)
 xlabel([sprintf('Lateral Distance ') '(\mum)']);
 % ylabel([sprintf('Axial Distance ') '(\mum)']);
@@ -187,52 +188,63 @@ xlabel([sprintf('Lateral Distance ') '(\mum)']);
 set(gca,'YTick',[0 60 120],'XTick',[25,100:100:500]);
 ylabel([sprintf('Axial      \nDistance ') '(\mum)        ']);
 xlim(xl)
+% title('Target neurons','Color',[1 0 1]);
+text(xl(1)+diff(xl)*0.5,yl(2)+diff(yl)*1.5,sprintf('Target neurons'),'FontSize',6, 'fontweight', 'bold','Color',[1 0 1],'HorizontalAlignment','center')
 
-%colorbar positive values
-ax2=axes('position',[position_x2(1)+0.1, position_y2(2)+0.03+0.02, panel_width2*0.2, panel_height2*0.15]);
-% imagesc(OUT1.distance_lateral_bins_centers, distance_axial_bins_plot,  OUT1.map)
-cmp = bluewhitered(512); %
-colormap(ax2, cmp)
-caxis([OUT1.minv max(max(OUT1.map(:,1:end)))]);
-ccc=colorbar;
-% ccc.Location='SouthOutside';
-text(5, -1, ['Connection stength' newline '(\Delta z-score activity)'],'Rotation',0);
-axis off
-
-%colorbar negative values
-ax3=axes('position',[10,10, panel_width2*0.2, panel_height2*0.35]);
-OUT1.map(OUT1.map>=0)=0;
-imagesc(OUT1.distance_lateral_bins_centers, distance_axial_bins_plot,  OUT1.map)
-cmp = bluewhitered(512); %
-%colorbar negative values
-ax4=axes('position',[position_x2(1)+0.1, position_y2(2)+0.015+0.02, panel_width2*0.2, panel_height2*0.15]);
-colormap(ax4, cmp)
-caxis([OUT1.minv 0]);
-ccc=colorbar;
-% ccc.Location='SouthOutside';
-% text(6, 0.1, ['Connection stength' newline '(\Delta z-score activity)'],'Rotation',0);
-axis off
-
-%% 2D plots - Control sites
+%% 2D plots - Control Targets
 key.neurons_or_control =0; % 1 neurons, 0 control sites
 rel_control = rel_data & rel_sessions_neurons & key & sprintf('response_p_val=%.3f',response_p_val);
 D2=fetch(rel_control ,'*');  % response p-value for inclusion. 1 means we take all pairs
 OUT2=fn_PLOT_CoupledResponseDistance_averaging(D2,distance_axial_bins,flag_response);
 
-
-
-
-% ax2=axes('position',[position_x1(1), position_y1(2), panel_width1, panel_height1]);
-% imagesc(OUT2.distance_lateral_bins_centers,  distance_axial_bins_plot, OUT2.map)
-% axis tight
-% axis equal
-% colormap(ax2,cmp)
-% % colorbar
-% caxis([OUT1.minv OUT1.maxv]);
-% xlabel([sprintf('Lateral Distance ') '(\mum)']);
+ax10=axes('position',[position_x2(2)-0.07, position_y2(2), panel_width2, panel_height2]);
+imagesc(OUT2.distance_lateral_bins_centers(1:end),  distance_axial_bins_plot, OUT2.map(:,1:end))
+axis tight
+axis equal
+% cmp = bluewhitered(512); %
+colormap(ax10, cmp)
+caxis([-0.01 max(max(OUT1.map(:,1:end)))]);
+% caxis([OUT1.minv max(max(OUT1.map(:,1:end)))]);
+xlabel([sprintf('Lateral Distance ') '(\mum)']);
 % ylabel([sprintf('Axial Distance ') '(\mum)']);
-% set(gca,'YTick',[0 60 90 120],'XTick',[25,100:100:500]);
+set(gca,'YTick',[0 60 120],'YTickLabel',[],'XTick',[25,100:100:500]);
 % ylabel([sprintf('Axial \nDistance\n ') '(\mum)']);
+text(xl(1)+diff(xl)*0.5,yl(2)+diff(yl)*1.5,sprintf('Control targets'),'FontSize',6, 'fontweight', 'bold','Color',[0 0.75 0.75],'HorizontalAlignment','center')
+
+
+%colorbar positive values
+ax2=axes('position',[position_x2(2)+0.03, position_y2(2)+0.04, panel_width2*0.2, panel_height2*0.15]);
+% imagesc(OUT1.distance_lateral_bins_centers, distance_axial_bins_plot,  OUT1.map)
+cmp = bluewhitered(512); %
+colormap(ax2, cmp)
+caxis([OUT1.minv max(max(OUT1.map(:,1:end)))]);
+ccc=colorbar;
+set(ccc,'YTick',[0,1], 'YTickLabel',[0,1]);
+% ccc.Location='SouthOutside';
+text(6, -0.6, ['Connection' newline 'strength'],'Rotation',90);
+
+% text(7, -3, ['Connection strength' newline '(\Delta z-score activity)'],'Rotation',90);
+axis off
+
+%colorbar negative values
+ax3=axes('position',[position_x2(2)+0.03,10, panel_width2*0.2, panel_height2*0.35]);
+OUT1.map(OUT1.map>=0)=0;
+imagesc(OUT1.distance_lateral_bins_centers, distance_axial_bins_plot,  OUT1.map)
+cmp = bluewhitered(512); %
+%colorbar negative values
+ax4=axes('position',[position_x2(2)+0.03, position_y2(2)+0.025, panel_width2*0.2, panel_height2*0.15]);
+colormap(ax4, cmp)
+% caxis([OUT1.minv 0]);
+caxis([-0.01 0]);
+
+ccc=colorbar;
+set(ccc,'YTick',[-0.01,0], 'YTickLabel',[-0.01,0]);
+% ccc.Location='SouthOutside';
+% text(6, 0.1, ['Connection strength' newline '(\Delta z-score activity)'],'Rotation',0);
+axis off
+
+
+
 
 %% Marginal distribution - lateral
 axes('position',[position_x2(1), position_y2(1), panel_width2, panel_height2*0.75]);
@@ -248,7 +260,7 @@ set(gca,'XTick',[25,100:100:500],'XTickLabel',[],'XLim',xl);
 
 box off
 % ylabel([sprintf('         Response\n') '        (z-score)']);
-ylabel (['Connection stength' newline '(\Delta z-score activity)']);
+ylabel (['Connection strength' newline '(\Delta z-score activity)']);
 set(gca,'YTick',[0,0.5,1]);
 % xlabel([sprintf('Lateral Distance ') '(\mum)']);
 
@@ -263,50 +275,55 @@ ylim(yl)
 set(gca,'XLim',xl);
 box off
 set(gca,'YTick',[-0.005  0 yl(2)],'XTick',[100 250 500],'XTickLabel',{'100' '     250' '500'},'TickLength',[0.05 0.05]);
-text(200,0.005,'Directly photostimulated','Color',[1 0 1]);
+text(200,0.005,'Target neurons','Color',[1 0 1]);
 text(200,0.003,sprintf('Control targets'),'Color',[0 0.75 0.75]);
 
 
 
 
 %% Marginal distribution - axial NEAR
-axm=axes('position',[position_x2(2), position_y2(1)+0.02, panel_width2*0.4, panel_height2*0.4]);
+axm=axes('position',[position_x2(2), position_y2(1)+0.03, panel_width2*0.4, panel_height2*0.4]);
 hold on
 plot([distance_axial_bins(1),distance_axial_bins(end)],[0 0],'-k')
 shadedErrorBar(distance_axial_bins,OUT1.marginal_axial_in_column_mean,OUT1.marginal_axial_in_column_stem,'lineprops',{'.-','Color',[1 0 1]})
 shadedErrorBar(distance_axial_bins,OUT2.marginal_axial_in_column_mean,OUT2.marginal_axial_in_column_stem,'lineprops',{'.-','Color',[0 0.75 0.75]})
 axm.View = [90 90]
 xlabel([sprintf('Axial \nDistance ') '(\mum)']);
-ylabel (['Connection stength' newline '(\Delta z-score activity)']);
+ylabel (['          Connection strength '  '(\Delta z-score activity)']);
 set(gca,'XTick',[0 60 120]);
 title([sprintf('25< Lateral <=100            \n') '(\mum)'],'FontSize',6)
 
 %% Marginal distribution - axial FAR
-axm=axes('position',[position_x2(2)+0.07, position_y2(1)+0.02, panel_width2*0.4, panel_height2*0.4]);
+axm=axes('position',[position_x2(2)+0.07, position_y2(1)+0.03, panel_width2*0.4, panel_height2*0.4]);
 hold on
 % plot([distance_axial_bins(1),distance_axial_bins(end)],[0 0],'-k')
 shadedErrorBar(distance_axial_bins,OUT1.marginal_axial_out_column_mean,OUT1.marginal_axial_out_column_stem,'lineprops',{'.-','Color',[1 0 1]})
 shadedErrorBar(distance_axial_bins,OUT2.marginal_axial_out_column_mean,OUT2.marginal_axial_out_column_stem,'lineprops',{'.-','Color',[0 0.75 0.75]})
 axm.View = [90 90]
 % xlabel([sprintf('Axial Distance ') '(\mum)']);
-set(gca,'XTick',[0 60 120],'XTickLabel',[]);
+set(gca,'XTick',[0 60 120],'XTickLabel',[],'YTickLabel',[-0.005,0]);
 title([sprintf('            100< Lateral <=250\n ') '(\mum)'],'FontSize',6)
-
-% plot( distance_axial_bins_plot, OUT1.marginal_axial_mean, '-b')
-% plot( distance_axial_bins_plot, OUT2.marginal_axial_mean,'-m')
-% set(gca,'Ydir','reverse')
-% % Marginal distribution - lateral (zoom)
-% axes('position',[position_x1(2), position_y1(1)+0.2, panel_width1, panel_height1/2]);
-% hold on
-% plot([0,OUT1.distance_lateral_bins_centers(end)], [0 0],'-k')
-% plot(OUT1.distance_lateral_bins_centers, OUT1.lateral_marginal,'-b')
-% plot(OUT2.distance_lateral_bins_centers, OUT2.lateral_marginal,'-m')
-% yl(1)=min([OUT1.lateral_marginal,OUT2.lateral_marginal]);
-% yl(2)=2*abs(min([OUT1.lateral_marginal,OUT2.lateral_marginal]));
-% ylim(yl)
 
 fig = gcf;    %or one particular figure whose handle you already know, or 0 to affect all figures
 set( findall(fig, '-property', 'fontsize'), 'fontsize', DefaultFontSize)
+
+
+%% The following calculates the average number of neuron targets and control targets, over sessions:
+% rel2= (STIMANAL.NeuronOrControlNumber & 'num_targets_neurons>=25' & 'num_targets_controls>=25') & (STIMANAL.SessionEpochsIncludedFinal& IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' );
+% D=fetch(rel2,'*')
+% mean([D.num_targets_neurons])
+% mean([D.num_targets_controls])
+% 
+% median([D.num_targets_neurons])
+% median([D.num_targets_controls])
+% 
+% rel_inf=STIM.ROIInfluence2  & (STIMANAL.SessionEpochsIncludedFinal& IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' ) & (IMG.PhotostimGroup & (STIMANAL.NeuronOrControl  & 'neurons_or_control=1'));
+% % rel_inf=STIM.ROIInfluence2 ;% & (STIMANAL.SessionEpochsIncludedFinal& IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' ) & (STIMANAL.NeuronOrControl  & 'neurons_or_control=1');
+% 
+% rel_inf.count()
+
+% (IMG.ROI-IMG.ROIBad)& (STIMANAL.SessionEpochsIncludedFinal& IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' ) & (IMG.PhotostimGroup & (STIMANAL.NeuronOrControl  & 'neurons_or_control=1'))
+
 
 
 

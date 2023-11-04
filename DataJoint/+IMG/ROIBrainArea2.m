@@ -5,9 +5,9 @@
 ---
 %}
 
-classdef ROIBrainArea < dj.Imported
+classdef ROIBrainArea2 < dj.Imported
     properties
-        keySource = EXP2.Session & IMG.Bregma & IMG.Mesoscope;
+        keySource = EXP2.Session & IMG.Bregma & IMG.Mesoscope & 'subject_id=464725' & 'session=8';
     end
     methods(Access=protected)
         function makeTuples(self, key)

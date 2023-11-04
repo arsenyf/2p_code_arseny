@@ -26,6 +26,7 @@ position_x1(end+1)=position_x1(end)+horizontal_dist;
 
 position_y1(1)=0.755;
 position_y1(end+1)=position_y1(end)-vertical_dist;
+position_y1(end+1)=position_y1(end)-vertical_dist;
 
 
 %Influence
@@ -38,5 +39,6 @@ position_x2(1)=0.36;
 position_x2(end+1)=position_x2(end)+horizontal_dist2;
 
 position_y2(1)=0.81;
+position_y2(end+1)=position_y2(end)-vertical_dist2;
 position_y2(end+1)=position_y2(end)-vertical_dist2;
 

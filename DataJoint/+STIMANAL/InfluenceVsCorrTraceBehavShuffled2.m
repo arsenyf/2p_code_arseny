@@ -17,7 +17,7 @@ num_pairs_in_each_corr_bin                      :blob    # num of  target-neuron
 %}
 
 
-classdef InfluenceVsCorrTraceBehavShuffled < dj.Computed
+classdef InfluenceVsCorrTraceBehavShuffled2 < dj.Computed
     properties
         keySource = EXP2.SessionEpoch & STIMANAL.Target2AllCorrTraceBehav & (EXP2.Session & STIM.ROIInfluence2);
     end
@@ -36,8 +36,8 @@ classdef InfluenceVsCorrTraceBehavShuffled < dj.Computed
             minimal_distance=25; %um, exlude all cells within minimal distance from target
             
             % bins
-            bins_corr = [[-1:0.1:-0.1],linspace(-0.05,0.05,11),0.1, 0.15, [0.2:0.1:1]]; 
-            bins_influence = [-inf, -0.3, linspace(-0.2,0.2,11),0.3, 0.4, 0.5, 0.75, 1, 1.25, 1.5, inf];
+            bins_corr = linspace(-1,1,10); 
+            bins_influence = [-inf, linspace(-0.2,1.5,6) inf];
             
             
             distance_lateral_bins = [0:10:500,inf]; % microns

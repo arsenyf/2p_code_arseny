@@ -1,6 +1,6 @@
 function PLOT_InfluenceVsCorrTraceSpontResidual()
 % close all
-clf;
+% clf;
 
 dir_base = fetch1(IMG.Parameters & 'parameter_name="dir_root_save"', 'parameter_value');
 dir_current_fig = [dir_base  '\Photostim\influence_vs_corr\populations_plots\'];
@@ -33,7 +33,7 @@ rel_data_neurons_shuffled = STIMANAL.InfluenceVsCorrTraceSpontShuffled & 'neuron
     & (STIMANAL.NeuronOrControlNumber & 'num_targets_neurons>=25') ...
     & (STIMANAL.NeuronOrControlNumber & 'num_targets_controls>=25');
 
-DefaultFontSize =16;
+DefaultFontSize =7;
 figure
 set(gcf,'DefaultAxesFontName','helvetica');
 set(gcf,'PaperUnits','centimeters','PaperPosition',[0 0 23 30]);

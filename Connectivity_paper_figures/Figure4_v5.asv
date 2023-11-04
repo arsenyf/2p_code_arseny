@@ -1,13 +1,10 @@
-function Supplementary_Figure_7()
-% close all
-clf;
-
+function Figure4_v5()
+close all
 dir_base = fetch1(IMG.Parameters & 'parameter_name="dir_root_save"', 'parameter_value');
 dir_current_fig = [dir_base  'Connectivity_paper_figures\plots\'];
 dir_embeded_graphics=dir_current_fig;
 
-filename=[sprintf('Supplementary_Figure_7_v1')];
-
+filename=[sprintf('Figure4_v5')];
 
 
 DefaultFontSize =6;
@@ -40,14 +37,13 @@ key.response_p_val=1;
 key.num_svd_components_removed_corr=0;  % this is relevant only if we remove  SVD  components of the ongoing dynamics from the connectivity response, to separate the evoked resposne from ongoing activity
 min_pairs_in_influence_bin=100;
 min_pairs_in_corr_bin=100;
+min_session_per_bin=10
 
-
-%%
+%% Spont
 title_string = 'Noise Correlations, rest';
 
 rel_data = STIMANAL.InfluenceVsCorrTraceSpont*EXP2.SessionID  & 'num_pairs>=0' & 'num_targets>=50' ...
     &  (STIMANAL.SessionEpochsIncludedFinal & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' & 'session_epoch_number=2');
-
 rel_shuffled = STIMANAL.InfluenceVsCorrTraceSpontShuffled*EXP2.SessionID & 'num_pairs>=0' & 'num_targets>=50' ...
     &  (STIMANAL.SessionEpochsIncludedFinal & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' & 'session_epoch_number=2');
   
@@ -57,23 +53,68 @@ rel_shuffled = STIMANAL.InfluenceVsCorrTraceSpontShuffled*EXP2.SessionID & 'num_
 key.neurons_or_control=1;
 colormap=[1 0 1];
 axes('position',[position_x1(1),position_y1(1), panel_width1, panel_height1])
-[DATA,DATA_SHUFFLED,idx_influence_pairs_exclude, min_session_per_bin, bins_influence_centers,colormap,bins_influence_edges, yl] ...
-        =fn_plot_corr_vs_connectivity_figure4(rel_data, rel_shuffled, key,title_string, colormap, min_pairs_in_influence_bin, min_pairs_in_corr_bin);
-axes('position',[position_x1(1),position_y1(2), panel_width1, panel_height1])
+flag_plot=0;
+[DATA,DATA_SHUFFLED,idx_influence_pairs_exclude, bins_influence_centers,colormap,bins_influence_edges, yl] ...
+        =fn_plot_corr_vs_connectivity_figure4(rel_data, rel_shuffled, key,title_string, colormap, min_pairs_in_influence_bin, min_pairs_in_corr_bin,min_session_per_bin, flag_plot);
+    
+% axes('position',[position_x1(1),position_y1(2), panel_width1, panel_height1])
+flag_plot=1;
 yl_residual ...
-    = fn_plot_corr_vs_connectivity_figure4_residual (DATA,DATA_SHUFFLED,idx_influence_pairs_exclude, min_session_per_bin, bins_influence_centers,colormap,bins_influence_edges)
+    = fn_plot_corr_vs_connectivity_figure4_residual (DATA,DATA_SHUFFLED,idx_influence_pairs_exclude, min_session_per_bin, bins_influence_centers,colormap,bins_influence_edges, flag_plot)
 
 
 % Control  Targets
 key.neurons_or_control=0;
 colormap=[0 1 1];
-axes('position',[position_x1(2),position_y1(1), panel_width1, panel_height1])
-[DATA,DATA_SHUFFLED,idx_influence_pairs_exclude, min_session_per_bin, bins_influence_centers,colormap,bins_influence_edges] ...
-        =fn_plot_corr_vs_connectivity_figure4(rel_data, rel_shuffled, key,title_string, colormap, min_pairs_in_influence_bin, min_pairs_in_corr_bin);
+flag_plot=0;
+% axes('position',[position_x1(2),position_y1(1), panel_width1, panel_height1])
+[DATA,DATA_SHUFFLED,idx_influence_pairs_exclude, bins_influence_centers,colormap,bins_influence_edges] ...
+        =fn_plot_corr_vs_connectivity_figure4(rel_data, rel_shuffled, key,title_string, colormap, min_pairs_in_influence_bin, min_pairs_in_corr_bin,min_session_per_bin, flag_plot);
     ylim(yl);
 
-axes('position',[position_x1(2),position_y1(2), panel_width1, panel_height1])
-fn_plot_corr_vs_connectivity_figure4_residual (DATA,DATA_SHUFFLED,idx_influence_pairs_exclude, min_session_per_bin, bins_influence_centers,colormap,bins_influence_edges)
+% axes('position',[position_x1(2),position_y1(2), panel_width1, panel_height1])
+flag_plot=1;
+fn_plot_corr_vs_connectivity_figure4_residual (DATA,DATA_SHUFFLED,idx_influence_pairs_exclude, min_session_per_bin, bins_influence_centers,colormap,bins_influence_edges, flag_plot)
+ylim(yl_residual);
+
+%% Behav
+
+rel_data = STIMANAL.InfluenceVsCorrTraceBehav*EXP2.SessionID  & 'num_pairs>=0' & 'num_targets>=50' ...
+    &  (STIMANAL.SessionEpochsIncludedFinal & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' & 'session_epoch_number=2');
+rel_shuffled = STIMANAL.InfluenceVsCorrTraceBehavShuffled*EXP2.SessionID & 'num_pairs>=0' & 'num_targets>=50' ...
+    &  (STIMANAL.SessionEpochsIncludedFinal & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' & 'session_epoch_number=2');
+
+% Target Neurons
+key.neurons_or_control=1;
+colormap=[0 0 1];
+% axes('position',[position_x1(1),position_y1(1), panel_width1, panel_height1])
+flag_plot=0;
+[DATA,DATA_SHUFFLED,idx_influence_pairs_exclude,  bins_influence_centers,colormap,bins_influence_edges, yl] ...
+        =fn_plot_corr_vs_connectivity_figure4(rel_data, rel_shuffled, key,title_string, colormap, min_pairs_in_influence_bin, min_pairs_in_corr_bin,min_session_per_bin, flag_plot);
+    
+% axes('position',[position_x1(1),position_y1(2), panel_width1, panel_height1])
+flag_plot=1;
+yl_residual ...
+    = fn_plot_corr_vs_connectivity_figure4_residual (DATA,DATA_SHUFFLED,idx_influence_pairs_exclude, min_session_per_bin, bins_influence_centers,colormap,bins_influence_edges, flag_plot)
+
+xlim([-0.2,2])
+ylim([-0.01,0.03])
+
+
+% Control  Targets
+key.neurons_or_control=0;
+colormap=[0 1 1];
+flag_plot=0;
+% axes('position',[position_x1(2),position_y1(1), panel_width1,
+% panel_height1])
+[DATA,DATA_SHUFFLED,idx_influence_pairs_exclude, bins_influence_centers,colormap,bins_influence_edges] ...
+        =fn_plot_corr_vs_connectivity_figure4(rel_data, rel_shuffled, key,title_string, colormap, min_pairs_in_influence_bin, min_pairs_in_corr_bin, flag_plot);
+    ylim(yl);
+
+% axes('position',[position_x1(2),position_y1(2), panel_width1,
+% panel_height1])
+flag_plot=1;
+fn_plot_corr_vs_connectivity_figure4_residual (DATA,DATA_SHUFFLED,idx_influence_pairs_exclude, min_session_per_bin, bins_influence_centers,colormap,bins_influence_edges,  flag_plot)
 ylim(yl_residual);
 
 
@@ -227,5 +268,6 @@ end
 figure_name_out=[ dir_current_fig filename];
 eval(['print ', figure_name_out, ' -dpdf -r300']);
 eval(['print ', figure_name_out, ' -dtiff  -r300']);
+
 
 

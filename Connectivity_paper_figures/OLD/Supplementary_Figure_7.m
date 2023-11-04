@@ -1,19 +1,22 @@
-function PLOT_InfluenceVsCorrTraceBehavResidual()
+function Supplementary_Figure_7()
 % close all
 clf;
 
 dir_base = fetch1(IMG.Parameters & 'parameter_name="dir_root_save"', 'parameter_value');
-dir_current_fig = [dir_base  '\Photostim\influence_vs_corr\populations_plots\'];
-filename = 'InfluenceVsCorrTraceBehavResidual'
+dir_current_fig = [dir_base  'Connectivity_paper_figures\plots\'];
+dir_embeded_graphics=dir_current_fig;
+
+filename=[sprintf('Supplementary_Figure_7_v1')];
+
 
 key.num_svd_components_removed_corr=0;
 
-rel_data_neurons_residual = STIMANAL.InfluenceVsCorrTraceBehavResidual  & 'neurons_or_control=1' & key ...
+rel_data_neurons_residual = STIMANAL.InfluenceVsCorrTraceSpontResidual  & 'neurons_or_control=1' & key ...
     &  (STIMANAL.SessionEpochsIncludedFinal & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' )  ...
     & (STIMANAL.NeuronOrControlNumber & 'num_targets_neurons>=25') ...
     & (STIMANAL.NeuronOrControlNumber & 'num_targets_controls>=25');
 
-rel_data_control_residual = STIMANAL.InfluenceVsCorrTraceBehavResidual & 'neurons_or_control=0' & key ...
+rel_data_control_residual = STIMANAL.InfluenceVsCorrTraceSpontResidual & 'neurons_or_control=0' & key ...
     &  (STIMANAL.SessionEpochsIncludedFinal & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' )  ...
     & (STIMANAL.NeuronOrControlNumber & 'num_targets_neurons>=25') ...
     & (STIMANAL.NeuronOrControlNumber & 'num_targets_controls>=25');
@@ -23,17 +26,17 @@ rel_data_control_residual = STIMANAL.InfluenceVsCorrTraceBehavResidual & 'neuron
 
 
 
-rel_data_neurons_raw = STIMANAL.InfluenceVsCorrTraceBehav & 'neurons_or_control=1' & key ...
+rel_data_neurons_raw = STIMANAL.InfluenceVsCorrTraceSpont & 'neurons_or_control=1' & key ...
     &  (STIMANAL.SessionEpochsIncludedFinal & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' )  ...
     & (STIMANAL.NeuronOrControlNumber & 'num_targets_neurons>=25') ...
     & (STIMANAL.NeuronOrControlNumber & 'num_targets_controls>=25');
 
-rel_data_neurons_shuffled = STIMANAL.InfluenceVsCorrTraceBehavShuffled & 'neurons_or_control=1' & key ...
+rel_data_neurons_shuffled = STIMANAL.InfluenceVsCorrTraceSpontShuffled & 'neurons_or_control=1' & key ...
     &  (STIMANAL.SessionEpochsIncludedFinal & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' )  ...
     & (STIMANAL.NeuronOrControlNumber & 'num_targets_neurons>=25') ...
     & (STIMANAL.NeuronOrControlNumber & 'num_targets_controls>=25');
 
-DefaultFontSize =7;
+DefaultFontSize =16;
 figure
 set(gcf,'DefaultAxesFontName','helvetica');
 set(gcf,'PaperUnits','centimeters','PaperPosition',[0 0 23 30]);
@@ -89,12 +92,12 @@ y_mean = nanmean(y,1);
 y_stem = nanstd(y,1)./sqrt(size(DATA_SHUFFLED,1));
 shadedErrorBar(bins_corr_centers,y_mean,y_stem,'lineprops',{'-','Color',[1 0.7 0.5], 'LineWidth',1})
 % plot(bins_corr_centers,y_mean,'-','Color',[0.8 0 0.8])
-xlabel('Trace Correlation, \itr');
+xlabel('''Noise'' Correlation, \itr');
 ylabel (['Connection stength' newline '(\Delta z-score activity)']);
 box off
-title(sprintf('Trace Correlations,\n Spontaneous'));
+title(sprintf('''Noise''Correlations,\n Spontaneous'));
 
-text(0.01,1.4,'Neuron targets','Color',[1 0 1]);
+text(0.01,1.4,'Directly photostimulated','Color',[1 0 1]);
 text(0.01,1.2,sprintf('Shuffled'),'Color',[1 0.7 0.5]);
 
 % %% Data minus Shuffled
@@ -112,11 +115,11 @@ plot([0,0],yl,'-k');
 xlim([bins_corr_edges(1), bins_corr_edges(end)]);
 ylim(yl);
 shadedErrorBar(bins_corr_centers,y_mean,y_stem,'lineprops',{'-','Color',[1 0 1], 'LineWidth',1})
-xlabel('Trace Correlation, \itr');
+xlabel('''Noise'' Correlation, \itr');
 ylabel (['Connection stength' newline '(\Delta z-score activity)']);
 box off
-title(sprintf('Trace Correlations,\n Spontaneous\residual'));
-text(0.01,1.4,'Neuron targets','Color',[1 0 1]);
+title(sprintf('''Noise'' Correlations,\n Spontaneous\residual'));
+text(0.01,1.4,'Directly photostimulated','Color',[1 0 1]);
 
 
 
@@ -136,13 +139,13 @@ shadedErrorBar(bins_corr_centers,y_mean,y_stem,'lineprops',{'-','Color',[1 0 1],
 y=DATA_control_residual.influence_binned_by_corr;
 y_mean = nanmean(y,1);
 y_stem = nanstd(y,1)./sqrt(size(DATA_control_residual,1));
-shadedErrorBar(bins_corr_centers,y_mean,y_stem,'lineprops',{'-','Color',[0.5 0.5 0.5], 'LineWidth',1})
-xlabel('Trace Correlation, \itr');
+shadedErrorBar(bins_corr_centers,y_mean,y_stem,'lineprops',{'-','Color',[0 0.75 0.75], 'LineWidth',1})
+xlabel('''Noise'' Correlation, \itr');
 ylabel (['Connection stength' newline '(\Delta z-score activity)']);
 box off
 title(sprintf('Spontaneous\n activity'));
-text(0.01,-1.4,'Neuron targets','Color',[1 0 1]);
-text(0.01,-1.2,sprintf('Control targets'),'Color',[0.5 0.5 0.5]);
+text(0.01,-1.4,'Directly photostimulated','Color',[1 0 1]);
+text(0.01,-1.2,sprintf('Control targets'),'Color',[0 0.75 0.75]);
 
 %% Zoom in
 subplot(4,4,11)
@@ -160,8 +163,8 @@ shadedErrorBar(bins_corr_centers,y_mean,y_stem,'lineprops',{'-','Color',[1 0 1],
 y=DATA_control_residual.influence_binned_by_corr;
 y_mean = nanmean(y,1);
 y_stem = nanstd(y,1)./sqrt(size(DATA_control_residual,1));
-shadedErrorBar(bins_corr_centers,y_mean,y_stem,'lineprops',{'-','Color',[0.5 0.5 0.5], 'LineWidth',1})
-xlabel('Trace Correlation, \itr');
+shadedErrorBar(bins_corr_centers,y_mean,y_stem,'lineprops',{'-','Color',[0 0.75 0.75], 'LineWidth',1})
+xlabel('''Noise'' Correlation, \itr');
 % ylabel ('Influence (\Delta Activity)');
 box off
 title('Zoom in');
@@ -170,8 +173,6 @@ set(gca,'XTick',[-0.05  0 0.05 ],'XTickLabel',[{'-0.05'  '   0' '0.05'} ],'TickL
 
 fig = gcf;    %or one particular figure whose handle you already know, or 0 to affect all figures
 set( findall(fig, '-property', 'fontsize'), 'fontsize', DefaultFontSize)
-
-
 
 
 if isempty(dir(dir_current_fig))

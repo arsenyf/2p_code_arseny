@@ -410,7 +410,7 @@ colormap(ax13,inferno)
 cb2 = colorbar;
 axis off
 set(cb2,'Ticks',[0, 1],'TickLabels',[{'0','1'}], 'FontSize',6);
-text(7,0.5,sprintf('Activity (norm.)'), 'FontSize',6,'HorizontalAlignment','center');
+text(9,0.5,sprintf('Activity (norm.)'), 'FontSize',6,'HorizontalAlignment','center');
 set(gca, 'FontSize',6);
 
 
@@ -439,7 +439,7 @@ d_lateral_mean_shuffled =  nanmean(distance_lateral_all_shuffled,1);
 d_lateral_stem_shuffled =  nanstd(distance_lateral_all_shuffled,1)/sqrt(size(D_shuffled,1));
 
 %axial
-idx_column_radius=10; %10 to 30 microns
+idx_column_radius=2; %10 to 30 microns
 distance_axial_all=[];
 distance_axial_all_shuffled=[];
 for i_s=1:1:size(D,1)

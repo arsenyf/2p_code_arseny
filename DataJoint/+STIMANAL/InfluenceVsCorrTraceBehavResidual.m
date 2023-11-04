@@ -26,10 +26,12 @@ classdef InfluenceVsCorrTraceBehavResidual < dj.Computed
             neurons_or_control_flag = [1,0]; % 1 neurons, 0 control sites
             neurons_or_control_label = { 'Neurons','Controls'};
             p_val=[1]; % for influence significance; %the code needs adjustment to include shuffling for other p-values
-            num_svd_components_removed_vector_corr =[0,1,5];
+%             num_svd_components_removed_vector_corr =[0,1,5];
+            num_svd_components_removed_vector_corr =[0];
+
             minimal_distance=25; %um, exlude all cells within minimal distance from target
             
-            bins_corr = [ -0.1,linspace(-0.05,0.05,11),0.1, 0.15, 0.2, 0.3,0.4,0.5, inf]; 
+            bins_corr = [ -0.1,linspace(-0.05,0.05,11),0.1, 0.15, 0.2, 0.3,0.4,0.5, inf];
             bins_influence = [-inf, -0.3, linspace(-0.2,0.2,11),0.3, 0.4,0.5,0.75,1,1.25,1.5, inf];
             
             distance_lateral_bins = [0:10:500,inf]; % microns
@@ -94,10 +96,11 @@ classdef InfluenceVsCorrTraceBehavResidual < dj.Computed
                     idx_DataStim_pval = cell2mat(idx_DataStim_pval);
                     
                     for i_c = 1:1:numel(num_svd_components_removed_vector_corr)
+                        
                         num_comp = num_svd_components_removed_vector_corr(i_c);
                         key_component_corr.num_svd_components_removed_corr = num_comp;
                         
-
+                        
                         
                         rel_data_corr=STIMANAL.Target2AllCorrTraceBehav & rel_target & 'threshold_for_event=0' & key_component_corr;
                         DataCorr = cell2mat(fetchn(rel_data_corr,'rois_corr', 'ORDER BY photostim_group_num'));
@@ -111,7 +114,7 @@ classdef InfluenceVsCorrTraceBehavResidual < dj.Computed
                         xx = Data_distance_lateral(:);
                         yy = Data_distance_axial(:);
                         dd = DataCorr(:);
-
+                        
                         
                         MeanCorrDistance_binned =[];
                         distance_axial_bins = unique(yy(:));
@@ -124,7 +127,7 @@ classdef InfluenceVsCorrTraceBehavResidual < dj.Computed
                                 MeanCorrDistance_binned(i_a, i_l) =nanmean(data_in_bin);
                             end
                         end
-
+                        
                         
                         
                         

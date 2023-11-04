@@ -56,15 +56,15 @@ Supplementary_Figure_7
 
 %% Influence versus noise correlations 
 populate(STIMANAL.Target2AllCorrTraceSpont);%based on spikes
-populate(STIMANAL.InfluenceVsCorrTraceSpont2);
-populate(STIMANAL.InfluenceVsCorrTraceSpontShuffled2); 
+populate(STIMANAL.InfluenceVsCorrTraceSpont22);
+populate(STIMANAL.InfluenceVsCorrTraceSpontShuffled); 
 % populate(STIMANAL.InfluenceVsCorrTraceSpontResidual); 
 % PLOT_InfluenceVsCorrTraceSpontResidual();
 PLOT_InfluenceVsCorrTraceSpontShuffledDiff();
 
 populate(STIMANAL.Target2AllCorrTraceBehav);%based on spikes
-populate(STIMANAL.InfluenceVsCorrTraceBehav2);
-populate(STIMANAL.InfluenceVsCorrTraceBehavShuffled2); 
+populate(STIMANAL.InfluenceVsCorrTraceBehav);
+populate(STIMANAL.InfluenceVsCorrTraceBehavShuffled); 
 % populate(STIMANAL.InfluenceVsCorrTraceBehavResidual); 
 % PLOT_InfluenceVsCorrTraceBehavResidual();
 PLOT_InfluenceVsCorrTraceBehavShuffledDiff(); 

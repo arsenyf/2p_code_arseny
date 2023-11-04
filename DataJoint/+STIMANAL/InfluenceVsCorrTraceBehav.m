@@ -11,6 +11,8 @@ bins_influence_edges                            :blob    # bin-edges for binning
 bins_corr_edges                                 :blob    # bin-edges for binning correlation
 num_targets                                     :int     # num targets included
 num_pairs                                       :int     # num pairs included
+num_pairs_in_each_influence_bin                 :blob    # num of  target-neuron pairs in each bin
+num_pairs_in_each_corr_bin                      :blob    # num of  target-neuron pairs in each bin
 %} 
 
 
@@ -30,8 +32,8 @@ classdef InfluenceVsCorrTraceBehav < dj.Computed
             num_svd_components_removed_vector_corr = [0];
             minimal_distance=25; %um exlude all cells within minimal distance from target
             % bins
-            bins_corr = [ -0.1,linspace(-0.05,0.05,11),0.1, 0.15, 0.2, 0.3,0.4,0.5, inf]; 
-            bins_influence = [-inf, -0.3, linspace(-0.2,0.2,11),0.3, 0.4,0.5,0.75,1,1.25,1.5, inf];
+            bins_corr = [[-1:0.1:-0.1],linspace(-0.05,0.05,11),0.1, 0.15, [0.2:0.1:1]]; 
+            bins_influence = [-inf, -0.3, linspace(-0.2,0.2,11),0.3, 0.4, 0.5, 0.75, 1, 1.25, 1.5, inf];
             
             dir_base = fetch1(IMG.Parameters & 'parameter_name="dir_root_save"', 'parameter_value');
             dir_fig = [dir_base  '\Photostim\Connectivity_vs_Tuning\single_sessions\tuning_by_trace_correlation\behavior\'];
@@ -58,7 +60,7 @@ classdef InfluenceVsCorrTraceBehav < dj.Computed
                 DataStim_num_of_target_trials_used=cell(numel(group_list),1);
                 DataStim_distance_lateral=cell(numel(group_list),1);
 
-                for i_g = 1:1:numel(group_list)
+                parfor i_g = 1:1:numel(group_list)
                     rel_data_influence_current = [rel_data_influence2 & ['photostim_group_num=' num2str(group_list(i_g))]];
                     DataStim{i_g} = fetchn(rel_data_influence_current,'response_mean', 'ORDER BY roi_number')';
                     DataStim_pval{i_g} = fetchn(rel_data_influence_current,'response_p_value1', 'ORDER BY roi_number')';
@@ -103,12 +105,12 @@ classdef InfluenceVsCorrTraceBehav < dj.Computed
                         % influence as a funciton of correlation
                         x=DataCorr(idx_DataStim_pval);
                         y=DataStim(idx_DataStim_pval);
-                        [influence_binned_by_corr]= fn_bin_data(x,y,bins_corr);
+                        [influence_binned_by_corr,  ~, num_pairs_in_each_corr_bin]= fn_bin_data(x,y,bins_corr);
                         
                         
                         x=DataStim(idx_DataStim_pval);
                         y=DataCorr(idx_DataStim_pval);
-                        [corr_binned_by_influence]= fn_bin_data(x,y,bins_influence);
+                        [corr_binned_by_influence, ~, num_pairs_in_each_influence_bin]= fn_bin_data(x,y,bins_influence);
                         
                         
                         if num_svd_components_removed_vector_corr(i_c)==0
@@ -116,10 +118,12 @@ classdef InfluenceVsCorrTraceBehav < dj.Computed
                         else
                             idx_subplot = 2;
                         end
+                        
                         subplot(2,2,idx_subplot+1)
-                        bins_influence_centers = bins_influence(1:end-1) + diff(bins_influence)/2;
                         hold on
-                        plot(bins_influence_centers,corr_binned_by_influence,'-','Color',colormap(i_c,:))
+                        idx_enough_pairs = num_pairs_in_each_influence_bin>=1000;
+                        bins_influence_centers = bins_influence(1:end-1) + diff(bins_influence)/2;
+                        plot(bins_influence_centers(idx_enough_pairs),corr_binned_by_influence(idx_enough_pairs),'-','Color',colormap(i_c,:))
                         xlabel ('Influence (dff)');
                         ylabel('Correlation, r');
                         if i_c==1
@@ -129,8 +133,9 @@ classdef InfluenceVsCorrTraceBehav < dj.Computed
                         
                         subplot(2,2,idx_subplot+2)
                         hold on
+                        idx_enough_pairs = num_pairs_in_each_corr_bin>=1000;
                         bins_corr_centers = bins_corr(1:end-1) + diff(bins_corr)/2;
-                        plot(bins_corr_centers,influence_binned_by_corr,'-','Color',colormap(i_c,:))
+                        plot(bins_corr_centers(idx_enough_pairs),influence_binned_by_corr(idx_enough_pairs),'-','Color',colormap(i_c,:))
                         xlabel('Correlation, r');
                         ylabel ('Influence (dff)');
                         if i_c==1
@@ -151,7 +156,8 @@ classdef InfluenceVsCorrTraceBehav < dj.Computed
                         key_insert.response_p_val=p_val(i_p);
                         key_insert.num_targets= numel(group_list);
                         key_insert.num_pairs=sum(~isnan(x));
-
+                        key_insert.num_pairs_in_each_corr_bin= num_pairs_in_each_corr_bin;
+                        key_insert.num_pairs_in_each_influence_bin=num_pairs_in_each_influence_bin;
                         insert(self, key_insert);
                     end
                     

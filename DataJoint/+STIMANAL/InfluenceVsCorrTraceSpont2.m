@@ -1,5 +1,5 @@
 %{
-# Correlation versus influence, and Influence versus Correlation. Binned. Cells within the same lateral-axial bins are shuffled
+# Correlation versus influence, and Influence versus Correlation. Binned
 -> EXP2.SessionEpoch
 neurons_or_control     :boolean              # 1 - neurons, 0 control
 response_p_val                  : double      # response p-value of influence cell pairs for inclusion. 1 means we take all pairs
@@ -9,56 +9,47 @@ influence_binned_by_corr                        :blob    # Influence versus Corr
 corr_binned_by_influence                        :blob    # Correlation versus Iinfluence.
 bins_influence_edges                            :blob    # bin-edges for binning influence
 bins_corr_edges                                 :blob    # bin-edges for binning correlation
-num_targets                                     :int     # num targets included
-num_pairs                                       :int     # num pairs included
+num_pairs                                       :int     # num of all pairs included
+num_targets                                     :int     # num of all targets included
 num_pairs_in_each_influence_bin                 :blob    # num of  target-neuron pairs in each bin
 num_pairs_in_each_corr_bin                      :blob    # num of  target-neuron pairs in each bin
+%} 
 
-%}
 
-
-classdef InfluenceVsCorrTraceBehavShuffled < dj.Computed
+classdef InfluenceVsCorrTraceSpont2 < dj.Computed
     properties
-        keySource = EXP2.SessionEpoch & STIMANAL.Target2AllCorrTraceBehav & (EXP2.Session & STIM.ROIInfluence2);
+        keySource = EXP2.SessionEpoch & STIMANAL.Target2AllCorrTraceSpont & (EXP2.Session & STIM.ROIInfluence2);
     end
     methods(Access=protected)
         function makeTuples(self, key)
-                        close all;
+            close all;
             figure('visible','off')
             rel_include = IMG.ROI-IMG.ROIBad;
-            
             neurons_or_control_flag = [1,0]; % 1 neurons, 0 control sites
             neurons_or_control_label = { 'Neurons','Controls'};
-            p_val=[1]; % for influence significance; %the code needs adjustment to include shuffling for other p-values
-%             num_svd_components_removed_vector_corr =[0,1,5];
-           num_svd_components_removed_vector_corr =[0];
-
-            minimal_distance=25; %um, exlude all cells within minimal distance from target
-            
+            p_val=[1]; % for influence significance %making it for more significant values requires debugging of the shuffling method
+%             num_svd_components_removed_vector_corr = [0,1,5];
+            num_svd_components_removed_vector_corr = [0];
+            minimal_distance=25; %um exlude all cells within minimal distance from target
             % bins
-            bins_corr = [[-1:0.1:-0.1],linspace(-0.05,0.05,11),0.1, 0.15, [0.2:0.1:1]]; 
-            bins_influence = [-inf, -0.3, linspace(-0.2,0.2,11),0.3, 0.4, 0.5, 0.75, 1, 1.25, 1.5, inf];
             
-            
-            distance_lateral_bins = [0:10:500,inf]; % microns
-            
-            
+            bins_corr = linspace(-1,1,10); 
+            bins_influence = [-inf, linspace(-0.2,1.5,6) inf];
             
             dir_base = fetch1(IMG.Parameters & 'parameter_name="dir_root_save"', 'parameter_value');
-            dir_fig = [dir_base  '\Photostim\Connectivity_vs_Tuning\single_sessions\tuning_by_trace_correlation\behav\\shuffled\'];
+            dir_fig = [dir_base  '\Photostim\Connectivity_vs_Tuning\single_sessions\tuning_by_trace_correlation\'];
             session_date = fetch1(EXP2.Session & key,'session_date');
-            
             
             rel_roi = rel_include & key;
             rel_data_influence=STIM.ROIInfluence2  & rel_include;
-            
+
             
             colormap=viridis(numel(num_svd_components_removed_vector_corr));
             
             for i_n = 1:1:numel(neurons_or_control_flag)
                 key.neurons_or_control = neurons_or_control_flag(i_n);
                 rel_target = IMG.PhotostimGroup & (STIMANAL.NeuronOrControl & key & rel_include);
-                rel_data_influence2=STIM.ROIInfluence2   & rel_target & 'num_svd_components_removed=0';
+                rel_data_influence2=rel_data_influence   & rel_target & 'num_svd_components_removed=0';
                 
                 group_list = fetchn(rel_target,'photostim_group_num','ORDER BY photostim_group_num');
                 if numel(group_list)<1
@@ -68,33 +59,25 @@ classdef InfluenceVsCorrTraceBehavShuffled < dj.Computed
                 DataStim=cell(numel(group_list),1);
                 DataStim_pval=cell(numel(group_list),1);
                 DataStim_num_of_target_trials_used=cell(numel(group_list),1);
-                Data_distance_lateral=cell(numel(group_list),1);
-                Data_distance_axial=cell(numel(group_list),1);
-                
+                DataStim_distance_lateral=cell(numel(group_list),1);
+
                 parfor i_g = 1:1:numel(group_list)
                     rel_data_influence_current = [rel_data_influence2 & ['photostim_group_num=' num2str(group_list(i_g))]];
                     DataStim{i_g} = fetchn(rel_data_influence_current,'response_mean', 'ORDER BY roi_number')';
                     DataStim_pval{i_g} = fetchn(rel_data_influence_current,'response_p_value1', 'ORDER BY roi_number')';
-                    DataStim_num_of_target_trials_used{i_g}=fetchn(rel_data_influence_current,'num_of_target_trials_used', 'ORDER BY roi_number')';
-                    Data_distance_lateral{i_g}=fetchn(rel_data_influence_current,'response_distance_lateral_um', 'ORDER BY roi_number')';
-                    Data_distance_axial{i_g}=fetchn(rel_data_influence_current,'response_distance_axial_um', 'ORDER BY roi_number')';
-                    
+                    DataStim_num_of_target_trials_used{i_g} = fetchn(rel_data_influence_current,'num_of_target_trials_used', 'ORDER BY roi_number')';
+                    DataStim_distance_lateral{i_g}=fetchn(rel_data_influence_current,'response_distance_lateral_um', 'ORDER BY roi_number')';
                 end
-                
                 DataStim = cell2mat(DataStim);
-                Data_distance_lateral = cell2mat(Data_distance_lateral);
-                Data_distance_axial = cell2mat(Data_distance_axial);
+                DataStim_distance_lateral = cell2mat(DataStim_distance_lateral);
                 DataStim_num_of_target_trials_used = cell2mat(DataStim_num_of_target_trials_used);
-                
-                idx_include = true(size(Data_distance_lateral));
-                idx_include(Data_distance_lateral<=minimal_distance  )=false; %exlude all cells within minimal distance from target
+
+                idx_include = true(size(DataStim_distance_lateral));
+                idx_include(DataStim_distance_lateral<=minimal_distance  )=false; %exlude all cells within minimal distance from target
                 idx_include(DataStim_num_of_target_trials_used==0  )=false; %exlude all cells within minimal distance from target
+
                 
                 DataStim(~idx_include)=NaN;
-                DataStim=DataStim(:);
-                
-                Data_distance_lateral = Data_distance_lateral(:);
-                Data_distance_axial = Data_distance_axial(:);
                 
                 
                 for i_p=1:1:numel(p_val)
@@ -104,14 +87,14 @@ classdef InfluenceVsCorrTraceBehavShuffled < dj.Computed
                         idx_DataStim_pval{i_g} = DataStim_pval{i_g}<=p_val(i_p);
                     end
                     idx_DataStim_pval = cell2mat(idx_DataStim_pval);
-                    idx_DataStim_pval= idx_DataStim_pval(:);
+                    
                     for i_c = 1:1:numel(num_svd_components_removed_vector_corr)
                         num_comp = num_svd_components_removed_vector_corr(i_c);
                         key_component_corr.num_svd_components_removed_corr = num_comp;
                         
+                       
                         
-                        
-                        rel_data_corr=STIMANAL.Target2AllCorrTraceBehav & rel_target & 'threshold_for_event=0' & key_component_corr & rel_roi;
+                        rel_data_corr=STIMANAL.Target2AllCorrTraceSpont & rel_target & 'threshold_for_event=0' & key_component_corr &rel_roi;
                         DataCorr = cell2mat(fetchn(rel_data_corr,'rois_corr', 'ORDER BY photostim_group_num'));
                         
                         if numel(DataCorr(:)) ~= numel(DataStim(:))
@@ -119,23 +102,7 @@ classdef InfluenceVsCorrTraceBehavShuffled < dj.Computed
                         end
                         
                         DataCorr(~idx_include)=NaN;
-                        DataCorr=DataCorr(:);
-                        
-                        
-                        
-                        distance_axial_bins = unique(Data_distance_axial);
-                        for i_l=1:1:numel(distance_lateral_bins)-1
-                            ix_l = Data_distance_lateral>=distance_lateral_bins(i_l) & Data_distance_lateral<distance_lateral_bins(i_l+1);
-                            for i_a = 1:1:numel(distance_axial_bins)
-                                ix_a = Data_distance_axial==distance_axial_bins(i_a);
-                                ix_bin = ix_l & ix_a;
-                                data_in_bin = DataCorr(ix_bin);
-                                DataCorr(ix_bin) =data_in_bin(randperm(numel(data_in_bin)));
-                            end
-                        end
-                        
-                        
-                        
+
                         % influence as a funciton of correlation
                         x=DataCorr(idx_DataStim_pval);
                         y=DataStim(idx_DataStim_pval);
@@ -152,7 +119,6 @@ classdef InfluenceVsCorrTraceBehavShuffled < dj.Computed
                         else
                             idx_subplot = 2;
                         end
-                        
                         subplot(2,2,idx_subplot+1)
                         hold on
                         idx_enough_pairs = num_pairs_in_each_influence_bin>=1000;
@@ -192,7 +158,6 @@ classdef InfluenceVsCorrTraceBehavShuffled < dj.Computed
                         key_insert.num_pairs=sum(~isnan(x));
                         key_insert.num_pairs_in_each_corr_bin= num_pairs_in_each_corr_bin;
                         key_insert.num_pairs_in_each_influence_bin=num_pairs_in_each_influence_bin;
-
                         insert(self, key_insert);
                     end
                     

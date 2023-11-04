@@ -23,7 +23,7 @@ colormap(ax8,inferno)
 cb1 = colorbar();
 axis off
 set(cb1,'Ticks',[0, 1], 'FontSize',6);
-text(4.1,0.5,sprintf('Activity (norm.)'),'Rotation',90, 'FontSize',6,'HorizontalAlignment','Center');
+text(5,0.5,sprintf('Activity (norm.)'),'Rotation',90, 'FontSize',6,'HorizontalAlignment','Center');
 set(gca, 'FontSize',6);
 
 %% Preferred time all PSTHs
@@ -78,8 +78,8 @@ xlim(xl);
 yl=[0 70];
 
 ylim(yl);
-text(xl(1)-diff(xl)*0.4,yl(1)-diff(yl)*0.3, sprintf('Position neurons\n              (%%)'), 'FontSize',6,'HorizontalAlignment','left','Rotation',90);
-text(xl(1)-diff(xl)*0.1,yl(1)+diff(yl)*1.3,sprintf('Preferred \nresponse-time',numel(peaktime_psth)),'HorizontalAlignment','left', 'FontSize',6,'FontWeight','bold');
+text(xl(1)-diff(xl)*0.4,yl(1)-diff(yl)*0.3, sprintf('Location neurons\n              (%%)'), 'FontSize',6,'HorizontalAlignment','left','Rotation',90);
+text(xl(1)-diff(xl)*0.1,yl(1)+diff(yl)*1.3,sprintf('Peak \nresponse-time',numel(peaktime_psth)),'HorizontalAlignment','left', 'FontSize',6,'FontWeight','bold');
 text(xl(1)+diff(xl)*0,yl(1)-diff(yl)*0.5,sprintf('Time to 1st \ncontact-lick (s)'),'HorizontalAlignment','left', 'FontSize',6);
 set(gca,'Xtick',[0,5],'TickLength',[0.05,0.05],'TickDir','out');
 box off
@@ -98,8 +98,8 @@ bar(edges(1:end-1),hhh2,'FaceColor',[0 0 0],'EdgeColor',[0 0 0])
 yl = [0, max(hhh2)];
 yl(2)=60;
 xl = [0.5,4.5];
-text(xl(1)+diff(xl)*0.25,yl(1)-diff(yl)*0.4,sprintf('Number of feilds'), 'FontSize',6,'HorizontalAlignment','center');
-text(xl(1)+diff(xl)*0.75,yl(1)+diff(yl)*1.4,sprintf('Positional tuning'), 'FontSize',6,'HorizontalAlignment','center', 'fontweight', 'bold');
+text(xl(1)+diff(xl)*0.25,yl(1)-diff(yl)*0.4,sprintf('Number of peaks'), 'FontSize',6,'HorizontalAlignment','center');
+text(xl(1)+diff(xl)*0.75,yl(1)+diff(yl)*1.4,sprintf('Location tuning'), 'FontSize',6,'HorizontalAlignment','center', 'fontweight', 'bold');
 text(xl(1)-diff(xl)*0.25,yl(1)+diff(yl)*0,sprintf('Percentage'),'Rotation',90, 'FontSize',6,'VerticalAlignment','bottom');
 xlim(xl);
 ylim(yl)
@@ -118,7 +118,7 @@ bar(edges(1:end-1),hhh2,'FaceColor',[0 0 0],'EdgeColor',[0 0 0])
 yl = [0, max(hhh2)];
 yl(2)=30;
 xl = [0,100];
-text(xl(1)+diff(xl)*0.5,yl(1)-diff(yl)*0.4,sprintf('Field size (%%)'), 'FontSize',6,'HorizontalAlignment','center');
+text(xl(1)+diff(xl)*0.5,yl(1)-diff(yl)*0.4,sprintf('Peak width (%%)'), 'FontSize',6,'HorizontalAlignment','center');
 %             text(xl(1)+diff(xl)*0.5,yl(1)+diff(yl)*1.3,sprintf('Positional \ntuning'), 'FontSize',6,'HorizontalAlignment','center', 'fontweight', 'bold');
 text(xl(1)-diff(xl)*0.25,yl(1)+diff(yl)*0,sprintf('Percentage'),'Rotation',90, 'FontSize',6,'VerticalAlignment','bottom');
 xlim(xl);
@@ -140,7 +140,7 @@ mmm=imagesc([-1,0,1],[-1,0,1],preferred_bin_mat);
 yl=[0, max(20,ceil(nanmax(preferred_bin_mat(:))))];
 caxis(yl)
 colormap(ax10,jet2);
-text(0.5,3.2,sprintf('Preferred\npositions'), 'FontSize',6,'HorizontalAlignment','center', 'fontweight', 'bold');
+text(0.5,3.2,sprintf('Peak\nlocations'), 'FontSize',6,'HorizontalAlignment','center', 'fontweight', 'bold');
 axis equal
 axis tight
 set(gca,'YDir','normal', 'FontSize',6);
@@ -148,13 +148,13 @@ axis off
 text(-2.5, 4.5, 'k', ...
     'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
 %colorbar
-ax11=axes('position',[position_x4(3)+0.055-0.85,position_y4(1), panel_width4*0.8, panel_height4*0.8]);
+ax11=axes('position',[position_x4(3)+0.055-0.09,position_y4(1), panel_width4*0.8, panel_height4*0.8]);
 caxis(yl)
 colormap(ax11,jet2)
 cb2 = colorbar;
 axis off
 set(cb2,'Ticks',[yl],'TickLabels',[yl], 'FontSize',6);
-text(0.5,-0.2,sprintf('Percentage'), 'FontSize',6,'HorizontalAlignment','center');
+text(0.5,-0.2,sprintf('Location neurons (%%)'), 'FontSize',6,'HorizontalAlignment','center');
 set(gca, 'FontSize',6);
 
 
@@ -166,7 +166,7 @@ bar(edges(1:end-1),hhh3,'FaceColor',[0 0 0],'EdgeColor',[0 0 0])
 yl = [0, max(hhh3)];
 yl(2)=25;
 xl = [-1,1];
-text(xl(1)+diff(xl)*0.5,yl(1)-diff(yl)*0.5, [sprintf('Tuning corr.,') '{\it r}'  newline 'across positions'], 'FontSize',6,'HorizontalAlignment','center')
+text(xl(1)+diff(xl)*0.5,yl(1)-diff(yl)*0.5, [sprintf('Tuning corr.,') '{\it r}'  newline 'across locations'], 'FontSize',6,'HorizontalAlignment','center')
 text(xl(1)+diff(xl)*0.5,yl(1)+diff(yl)*1.3,sprintf('Temporal tuning\nsimilarity'), 'FontSize',6,'HorizontalAlignment','center', 'fontweight', 'bold');
 text(xl(1)-diff(xl)*0.25,yl(1)+diff(yl)*0,sprintf('Percentage'),'Rotation',90, 'FontSize',6,'VerticalAlignment','bottom');
 xlim(xl);
@@ -203,8 +203,8 @@ box off
 ff=gca;
 xl=ff.XLim;
 yl=ff.YLim;
-text(v.Position(1,1)-v.Radius(1)*0.2,v.Position(1,2)+v.Radius(1)*1.3,sprintf('Temporally tuned'),'Color',[0 0 1],'FontSize',6,'HorizontalAlignment','Center');
-text(v.Position(2,1)-v.Radius(1)*0.2,v.Position(2,2)-v.Radius(2)*1.65,sprintf('Positionally tuned'),'Color',[1 0 0],'FontSize',6,'HorizontalAlignment','Center');
+text(v.Position(1,1)-v.Radius(1)*0.2,v.Position(1,2)+v.Radius(1)*1.3,sprintf('Temporal tuning'),'Color',[0 0 1],'FontSize',6,'HorizontalAlignment','Center');
+text(v.Position(2,1)-v.Radius(1)*0.2,v.Position(2,2)-v.Radius(2)*1.65,sprintf('Location tuning'),'Color',[1 0 0],'FontSize',6,'HorizontalAlignment','Center');
 
 text(xl(1)+diff(xl)*0.5, yl(1)+diff(yl)*1.3, sprintf('%d cells',count_total), 'fontsize', 6, 'fontname', 'helvetica', 'fontweight', 'bold','HorizontalAlignment','Center');
 

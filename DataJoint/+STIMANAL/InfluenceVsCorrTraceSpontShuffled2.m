@@ -17,9 +17,9 @@ num_pairs_in_each_corr_bin                      :blob    # num of  target-neuron
 %}
 
 
-classdef InfluenceVsCorrTraceBehavShuffled < dj.Computed
+classdef InfluenceVsCorrTraceSpontShuffled2 < dj.Computed
     properties
-        keySource = EXP2.SessionEpoch & STIMANAL.Target2AllCorrTraceBehav & (EXP2.Session & STIM.ROIInfluence2);
+        keySource = EXP2.SessionEpoch & STIMANAL.Target2AllCorrTraceSpont & (EXP2.Session & STIM.ROIInfluence2);
     end
     methods(Access=protected)
         function makeTuples(self, key)
@@ -36,16 +36,17 @@ classdef InfluenceVsCorrTraceBehavShuffled < dj.Computed
             minimal_distance=25; %um, exlude all cells within minimal distance from target
             
             % bins
-            bins_corr = [[-1:0.1:-0.1],linspace(-0.05,0.05,11),0.1, 0.15, [0.2:0.1:1]]; 
-            bins_influence = [-inf, -0.3, linspace(-0.2,0.2,11),0.3, 0.4, 0.5, 0.75, 1, 1.25, 1.5, inf];
-            
+%             bins_corr = [[-1:0.1:-0.1],linspace(-0.05,0.05,11),0.1, 0.15, [0.2:0.1:1]]; 
+%             bins_influence = [-inf, -0.3, linspace(-0.2,0.2,11),0.3, 0.4, 0.5, 0.75, 1, 1.25, 1.5, inf];
+            bins_corr = linspace(-1,1,10); 
+            bins_influence = [-inf, linspace(-0.2,1.5,6) inf];
             
             distance_lateral_bins = [0:10:500,inf]; % microns
             
             
             
             dir_base = fetch1(IMG.Parameters & 'parameter_name="dir_root_save"', 'parameter_value');
-            dir_fig = [dir_base  '\Photostim\Connectivity_vs_Tuning\single_sessions\tuning_by_trace_correlation\behav\\shuffled\'];
+            dir_fig = [dir_base  '\Photostim\Connectivity_vs_Tuning\single_sessions\tuning_by_trace_correlation\shuffled\'];
             session_date = fetch1(EXP2.Session & key,'session_date');
             
             
@@ -111,7 +112,7 @@ classdef InfluenceVsCorrTraceBehavShuffled < dj.Computed
                         
                         
                         
-                        rel_data_corr=STIMANAL.Target2AllCorrTraceBehav & rel_target & 'threshold_for_event=0' & key_component_corr & rel_roi;
+                        rel_data_corr=STIMANAL.Target2AllCorrTraceSpont & rel_target & 'threshold_for_event=0' & key_component_corr & rel_roi;
                         DataCorr = cell2mat(fetchn(rel_data_corr,'rois_corr', 'ORDER BY photostim_group_num'));
                         
                         if numel(DataCorr(:)) ~= numel(DataStim(:))
@@ -153,7 +154,7 @@ classdef InfluenceVsCorrTraceBehavShuffled < dj.Computed
                             idx_subplot = 2;
                         end
                         
-                        subplot(2,2,idx_subplot+1)
+                         subplot(2,2,idx_subplot+1)
                         hold on
                         idx_enough_pairs = num_pairs_in_each_influence_bin>=1000;
                         bins_influence_centers = bins_influence(1:end-1) + diff(bins_influence)/2;
