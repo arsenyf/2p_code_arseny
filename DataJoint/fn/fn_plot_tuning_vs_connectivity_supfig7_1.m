@@ -1,4 +1,4 @@
-function fn_plot_tuning_vs_connectivity(rel_data, rel_shuffled, key,title_string, colormap, i_c,  min_pairs_in_influence_bin, min_pairs_in_corr_bin)
+function fn_plot_tuning_vs_connectivity_supfig7_1(rel_data, rel_shuffled, key,title_string, colormap,   min_pairs_in_influence_bin, min_pairs_in_corr_bin)
 min_session_per_bin=10;
 
 DATA=struct2table(fetch(rel_data & key,'*', 'ORDER BY session_uid'));
@@ -40,16 +40,16 @@ y_stem = nanstd(y,1)./sqrt(sum(~isnan(y)));
 y_mean_shuf = nanmean(y_shuf,1);
 y_stem_shuf = nanstd(y_shuf,1)./sqrt(size(DATA_SHUFFLED,1));
 %     y_min_max=[min([y_mean,y_mean_shuf]), max([y_mean,y_stem_shuf])];
-if i_c ==1
+
     %         plot([bins_influence_centers(1),bins_influence_centers(end)],[0,0],'-k');
     plot([0,0],[min(y_mean-y_stem),max(y_mean+y_stem)],'-k');
-end
-shadedErrorBar(bins_influence_centers,y_mean,y_stem,'lineprops',{'-','Color',colormap(i_c,:)})
+
+shadedErrorBar(bins_influence_centers,y_mean,y_stem,'lineprops',{'-','Color',colormap})
 shadedErrorBar(bins_influence_centers,y_mean_shuf,y_stem_shuf,'lineprops',{'-','Color',[0.5 0.5 0.5]})
 plot(bins_influence_centers,y_mean_shuf,'.-','Color',[0.5 0.5 0.5])
 plot(bins_influence_centers,y_mean,'.-','Color',colormap)
 
-xlabel (['Connection strength' newline '(\Delta z-score activity)']);
+xlabel (['Connection stength' newline '(\Delta z-score activity)']);
 ylabel('Tuning Similarity, \itr');
 title(sprintf(title_string));
 box off
@@ -80,12 +80,12 @@ y_mean_shuf = nanmean(y_shuf,1);
 y_stem_shuf = nanstd(y_shuf,1)./sqrt(size(DATA_SHUFFLED,1));
 y_min_max=[min([y_mean,y_mean_shuf]), max([y_mean,y_stem_shuf])];
 %     y_min_max_tick=[-0.005, 0.02];
-if i_c ==1
+
     %         plot([bins_corr_edges(1),bins_corr_edges(end)],[0,0],'-k');
     %         plot([0,0],[min(y_mean-y_stem),max(y_mean+y_stem)],'-k');
     plot([0,0],[y_min_max(1),y_min_max(2)],'-k');
     xlim([bins_corr_edges(1), bins_corr_edges(end)]);
-end
+
 %     shadedErrorBar(bins_corr_centers,y_mean,y_stem,'lineprops',{'-','Color',colormap(i_c,:)})
 shadedErrorBar(bins_corr_centers,y_mean,y_stem,'lineprops',{'-','Color',colormap})
 shadedErrorBar(bins_corr_centers,y_mean_shuf,y_stem_shuf,'lineprops',{'-','Color',[0.5 0.5 0.5]})
@@ -93,7 +93,7 @@ plot(bins_corr_centers,y_mean_shuf,'.-','Color',[0.5 0.5 0.5])
 plot(bins_corr_centers,y_mean,'.-','Color',colormap)
 
 xlabel('Tuning Similarity, \itr');
-ylabel (['Connection strength' newline '(\Delta z-score activity)']);
+ylabel (['Connection stength' newline '(\Delta z-score activity)']);
 title(sprintf(title_string));
 box off
 %     ylim(y_min_max)
@@ -116,13 +116,13 @@ y_mean = nanmean(y,1);
 y_stem = nanstd(y,1)./sqrt(sum(~isnan(y)));
 %y_stem = nanstd(y,1)./sqrt(size(DATA,1));
 
-if i_c ==1
+
     plot([bins_influence_centers(1),bins_influence_centers(end)],[0,0],'-k');
     plot([0,0],[min(y_mean-y_stem),max(y_mean+y_stem)],'-k');
-end
-shadedErrorBar(bins_influence_centers,y_mean,y_stem,'lineprops',{'-','Color',colormap(i_c,:)})
+
+shadedErrorBar(bins_influence_centers,y_mean,y_stem,'lineprops',{'-','Color',colormap})
 plot(bins_influence_centers,y_mean,'.-','Color',colormap)
-xlabel (['Connection strength' newline '(\Delta z-score activity)']);
+xlabel (['Connection stength' newline '(\Delta z-score activity)']);
 ylabel('Residual Tuning Similarity, \itr');
 %     title(sprintf(title_string));
 box off
@@ -145,16 +145,16 @@ y_stem = nanstd(y,1)./sqrt(sum(~isnan(y)));
 
 % y_min_max=[-0.006, 0.02];
 % y_min_max_tick=[-0.005, 0.02];
-if i_c ==1
+
     plot([bins_corr_edges(1),bins_corr_edges(end)],[0,0],'-k');
     %         plot([0,0],[min(y_mean-y_stem),max(y_mean+y_stem)],'-k');
     plot([0,0],[min(y_mean-y_stem),max(y_mean+y_stem)],'-k');
-end
+
 %     shadedErrorBar(bins_corr_centers,y_mean,y_stem,'lineprops',{'-','Color',colormap(i_c,:)})
 shadedErrorBar(bins_corr_centers,y_mean,y_stem,'lineprops',{'-','Color',colormap})
 plot(bins_corr_centers,y_mean,'.-','Color',colormap)
 xlabel('Tuning Similarity, \itr');
-ylabel (['Residual Connection strength' newline '(\Delta z-score activity)']);
+ylabel (['Residual Connection stength' newline '(\Delta z-score activity)']);
 %     title(sprintf(title_string));
 box off
 % ylim(y_min_max)

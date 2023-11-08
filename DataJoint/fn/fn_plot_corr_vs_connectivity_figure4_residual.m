@@ -17,12 +17,12 @@ y_stem = nanstd(y,1)./sqrt(sum(~isnan(y)));
 yl=[min(y_mean-y_stem),max(y_mean+y_stem)];
 
 if flag_plot==1
-    plot([bins_influence_centers(1),bins_influence_centers(end)],[0,0],'-k');
-    plot([0,0],[min(y_mean-y_stem),max(y_mean+y_stem)],'-k');
+%     plot([bins_influence_centers(1),bins_influence_centers(end)],[0,0],'-k');
+%     plot([0,0],[min(y_mean-y_stem),max(y_mean+y_stem)],'-k');
     shadedErrorBar(bins_influence_centers,y_mean,y_stem,'lineprops',{'-','Color',colormap(1,:)})
-    plot(bins_influence_centers,y_mean,'.-','Color',colormap)
-    xlabel (['Connection stength' newline '(\Delta z-score activity)']);
-    ylabel('Residual Tuning Similarity, \itr');
+%     plot(bins_influence_centers,y_mean,'.-','Color',colormap)
+%     xlabel (['Connection stength' newline '(\Delta z-score activity)']);
+%     ylabel([sprintf('Noise correlation, \n residual') ' \itr']);
     %     title(sprintf(title_string));
     box off
     xlim([bins_influence_edges(1), bins_influence_edges(end)]);

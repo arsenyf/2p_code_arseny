@@ -161,7 +161,7 @@ out_degree_inhibitory= (out_degree_inhibitory./num_neurons_in_radius)*mean(num_n
 
 number_of_bins=9;
 number_of_bins2=9; 
-%% Connectivity vs Positional tuning (information)
+%% Connectivity vs Positional tuning (modulation)
 axes('position',[position_x1(1), position_y1(1), panel_width1, panel_height1]);
 hold on
 % y=signal1.map_information ;
@@ -174,10 +174,12 @@ hist_bins(end-2:end-1)=[];
 shadedErrorBar(hist_bins_centers,y_binned_mean,y_binned_stem,'lineprops',{'.-','Color',[1 0 0]})
 shadedErrorBar(hist_bins_centers,y_binned_shuffled_mean,y_binned_shuffled_stem,'lineprops',{'.-','Color',[0 0 0]})
 ylim([min(y_binned_mean-y_binned_stem),max(y_binned_mean+y_binned_stem)])
-xlabel(sprintf('Causal Connections\n out-degree')) 
-ylabel(sprintf('Spatial Information \n(bits/spike)'))
-title(sprintf('Tuning to target position\n'));
+xlabel(sprintf('Number of causal connections,\n out-degree')) 
+ylabel(sprintf('Location-tuning\n modulation (%%)'))
+% ylabel(sprintf('Spatial Information \n(bits/spike)'))
+title(sprintf('Location tuning\n'));
 box off;
+ylim([32,42]);
 
 %% Connectivity vs Positional tuning (similarity)
 axes('position',[position_x1(2), position_y1(1), panel_width1, panel_height1]);
@@ -191,9 +193,9 @@ hist_bins(end-2:end-1)=[];
 shadedErrorBar(hist_bins_centers,y_binned_mean,y_binned_stem,'lineprops',{'.-','Color',[1 0 0]})
 shadedErrorBar(hist_bins_centers,y_binned_shuffled_mean,y_binned_shuffled_stem,'lineprops',{'.-','Color',[0 0 0]})
 ylim([min(y_binned_mean-y_binned_stem),max(y_binned_mean+y_binned_stem)])
-xlabel(sprintf('Causal Connections\n out-degree')) 
-ylabel('Tuning Similarity, \itr');
-title(sprintf('Tuning to target position\n'));
+xlabel(sprintf('Number of causal connections,\n out-degree')) 
+ylabel([sprintf('Location-tuning, \nstability ') '\itr']);
+title(sprintf('Location tuning\n'));
 box off;
 
 
@@ -209,7 +211,7 @@ box off;
 % shadedErrorBar(hist_bins_centers,y_binned_mean,y_binned_stem,'lineprops',{'.-','Color',[0 0 1]})
 % shadedErrorBar(hist_bins_centers,y_binned_shuffled_mean,y_binned_shuffled_stem,'lineprops',{'.-','Color',[0 0 0]})
 % ylim([min(y_binned_mean-y_binned_stem),max(y_binned_mean+y_binned_stem)])
-% xlabel(sprintf('Causal Connections\n out-degree')) 
+% xlabel(sprintf('Number of causal connections,\n out-degree')) 
 % ylabel(sprintf('Rayleigh vector length\n'));
 % title(sprintf('Tuning to target direction\n'));
 % box off;
@@ -226,7 +228,7 @@ hist_bins(end-2:end-1)=[];
 shadedErrorBar(hist_bins_centers,y_binned_mean,y_binned_stem,'lineprops',{'.-','Color',[1 0 0]})
 shadedErrorBar(hist_bins_centers,y_binned_shuffled_mean,y_binned_shuffled_stem,'lineprops',{'.-','Color',[0 0 0]})
 ylim([min(y_binned_mean-y_binned_stem),max(y_binned_mean+y_binned_stem)])
-xlabel(sprintf('Causal Connections\n out-degree')) 
+xlabel(sprintf('Number of causal connections,\n out-degree')) 
 ylabel('Tuning Similarity, \itr');
 title(sprintf('Tuning to response time \n'));box off;
 
@@ -243,13 +245,13 @@ hist_bins(end-2:end-1)=[];
 shadedErrorBar(hist_bins_centers,y_binned_mean,y_binned_stem,'lineprops',{'.-','Color',[1 0 0]})
 shadedErrorBar(hist_bins_centers,y_binned_shuffled_mean,y_binned_shuffled_stem,'lineprops',{'.-','Color',[0 0 0]})
 ylim([min(y_binned_mean-y_binned_stem),max(y_binned_mean+y_binned_stem)])
-xlabel(sprintf('Causal Connections\n out-degree')) 
+xlabel(sprintf('Number of causal connections,\n out-degree')) 
 ylabel('Tuning Similarity, \itr');
 title(sprintf('Tuning to response time \nand target position'));box off;
 
 
 %% Connectivity vs Reward tuning (large vs regular reward)
-axes('position',[position_x1(2), position_y1(2), panel_width1, panel_height1]);
+axes('position',[position_x1(1), position_y1(2), panel_width1, panel_height1]);
 hold on
 y=abs(signal2.reward_increase);
 % excitatory
@@ -260,13 +262,13 @@ hist_bins(end-2:end-1)=[];
 shadedErrorBar(hist_bins_centers,y_binned_mean,y_binned_stem,'lineprops',{'.-','Color',[1 0.5 0]})
 shadedErrorBar(hist_bins_centers,y_binned_shuffled_mean,y_binned_shuffled_stem,'lineprops',{'.-','Color',[0 0 0]})
 ylim([min(y_binned_mean-y_binned_stem),max(y_binned_mean+y_binned_stem)])
-xlabel(sprintf('Causal Connections\n out-degree')) 
+xlabel(sprintf('Number of causal connections,\n out-degree')) 
 ylabel(sprintf('Reward-increase \n modulation (%%)'))
 title(sprintf('Reward-increase\n'));
 box off;
 
 %% Connectivity vs Reward tuning (small vs regular reward)
-axes('position',[position_x1(3), position_y1(2), panel_width1, panel_height1]);
+axes('position',[position_x1(2), position_y1(2), panel_width1, panel_height1]);
 hold on
 y=abs(signal2.reward_omission);
 % excitatory
@@ -277,10 +279,31 @@ hist_bins(end-2:end-1)=[];
 shadedErrorBar(hist_bins_centers,y_binned_mean,y_binned_stem,'lineprops',{'.-','Color',[0 0.7 0.2]})
 shadedErrorBar(hist_bins_centers,y_binned_shuffled_mean,y_binned_shuffled_stem,'lineprops',{'.-','Color',[0 0 0]})
 ylim([min(y_binned_mean-y_binned_stem),max(y_binned_mean+y_binned_stem)])
-xlabel(sprintf('Causal Connections\n out-degree')) 
+xlabel(sprintf('Number of causal connections,\n out-degree')) 
 ylabel(sprintf('Reward-omission \n modulation (%%)'))
 title(sprintf('Reward-omission\n'));
 box off;
+
+
+
+%% Connectivity vs Reward tuning (reward omission and large reward combined)
+axes('position',[position_x1(3), position_y1(2), panel_width1, panel_height1]);
+hold on
+% we average reward_increase and reward_omission of each neuron together
+y=[mean([abs(signal2.reward_omission),abs(signal2.reward_increase)],2)];
+% excitatory
+k =[out_degree_excitatory(idx_small)];
+hist_bins = linspace(0,ceil(max(k)),number_of_bins2);
+hist_bins(end-2:end-1)=[];
+[hist_bins_centers, y_binned_mean,y_binned_stem, y_binned_shuffled_mean, y_binned_shuffled_stem] =fn_bin_and_shuffle (hist_bins, num_shuffles, k, y);
+shadedErrorBar(hist_bins_centers,y_binned_mean,y_binned_stem,'lineprops',{'.-','Color',[1 0 0]})
+shadedErrorBar(hist_bins_centers,y_binned_shuffled_mean,y_binned_shuffled_stem,'lineprops',{'.-','Color',[0 0 0]})
+ylim([min(y_binned_mean-y_binned_stem),max(y_binned_mean+y_binned_stem)])
+xlabel(sprintf('Number of causal connections,\n out-degree')) 
+ylabel(sprintf('Reward-outcome \n modulation (%%)'))
+title(sprintf('Reward-outcome tuning\n'));
+box off;
+ylim([10,15]);
 
 %% Local correlations
 axes('position',[position_x1(1), position_y1(3), panel_width1, panel_height1]);
@@ -291,10 +314,10 @@ k =out_degree_excitatory;
 hist_bins = linspace(0,ceil(max(k)),number_of_bins);
 hist_bins(end-2:end-1)=[];
 [hist_bins_centers, y_binned_mean,y_binned_stem, y_binned_shuffled_mean, y_binned_shuffled_stem] =fn_bin_and_shuffle (hist_bins, num_shuffles, k, y);
-shadedErrorBar(hist_bins_centers,y_binned_mean,y_binned_stem,'lineprops',{'.-','Color',[1 0 1]})
+shadedErrorBar(hist_bins_centers,y_binned_mean,y_binned_stem,'lineprops',{'.-','Color',[1 0 0]})
 shadedErrorBar(hist_bins_centers,y_binned_shuffled_mean,y_binned_shuffled_stem,'lineprops',{'.-','Color',[0 0 0]})
 ylim([min(y_binned_mean-y_binned_stem),max(y_binned_mean+y_binned_stem)])
-xlabel(sprintf('Causal Connections\n out-degree'))
+xlabel(sprintf('Number of causal connections,\n out-degree'))
 ylabel([sprintf('Local noise') newline '    {correlations, \it r}'])
 title(sprintf('''Noise'' correlations with \nneighboring neurons\n'))
 box off;
@@ -315,7 +338,7 @@ shadedErrorBar(hist_bins_centers,y_binned_shuffled_mean,y_binned_shuffled_stem,'
 % ylim([min(y_binned_mean-y_binned_stem),max(y_binned_mean+y_binned_stem)])
 ylim([0,max(y_binned_mean+y_binned_stem)])
 
-xlabel(sprintf('Causal Connections\n out-degree')) 
+xlabel(sprintf('Number of causal connections,\n out-degree')) 
 ylabel(sprintf('Mean DeltaF/F \n'))
 title(sprintf('Flourescence \n'));
 box off;
@@ -332,7 +355,7 @@ hist_bins(end-2:end-1)=[];
 shadedErrorBar(hist_bins_centers,y_binned_mean,y_binned_stem,'lineprops',{'.-','Color',[0 0 1]})
 shadedErrorBar(hist_bins_centers,y_binned_shuffled_mean,y_binned_shuffled_stem,'lineprops',{'.-','Color',[0 0 0]})
 ylim([min(y_binned_mean-y_binned_stem),max(y_binned_mean+y_binned_stem)])
-xlabel(sprintf('Causal Connections\n out-degree')) 
+xlabel(sprintf('Number of causal connections,\n out-degree')) 
 ylabel(sprintf('Target response to direct \n photostimulation DeltaF/F \n'))
 title(sprintf('Flourescence \n'));
 box off;
@@ -359,7 +382,7 @@ for i_b=2:1:numel(hist_bins)
 end
 poisson_prob = max( poisson_prob_at_bins)*(poisson_prob_continuous./max(poisson_prob_continuous));
 plot(continuous_bins,poisson_prob,'-' ,'Color',[0.5 0.5 0.5])
-xlabel(sprintf('Causal Connections\n out-degree')) 
+xlabel(sprintf('Number of causal connections,\n out-degree')) 
 ylabel('Probability')
 title('Excitatory connections', 'Color',[1 0 0]);
 text(35,0.2,'Observed','Color',[1 0 0]);
@@ -371,7 +394,7 @@ loglog((hist_bins_centers),(k_prob),'.-r');
 hold on
 %poisson
 loglog(continuous_bins,poisson_prob,'-','Color',[0.5 0.5 0.5]);
-xlabel(sprintf('Causal Connections\n out-degree')) 
+xlabel(sprintf('Number of causal connections,\n out-degree')) 
 ylabel('Probability')
 box off;
 set(gca,'Xtick',[1,10,100], 'Ytick',[0.0001, 0.001, 0.01, 0.1, 1])
@@ -400,7 +423,7 @@ for i_b=2:1:numel(hist_bins)
 end
 poisson_prob = max( poisson_prob_at_bins)*(poisson_prob_continuous./max(poisson_prob_continuous));
 plot(continuous_bins,poisson_prob,'-' ,'Color',[0.5 0.5 0.5])
-xlabel(sprintf('Causal Connections\n out-degree')) 
+xlabel(sprintf('Number of causal connections,\n out-degree')) 
 ylabel('Probability')
 title('Inhibitory connections','Color', [0 0 1]);
 text(35,0.2,'Observed','Color',[0 0 1]);
@@ -411,7 +434,7 @@ loglog((hist_bins_centers),(k_prob),'.-b');
 hold on
 %poisson
 loglog(continuous_bins,poisson_prob,'-','Color',[0.5 0.5 0.5]);
-xlabel(sprintf('Causal Connections\n out-degree')) 
+xlabel(sprintf('Number of causal connections,\n out-degree')) 
 ylabel('Probability')
 k_prob(k_prob==0)=NaN;
 % set(gca,'FontSize',12);

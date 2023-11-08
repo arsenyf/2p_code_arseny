@@ -33,13 +33,14 @@ y_shuf(:,idx_bins_exclude)=NaN;
 y_mean = nanmean(y,1);
 % y_stem = nanstd(y,1)./sqrt(size(DATA,1));
 y_stem = nanstd(y,1)./sqrt(sum(~isnan(y)));
+
 yl = [min(y_mean-y_stem),max(y_mean+y_stem)];
 
 
 
 y_mean_shuf = nanmean(y_shuf,1);
 % y_stem_shuf = nanstd(y_shuf,1)./sqrt(size(DATA_SHUFFLED,1));
-y_stem_shuf = nanstd(y_shuf,1)./sqrt(sum(~isnan(y)));
+y_stem_shuf = nanstd(y_shuf,1)./sqrt(sum(~isnan(y_shuf)));
 
 if flag_plot==1
     hold on
@@ -48,8 +49,8 @@ if flag_plot==1
     
     shadedErrorBar(bins_influence_centers,y_mean,y_stem,'lineprops',{'-','Color',colormap(1,:)})
     shadedErrorBar(bins_influence_centers,y_mean_shuf,y_stem_shuf,'lineprops',{'-','Color',[0.5 0.5 0.5]})
-    plot(bins_influence_centers,y_mean_shuf,'.-','Color',[0.5 0.5 0.5])
-    plot(bins_influence_centers,y_mean,'.-','Color',colormap)
+%     plot(bins_influence_centers,y_mean_shuf,'.-','Color',[0.5 0.5 0.5])
+%     plot(bins_influence_centers,y_mean,'.-','Color',colormap)
     
     xlabel (['Connection stength' newline '(\Delta z-score activity)']);
     ylabel('Tuning Similarity, \itr');

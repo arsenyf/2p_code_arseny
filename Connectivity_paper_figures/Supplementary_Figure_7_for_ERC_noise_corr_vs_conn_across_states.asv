@@ -1,4 +1,4 @@
-function Supplementary_Figure_7()
+function Supplementary_Figure_7_for_ERC_noise_corr_vs_conn_across_states()
 close all
 % clf;
 
@@ -6,7 +6,7 @@ dir_base = fetch1(IMG.Parameters & 'parameter_name="dir_root_save"', 'parameter_
 dir_current_fig = [dir_base  'Connectivity_paper_figures\plots\'];
 dir_embeded_graphics=dir_current_fig;
 
-filename=[sprintf('Supplementary_Figure_7_v1')];
+filename=[sprintf('Supplementary_Figure_7_for_ERC_noise_corr_vs_conn_across_states')];
 
 
 
@@ -51,26 +51,6 @@ rel_shuffled = STIMANAL.InfluenceVsCorrTraceSpontShuffled*EXP2.SessionID & 'num_
 
 % Data, Distance shuffled   corr (y) vs connectivity (x)
 %------------------------------------------------
-axes('position',[position_x1(1),position_y1(1), panel_width1, panel_height1])
-key.neurons_or_control=1;
-colormap=[1 0 0];
-supfig7_fn_plot_corr_vs_connectivity_data_and_distanceshuffle(rel_data, rel_shuffled, key,colormap,  min_pairs_in_influence_bin, min_pairs_in_corr_bin, min_session_per_bin);
-% key.neurons_or_control=0;
-% colormap=[0 1 1];
-% supfig7_fn_plot_corr_vs_connectivity_data_and_distanceshuffle(rel_data, rel_shuffled, key,colormap,  min_pairs_in_influence_bin, min_pairs_in_corr_bin, min_session_per_bin);
-yl=[0,0.08];
-xl=[-0.02,1.7];
-ylim(yl);
-text(xl(1)-diff(xl)*0.75, yl(1)+diff(yl)*1.3, 'a', ...
-    'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
-% xlabel (['Connection strength' newline '(\Delta z-score activity)']);
-ylabel([sprintf('Noise correlation, \n') ' \itr']);
-text(xl(1)+diff(xl)*0.05,yl(1)+diff(yl)*1.1,sprintf('At rest'),'FontSize',7,'HorizontalAlignment','left','Color',[0 0 0])
-text(xl(1)+diff(xl)*1,yl(1)+diff(yl)*0.9,sprintf('Data'), 'FontSize',6,'HorizontalAlignment','left','Color',[1 0 0]);
-text(xl(1)+diff(xl)*1,yl(1)+diff(yl)*0.5,sprintf('Distance shuffled'), 'FontSize',6,'HorizontalAlignment','left','Color',[0.5 0.5 0.5]);
-set(gca,'Xtick',[0,1.5], 'XtickLabel',[0,1.5])
-set(gca,'Ytick',[0,0.08], 'YtickLabel',[0,0.08],'TickLength',[0.05,0.05], 'FontSize',6)
-plot([0,0],[yl],'-k');
 
 % Residual corr (y) vs connectivity (x) 
 %------------------------------------------------
@@ -92,56 +72,6 @@ ylabel([sprintf('Noise correlation, \n residual') ' \itr']);
 text(xl(1)-diff(xl)*0.25,yl(1)+diff(yl)*1.1,sprintf('Residual = Data - Distance shuffled'), 'FontSize',6,'HorizontalAlignment','left','Color',[0 0 1]);
 set(gca,'Xtick',[0,1.5], 'XtickLabel',[0,1.5])
 set(gca,'Ytick',[0,0.03], 'YtickLabel',[0,0.03],'TickLength',[0.05,0.05], 'FontSize',6)
-
-
-% Opposite:  Data Distance shuffled  connectivity  (y) vs  corr  (x)
-%------------------------------------------------
-axes('position',[position_x1(1),position_y1(3), panel_width1, panel_height1])
-key.neurons_or_control=1;
-colormap=[1 0 0];
-supfig7_fn_plot_connectivity_vs_corr_data_and_distanceshuffle(rel_data, rel_shuffled, key,colormap,  min_pairs_in_influence_bin, min_pairs_in_corr_bin, min_session_per_bin);
-% key.neurons_or_control=0;
-% colormap=[0 1 1];
-% supfig7_fn_plot_corr_vs_connectivity_data_and_distanceshuffle(rel_data, rel_shuffled, key,colormap,  min_pairs_in_influence_bin, min_pairs_in_corr_bin, min_session_per_bin);
-yl=[-0.01,0.1];
-xl=[-0.15,0.5];
-ylim(yl);
-xlim(xl);
-text(xl(1)-diff(xl)*0.75, yl(1)+diff(yl)*1.3, 'c', ...
-    'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
-% xlabel (['Connection strength' newline '(\Delta z-score activity)']);
-ylabel (['Connection strength' newline '(\Delta z-score activity)']);
-text(xl(1)+diff(xl)*0.05,yl(1)+diff(yl)*1.1,sprintf('At rest'),'FontSize',7,'HorizontalAlignment','left','Color',[0 0 0])
-text(xl(1)+diff(xl)*1,yl(1)+diff(yl)*0.9,sprintf('Data'), 'FontSize',6,'HorizontalAlignment','left','Color',[1 0 0]);
-text(xl(1)+diff(xl)*1,yl(1)+diff(yl)*0.5,sprintf('Distance shuffled'), 'FontSize',6,'HorizontalAlignment','left','Color',[0.5 0.5 0.5]);
-set(gca,'Xtick',[0,1.5], 'XtickLabel',[0,1.5])
-set(gca,'Ytick',[0,0.1], 'YtickLabel',[0,0.1],'TickLength',[0.05,0.05], 'FontSize',6)
-
-
-
-% Opposite:  Residual  connectivity (y) vs corr (y) 
-%------------------------------------------------
-axes('position',[position_x1(1),position_y1(4), panel_width1, panel_height1])
-key.neurons_or_control=1;
-colormap=[0 0 1];
-supfig7_fn_plot_connectivity_vs_corr_residual(rel_data, rel_shuffled, key,colormap,  min_pairs_in_influence_bin, min_pairs_in_corr_bin, min_session_per_bin);
-% key.neurons_or_control=0;
-% colormap=[0 1 1];
-% supfig7_fn_plot_corr_vs_connectivity_residual(rel_data, rel_shuffled, key,colormap,  min_pairs_in_influence_bin, min_pairs_in_corr_bin, min_session_per_bin);
-yl=[-0.005,0.06];
-xl=[-0.15,0.5];
-ylim(yl);
-xlim(xl);
-% text(xl(1)-diff(xl)*0.75, yl(1)+diff(yl)*1.3, 'a', ...
-%     'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
-ylabel (['Residual' newline 'Connection strength' newline '(\Delta z-score activity)']);
-xlabel([sprintf('Noise correlation, \n') ' \itr']);
-% text(xl(1)+diff(xl)*0.25,yl(1)+diff(yl)*1.1,sprintf('At rest'),'FontSize',7,'HorizontalAlignment','left','Color',[0 0 0])
-
-text(xl(1)-diff(xl)*0.25,yl(1)+diff(yl)*1.1,sprintf('Residual = Data - Distance shuffled'), 'FontSize',6,'HorizontalAlignment','left','Color',[0 0 1]);
-set(gca,'Xtick',[0,1.5], 'XtickLabel',[0,1.5])
-set(gca,'Ytick',[0,0.05], 'YtickLabel',[0,0.05],'TickLength',[0.05,0.05], 'FontSize',6)
-
 
 
 
