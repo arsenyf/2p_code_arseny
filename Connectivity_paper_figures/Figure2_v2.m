@@ -2,7 +2,7 @@ function Figure2_v2
 close all;
 lickmap_regular_odd_vs_even_corr_threshold=0.25; 
 
-DATA=fetch1(PAPER.ConnectivityPaperFigure2datav1,'figure_data');
+DATA=fetch1(PAPER.ConnectivityPaperFigure2datav2,'figure_data');
 DATA.D_positional_and_reward=DATA.D_positional_and_reward;
 DATA.D_reward=DATA.D_reward;
 DATA.D_venn_reward_positional=DATA.D_venn_reward_positional	;

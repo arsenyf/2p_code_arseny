@@ -78,7 +78,7 @@ for i_s = 1:1:rel_session.count
     key_epoch = fetch(EXP2.SessionEpoch & k_s & k_corr_local);
     key_epoch_local_behav = fetch(EXP2.SessionEpoch & k_s & k_corr_local_behav);
     rel_signal1 = LICK2D.ROILick2DmapStatsSpikes3binsShort & k_s & key_epoch_local_behav & rel_include;
-    rel_signal2 = LICK2D.ROILick2DPSTHStatsSpikes  & k_s & key_epoch_local_behav & rel_include;
+    rel_signal2 = LICK2D.ROILick2DPSTHStatsSpikes*LICK2D.ROILick2DPSTHSpikesModulation  & k_s & key_epoch_local_behav & rel_include;
     rel_signal3 = LICK2D.ROILick2DmapSpikes3binsModulation & k_s & key_epoch_local_behav & rel_include;
     rel_signal4 = IMG.ROIdeltaFStats  & k_s & key_epoch & rel_include;
 %     rel_signal5 = STIM.ROIResponseDirectUnique & k_s & k_degree & rel_include;
@@ -94,7 +94,7 @@ for i_s = 1:1:rel_session.count
     rel_corr_local =  rel_corr_local& key_epoch(1);
     
     DATA_SIGNAL1 = struct2table(fetch(rel_signal1, 'information_per_spike_regular','lickmap_regular_odd_vs_even_corr','psth_position_concat_regular_odd_even_corr', 'ORDER BY roi_number'));
-    DATA_SIGNAL2 = struct2table(fetch(rel_signal2, 'psth_regular_odd_vs_even_corr', 'reward_peak_regular', 'reward_peak_small','reward_peak_large', 'reward_mean_regular', 'reward_mean_small','reward_mean_large','reward_mean_pval_regular_large','reward_mean_pval_regular_small', 'ORDER BY roi_number'));
+    DATA_SIGNAL2 = struct2table(fetch(rel_signal2, 'psth_regular_odd_vs_even_corr','psth_regular_modulation', 'reward_peak_regular', 'reward_peak_small','reward_peak_large', 'reward_mean_regular', 'reward_mean_small','reward_mean_large','reward_mean_pval_regular_large','reward_mean_pval_regular_small', 'ORDER BY roi_number'));
     DATA_SIGNAL3 = struct2table(fetch(rel_signal3, 'lickmap_fr_regular_modulation', 'ORDER BY roi_number'));
     DATA_SIGNAL4 = struct2table(fetch(rel_signal4, 'mean_dff'));
 %     DATA_SIGNAL5 = struct2table(fetch(rel_signal5, 'response_mean'));
@@ -125,6 +125,7 @@ signal1.map_stability = DATA_SIGNAL_ALL1.lickmap_regular_odd_vs_even_corr;
 signal1.psth_concat_stability = DATA_SIGNAL_ALL1.psth_position_concat_regular_odd_even_corr;
 
 signal2.psth_stability = DATA_SIGNAL_ALL2.psth_regular_odd_vs_even_corr;
+signal2.psth_modulation = DATA_SIGNAL_ALL2.psth_regular_modulation;
 
 signal3.map_modulation = DATA_SIGNAL_ALL3.lickmap_fr_regular_modulation;
 
@@ -216,8 +217,25 @@ box off;
 % title(sprintf('Tuning to target direction\n'));
 % box off;
 
-%% Connectivity vs Temporal tuning 
+%% Connectivity vs Temporal tuning (modulation)
 axes('position',[position_x1(3), position_y1(1), panel_width1, panel_height1]);
+hold on
+y=signal2.psth_modulation ;
+% excitatory
+k =out_degree_excitatory;
+hist_bins = linspace(0,ceil(max(k)),number_of_bins);
+hist_bins(end-2:end-1)=[];
+[hist_bins_centers, y_binned_mean,y_binned_stem, y_binned_shuffled_mean, y_binned_shuffled_stem] =fn_bin_and_shuffle (hist_bins, num_shuffles, k, y);
+shadedErrorBar(hist_bins_centers,y_binned_mean,y_binned_stem,'lineprops',{'.-','Color',[1 0 0]})
+shadedErrorBar(hist_bins_centers,y_binned_shuffled_mean,y_binned_shuffled_stem,'lineprops',{'.-','Color',[0 0 0]})
+ylim([min(y_binned_mean-y_binned_stem),max(y_binned_mean+y_binned_stem)])
+xlabel(sprintf('Number of causal connections,\n out-degree')) 
+ylabel('Tuning modulation, \itr');
+title(sprintf('Tuning to response time \n'));box off;
+
+
+%% Connectivity vs Temporal tuning (stability)
+axes('position',[position_x1(4), position_y1(1), panel_width1, panel_height1]);
 hold on
 y=signal2.psth_stability ;
 % excitatory
@@ -233,21 +251,21 @@ ylabel('Tuning Similarity, \itr');
 title(sprintf('Tuning to response time \n'));box off;
 
 
-%% Connectivity vs Temporal tuning tuning that is independent of direction: psth_position_concat_regularreward_odd_even_corr_binwise
-axes('position',[position_x1(4), position_y1(1), panel_width1, panel_height1]);
-hold on
-y=signal1.psth_concat_stability ;
-% excitatory
-k =out_degree_excitatory;
-hist_bins = linspace(0,ceil(max(k)),number_of_bins);
-hist_bins(end-2:end-1)=[];
-[hist_bins_centers, y_binned_mean,y_binned_stem, y_binned_shuffled_mean, y_binned_shuffled_stem] =fn_bin_and_shuffle (hist_bins, num_shuffles, k, y);
-shadedErrorBar(hist_bins_centers,y_binned_mean,y_binned_stem,'lineprops',{'.-','Color',[1 0 0]})
-shadedErrorBar(hist_bins_centers,y_binned_shuffled_mean,y_binned_shuffled_stem,'lineprops',{'.-','Color',[0 0 0]})
-ylim([min(y_binned_mean-y_binned_stem),max(y_binned_mean+y_binned_stem)])
-xlabel(sprintf('Number of causal connections,\n out-degree')) 
-ylabel('Tuning Similarity, \itr');
-title(sprintf('Tuning to response time \nand target position'));box off;
+% %% Connectivity vs Temporal tuning tuning that is independent of direction: psth_position_concat_regularreward_odd_even_corr_binwise
+% axes('position',[position_x1(4), position_y1(1), panel_width1, panel_height1]);
+% hold on
+% y=signal1.psth_concat_stability ;
+% % excitatory
+% k =out_degree_excitatory;
+% hist_bins = linspace(0,ceil(max(k)),number_of_bins);
+% hist_bins(end-2:end-1)=[];
+% [hist_bins_centers, y_binned_mean,y_binned_stem, y_binned_shuffled_mean, y_binned_shuffled_stem] =fn_bin_and_shuffle (hist_bins, num_shuffles, k, y);
+% shadedErrorBar(hist_bins_centers,y_binned_mean,y_binned_stem,'lineprops',{'.-','Color',[1 0 0]})
+% shadedErrorBar(hist_bins_centers,y_binned_shuffled_mean,y_binned_shuffled_stem,'lineprops',{'.-','Color',[0 0 0]})
+% ylim([min(y_binned_mean-y_binned_stem),max(y_binned_mean+y_binned_stem)])
+% xlabel(sprintf('Number of causal connections,\n out-degree')) 
+% ylabel('Tuning Similarity, \itr');
+% title(sprintf('Tuning to response time \nand target position'));box off;
 
 
 %% Connectivity vs Reward tuning (large vs regular reward)
