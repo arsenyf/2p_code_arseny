@@ -1,4 +1,4 @@
-function Figure1_v9
+function Figure1_v10
 close all;
 
 DATA=fetch1(PAPER.ConnectivityPaperFigure1datav5,'figure_data');

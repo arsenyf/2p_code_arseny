@@ -1,0 +1,229 @@
+function Supplementary_Figure_2__Cell_Stats
+close all;
+
+
+dir_base = fetch1(IMG.Parameters & 'parameter_name="dir_root_save"', 'parameter_value');
+dir_current_fig = [dir_base  '\Connectivity_paper_figures\plots\'];
+
+filename=[sprintf('Supplementary_Figure_2__Cell_Stats')];
+
+rel_roi=PAPER.ROILICK2DInclusion;
+
+DATA=fetch1(PAPER.ConnectivityPaperFigure1datav5,'figure_data');
+lickmap_regular_odd_vs_even_corr_threshold=0.25; % will only affect panel m
+%             information_per_spike_regular_threshold=0.02; % will only affect panel m
+D_tuned_temporal=DATA.D_tuned_temporal;
+D_tuned_positional=DATA.D_tuned_positional;
+D_tuned_temporal_and_positional=DATA.D_tuned_temporal_and_positional;
+D_all=DATA.D_all;
+D_tuned_positional_4bins=DATA.D_tuned_positional_4bins;
+PSTH_all=DATA.PSTH_all;
+psth_time = DATA.psth_time;
+
+
+PAPER_graphics_definition_Sup_Figure2
+
+
+% Temporal modulation
+axes('position',[position_x1(1),position_y1(1), panel_width1, panel_height1])
+hold on
+lickmap_fr_regular_modulation = fetchn( LICK2D.ROILick2DPSTHSpikesModulation & rel_roi,'psth_regular_modulation');
+sigfnif_threshold=25;
+[hhh3,edges]=histcounts([lickmap_fr_regular_modulation],linspace(0,100,15));
+hhh3=100*hhh3/sum(hhh3);
+bar(edges(1:end-1),hhh3,'FaceColor',[0 0 0],'EdgeColor',[0 0 0])
+yl = [0, max(hhh3)];
+yl(2)=25;
+xl = [0,100];
+text(xl(1)+diff(xl)*0.5,yl(1)-diff(yl)*0.4, [sprintf('Tuning modulation') newline '(%)'], 'FontSize',6,'HorizontalAlignment','center')
+text(xl(1)+diff(xl)*0.5,yl(1)+diff(yl)*1.3,sprintf('Temporal tuning\nmodulation'), 'FontSize',6,'HorizontalAlignment','center', 'fontweight', 'bold');
+text(xl(1)-diff(xl)*0.55,yl(1)-diff(yl)*0.2, sprintf('All neurons\n           (%%)'), 'FontSize',6,'HorizontalAlignment','left','Rotation',90);
+xlim(xl);
+ylim(yl)
+set(gca,'XTick',[0,100],'Ytick',[0, yl(2)],'TickLength',[0.05,0], 'FontSize',6);
+box off
+text(xl(1)-diff(xl)*0.5, yl(1)+diff(yl)*1.5, 'a', ...
+    'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
+plot([sigfnif_threshold,sigfnif_threshold],yl,'Color',[1 0 0],'LineWidth',2);
+
+
+% Location modulation
+axes('position',[position_x1(2),position_y1(1), panel_width1, panel_height1])
+hold on
+lickmap_fr_regular_modulation = fetchn( LICK2D.ROILick2DmapSpikes3binsModulation & rel_roi,'lickmap_fr_regular_modulation');
+sigfnif_threshold=25;
+[hhh3,edges]=histcounts([lickmap_fr_regular_modulation],linspace(0,100,15));
+hhh3=100*hhh3/sum(hhh3);
+bar(edges(1:end-1),hhh3,'FaceColor',[0 0 0],'EdgeColor',[0 0 0])
+yl = [0, max(hhh3)];
+yl(2)=25;
+xl = [0,100];
+text(xl(1)+diff(xl)*0.5,yl(1)-diff(yl)*0.4, [sprintf('Tuning modulation') newline '(%)'], 'FontSize',6,'HorizontalAlignment','center')
+text(xl(1)+diff(xl)*0.5,yl(1)+diff(yl)*1.3,sprintf('Location tuning\nmodulation'), 'FontSize',6,'HorizontalAlignment','center', 'fontweight', 'bold');
+text(xl(1)-diff(xl)*0.25,yl(1)+diff(yl)*0,sprintf('Percentage'),'Rotation',90, 'FontSize',6,'VerticalAlignment','bottom');
+xlim(xl);
+ylim(yl)
+set(gca,'XTick',[0,100],'Ytick',[0, yl(2)],'TickLength',[0.05,0], 'FontSize',6);
+box off
+text(xl(1)-diff(xl)*0.5, yl(1)+diff(yl)*1.5, 'b', ...
+    'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
+plot([sigfnif_threshold,sigfnif_threshold],yl,'Color',[1 0 0],'LineWidth',2);
+
+
+%% Field size
+axes('position',[position_x1(3),position_y1(1), panel_width1, panel_height1])
+% axes('position',[position_x4(2),position_y4(1), panel_width4, panel_height4])
+[hhh2,edges]=histcounts([D_tuned_positional_4bins.field_size_without_baseline_regular],linspace(0,100,10));
+% [hhh2,edges]=histcounts([D_tuned_positional.field_size_without_baseline_regular],linspace(0,100,10));
+hhh2=100*hhh2/sum(hhh2);
+bar(edges(1:end-1),hhh2,'FaceColor',[0 0 0],'EdgeColor',[0 0 0])
+yl = [0, max(hhh2)];
+yl(2)=30;
+xl = [0,100];
+text(xl(1)+diff(xl)*0.5,yl(1)-diff(yl)*0.4,sprintf('Peak width (%%)'), 'FontSize',6,'HorizontalAlignment','center');
+            text(xl(1)+diff(xl)*0.5,yl(1)+diff(yl)*1.3,sprintf('Location \ntuning'), 'FontSize',6,'HorizontalAlignment','center', 'fontweight', 'bold');
+text(xl(1)-diff(xl)*0.55,yl(1)-diff(yl)*0.2, sprintf('Location neurons\n           (%%)'), 'FontSize',6,'HorizontalAlignment','left','Rotation',90);
+xlim(xl);
+ylim(yl)
+set(gca,'XTick',[0,100],'Ytick',[0, yl(2)],'TickLength',[0.05,0], 'FontSize',6);
+box off
+            text(xl(1)-diff(xl)*0.5, yl(1)+diff(yl)*1.5, 'c', ...
+                'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
+
+
+
+
+
+
+%% Temporal tuning similarity,\nacross positions
+axes('position',[position_x2(1),position_y2(1), panel_width2, panel_height2])
+hold on
+psth_regular_odd_vs_even_corr = fetchn( LICK2D.ROILick2DPSTHStatsSpikes & rel_roi,'psth_regular_odd_vs_even_corr');
+sigfnif_threshold=0.25;
+[hhh3,edges]=histcounts([psth_regular_odd_vs_even_corr],linspace(-1,1,15));
+hhh3=100*hhh3/sum(hhh3);
+bar(edges(1:end-1),hhh3,'FaceColor',[0 0 0],'EdgeColor',[0 0 0])
+yl = [0, max(hhh3)];
+yl(2)=25;
+xl = [-1,1];
+text(xl(1)+diff(xl)*0.5,yl(1)-diff(yl)*0.4, [sprintf('Tuning corr.,') newline '{\it r} (odd,even)'], 'FontSize',6,'HorizontalAlignment','center')
+text(xl(1)+diff(xl)*0.5,yl(1)+diff(yl)*1.3,sprintf('Temporal tuning\nstability'), 'FontSize',6,'HorizontalAlignment','center', 'fontweight', 'bold');
+text(xl(1)-diff(xl)*0.55,yl(1)-diff(yl)*0.2, sprintf('All neurons\n           (%%)'), 'FontSize',6,'HorizontalAlignment','left','Rotation',90);
+xlim(xl);
+ylim(yl)
+set(gca,'XTick',[-1,0,1],'Ytick',[0, yl(2)],'TickLength',[0.05,0], 'FontSize',6);
+box off
+text(xl(1)-diff(xl)*0.5, yl(1)+diff(yl)*1.5, 'f', ...
+    'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
+plot([sigfnif_threshold,sigfnif_threshold],yl,'Color',[1 0 0],'LineWidth',2);
+
+
+
+axes('position',[position_x2(2),position_y2(1), panel_width2, panel_height2])
+hold on
+psth_position_concat_regular_odd_even_corr = fetchn( LICK2D.ROILick2DmapStatsSpikes3binsShort & rel_roi,'psth_position_concat_regular_odd_even_corr');
+sigfnif_threshold=0.25;
+[hhh3,edges]=histcounts([psth_position_concat_regular_odd_even_corr],linspace(-1,1,15));
+hhh3=100*hhh3/sum(hhh3);
+bar(edges(1:end-1),hhh3,'FaceColor',[0 0 0],'EdgeColor',[0 0 0])
+yl = [0, max(hhh3)];
+yl(2)=25;
+xl = [-1,1];
+text(xl(1)+diff(xl)*0.5,yl(1)-diff(yl)*0.4, [sprintf('Tuning corr.,') newline '{\it r} (odd,even)'], 'FontSize',6,'HorizontalAlignment','center')
+text(xl(1)+diff(xl)*0.5,yl(1)+diff(yl)*1.3,sprintf('Location-temporal \ntuning stability'), 'FontSize',6,'HorizontalAlignment','center', 'fontweight', 'bold');
+text(xl(1)-diff(xl)*0.55,yl(1)-diff(yl)*0.2, sprintf('All neurons\n           (%%)'), 'FontSize',6,'HorizontalAlignment','left','Rotation',90);
+xlim(xl);
+ylim(yl)
+set(gca,'XTick',[-1,0,1],'Ytick',[0, yl(2)],'TickLength',[0.05,0], 'FontSize',6);
+box off
+text(xl(1)-diff(xl)*0.5, yl(1)+diff(yl)*1.5, 'g', ...
+    'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
+plot([sigfnif_threshold,sigfnif_threshold],yl,'Color',[1 0 0],'LineWidth',2);
+
+
+
+
+axes('position',[position_x2(3),position_y2(1), panel_width2, panel_height2])
+hold on
+lickmap_regular_odd_vs_even_corr = fetchn( LICK2D.ROILick2DmapStatsSpikes3binsShort & rel_roi,'lickmap_regular_odd_vs_even_corr');
+sigfnif_threshold=0.25;
+[hhh3,edges]=histcounts([lickmap_regular_odd_vs_even_corr],linspace(-1,1,15));
+hhh3=100*hhh3/sum(hhh3);
+bar(edges(1:end-1),hhh3,'FaceColor',[0 0 0],'EdgeColor',[0 0 0])
+yl = [0, max(hhh3)];
+yl(2)=15;
+xl = [-1,1];
+text(xl(1)+diff(xl)*0.5,yl(1)-diff(yl)*0.4, [sprintf('Tuning corr.,') newline '{\it r} (odd,even)'], 'FontSize',6,'HorizontalAlignment','center')
+text(xl(1)+diff(xl)*0.5,yl(1)+diff(yl)*1.3,sprintf('Location tuning\nstability'), 'FontSize',6,'HorizontalAlignment','center', 'fontweight', 'bold');
+text(xl(1)-diff(xl)*0.55,yl(1)-diff(yl)*0.2, sprintf('All neurons\n           (%%)'), 'FontSize',6,'HorizontalAlignment','left','Rotation',90);
+xlim(xl);
+ylim(yl)
+set(gca,'XTick',[-1,0,1],'Ytick',[0, yl(2)],'TickLength',[0.05,0], 'FontSize',6);
+box off
+text(xl(1)-diff(xl)*0.5, yl(1)+diff(yl)*1.5, 'h', ...
+    'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
+plot([sigfnif_threshold,sigfnif_threshold],yl,'Color',[1 0 0],'LineWidth',2);
+
+
+%% What percentage of temporally tuned neurons are positiionally tuned in -- binned according to preferred temporal bin
+PSTH_all = PSTH_all./max(PSTH_all,[],2);
+[~,idx_max_time] = max(PSTH_all,[],2);
+peaktime_psth=psth_time(idx_max_time)';
+axes('position',[position_x4(2)+0.02,position_y4(2), panel_width4, panel_height4])
+hold on
+time_bin_size=0.5;
+time_bins1 = floor(psth_time(1)):time_bin_size:ceil(psth_time(end));
+time_bins=time_bins1(1):time_bin_size:time_bins1(end);
+try
+    idx_positional =[D_tuned_temporal.lickmap_regular_odd_vs_even_corr>=lickmap_regular_odd_vs_even_corr_threshold];
+catch
+    idx_positional =[D_tuned_temporal.information_per_spike_regular>=information_per_spike_regular_threshold];
+end
+tuned_in_time_bins=[];
+for ib = 1:1:numel(time_bins)-1
+    idx_time_bin = peaktime_psth>=time_bins(ib) & peaktime_psth<time_bins(ib+1);
+    % percentage tuned in each time bin
+    if (100*sum(idx_time_bin)/numel(idx_time_bin))>1 % if there are less than 1% of total cells in the bin we set it to NaN, to avoid spurious values
+        tuned_in_time_bins(ib) =100*sum(idx_time_bin & idx_positional)/sum(idx_time_bin);
+    else
+        tuned_in_time_bins(ib)=NaN;
+    end
+end
+% yyaxis right
+
+time_bins=time_bins1(1):time_bin_size:time_bins1(end);
+time_bins_centers=time_bins(1:end-1)+mean(diff(time_bins))/2;
+% plot(time_bins_centers,tuned_in_time_bins,'.-','LineWidth',1,'MarkerSize',5,'Color',[0 0 0])
+bar(time_bins_centers,tuned_in_time_bins,'FaceColor',[0 0 0],'EdgeColor',[0 0 0])
+% xlabel(sprintf('Response time of neurons\n relative to first lickport contact (s)'));
+xl=[time_bins(1),time_bins(end)];
+xlim(xl);
+% yl=[0 ceil(max(tuned_in_time_bins))];
+yl=[0 70];
+
+ylim(yl);
+% text(xl(1)-diff(xl)*0.4,yl(1)-diff(yl)*0.3, sprintf('Location neurons\n              (%%)'), 'FontSize',6,'HorizontalAlignment','left','Rotation',90);
+text(xl(1)-diff(xl)*0.1,yl(1)+diff(yl)*1.3,sprintf('Peak \nresponse-time',numel(peaktime_psth)),'HorizontalAlignment','left', 'FontSize',6,'FontWeight','bold');
+text(xl(1)+diff(xl)*0,yl(1)-diff(yl)*0.5,sprintf('Time to 1st \ncontact-lick (s)'),'HorizontalAlignment','left', 'FontSize',6);
+set(gca,'Xtick',[0,5],'TickLength',[0.05,0.05],'TickDir','out');
+box off
+set(gca,'XTick',[0,5],'Ytick',[yl(1), yl(2)],'TickLength',[0.05,0], 'FontSize',6);
+text(xl(1)-diff(xl)*0.7, yl(1)+diff(yl)*1.5, 'i', ...
+    'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
+shuffle_value=100*sum(idx_positional)/numel(idx_positional);
+plot([time_bins_centers(1),time_bins_centers(end)],[shuffle_value shuffle_value],'-','LineWidth',1,'MarkerSize',5,'Color',[0.5 0.5 0.5])
+text(xl(1)+diff(xl)*0.5,yl(1)+diff(yl)*0.85,sprintf('Expected'),'HorizontalAlignment','left', 'FontSize',6,'Color',[0.5 0.5 0.5]);
+
+
+
+if isempty(dir(dir_current_fig))
+    mkdir (dir_current_fig)
+end
+%
+figure_name_out=[ dir_current_fig filename];
+eval(['print ', figure_name_out, ' -dtiff  -r500']);
+eval(['print ', figure_name_out, ' -dpdf -r200']);
+
+
+
+

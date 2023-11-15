@@ -6,7 +6,7 @@ dir_current_fig = [dir_base  '\POP\corr_distance_pop\'];
 
 
 % key.subject_id=464725;
-rel_data = POP.CorrPairwiseDistanceSVD-IMG.Volumetric;
+rel_data = (POP.CorrPairwiseDistanceSVD-IMG.Volumetric) & IMG.Mesoscope;
 num_svd_components_removed_vector = [0, 1, 10, 100, 500];
 
 threshold_for_event_vector = unique([fetchn(rel_data, 'threshold_for_event')]);
@@ -59,7 +59,7 @@ for i_c=1:1:numel(num_svd_components_removed_vector)
                for i=1:1:numel(D)
                mmm=[mmm + D(i).corr_histogram_per_distance./max(D(i).corr_histogram_per_distance,[],2)];
                end
-               mmm=mmm./numel(D)
+               mmm=mmm./numel(D);
         hold on 
         imagesc(x,xh,mmm')
         

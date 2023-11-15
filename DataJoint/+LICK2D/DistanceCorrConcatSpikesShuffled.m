@@ -11,7 +11,7 @@ column_inner_radius                  :blob      # inner radius of a column, micr
 column_outer_radius                  :blob      # outer radius of a column, microns. cells at lateral distance larger than this radius are not included
 axial_distance_bins                  :blob      # axial bins, microns
 lateral_distance_bins                :blob      # laterian bins, microns
-eucledian_distance_bins              :blob    # eucledian bins, microns
+eucledian_distance_bins              :blob      # eucledian bins, microns
 num_cells_included                   :int       #
 %}
 

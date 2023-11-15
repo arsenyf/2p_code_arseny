@@ -22,12 +22,16 @@ classdef ConnectivityPaperFigure1datav5 < dj.Computed
             psth_regular_odd_vs_even_corr=0.25;
             lickmap_regular_odd_vs_even_corr_threshold=0.25;
             lickmap_fr_regular_modulation_threshold=25;
+            psth_regular_modulation_threshold=25; 
+
             %             information_per_spike_regular_threshold=0.1;
             rel_roi=PAPER.ROILICK2DInclusion;
-            rel_temporal_signif = rel_roi & (LICK2D.ROILick2DPSTHStatsSpikes & sprintf('psth_regular_odd_vs_even_corr>=%.2f',psth_regular_odd_vs_even_corr));
+            rel_temporal_signif = rel_roi & (LICK2D.ROILick2DPSTHStatsSpikes & sprintf('psth_regular_odd_vs_even_corr>=%.2f',psth_regular_odd_vs_even_corr)) ... 
+                & (LICK2D.ROILick2DPSTHSpikesModulation & sprintf('psth_regular_modulation>=%.2f',psth_regular_modulation_threshold));
 
 %             rel_temporal_signif = rel_roi & (LICK2D.ROILick2DPSTHStatsSpikesLongerInterval & sprintf('psth_regular_odd_vs_even_corr>=%.2f',psth_regular_odd_vs_even_corr));
-            rel_positional_signif = rel_roi & (LICK2D.ROILick2DmapStatsSpikes3binsShort & sprintf('lickmap_regular_odd_vs_even_corr>=%.2f',lickmap_regular_odd_vs_even_corr_threshold)) & (LICK2D.ROILick2DmapSpikes3binsModulation & sprintf('lickmap_fr_regular_modulation>=%.2f',lickmap_fr_regular_modulation_threshold));
+            rel_positional_signif = rel_roi & (LICK2D.ROILick2DmapStatsSpikes3binsShort & sprintf('lickmap_regular_odd_vs_even_corr>=%.2f',lickmap_regular_odd_vs_even_corr_threshold)) ...
+                & (LICK2D.ROILick2DmapSpikes3binsModulation & sprintf('lickmap_fr_regular_modulation>=%.2f',lickmap_fr_regular_modulation_threshold));
             %             rel_positional_signif = rel_roi & (LICK2D.ROILick2DmapStatsSpikes3binsShort & sprintf('information_per_spike_regular>=%.2f',information_per_spike_regular_threshold));
             
             % all

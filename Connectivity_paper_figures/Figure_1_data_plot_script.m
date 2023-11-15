@@ -44,51 +44,51 @@ title(sprintf('Temporal tuning\n%d cells',numel(peaktime_psth)), 'FontSize',6);
 text(xl(1)-diff(xl)*0.7, yl(1)+diff(yl)*1.75, 'g', ...
     'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
 
-%% What percentage of temporally tuned neurons are positiionally tuned in -- binned according to preferred temporal bin
-axes('position',[position_x4(2)+0.02,position_y4(2), panel_width4, panel_height4])
-hold on
-time_bin_size=0.5;
-time_bins1 = floor(psth_time(1)):time_bin_size:ceil(psth_time(end));
-time_bins=time_bins1(1):time_bin_size:time_bins1(end);
-try
-    idx_positional =[D_tuned_temporal.lickmap_regular_odd_vs_even_corr>=lickmap_regular_odd_vs_even_corr_threshold];
-catch
-    idx_positional =[D_tuned_temporal.information_per_spike_regular>=information_per_spike_regular_threshold];
-end
-tuned_in_time_bins=[];
-for ib = 1:1:numel(time_bins)-1
-    idx_time_bin = peaktime_psth>=time_bins(ib) & peaktime_psth<time_bins(ib+1);
-    % percentage tuned in each time bin
-    if (100*sum(idx_time_bin)/numel(idx_time_bin))>1 % if there are less than 1% of total cells in the bin we set it to NaN, to avoid spurious values
-        tuned_in_time_bins(ib) =100*sum(idx_time_bin & idx_positional)/sum(idx_time_bin);
-    else
-        tuned_in_time_bins(ib)=NaN;
-    end
-end
-% yyaxis right
-
-time_bins=time_bins1(1):time_bin_size:time_bins1(end);
-time_bins_centers=time_bins(1:end-1)+mean(diff(time_bins))/2;
-% plot(time_bins_centers,tuned_in_time_bins,'.-','LineWidth',1,'MarkerSize',5,'Color',[0 0 0])
-bar(time_bins_centers,tuned_in_time_bins,'FaceColor',[0 0 0],'EdgeColor',[0 0 0])
-% xlabel(sprintf('Response time of neurons\n relative to first lickport contact (s)'));
-xl=[time_bins(1),time_bins(end)];
-xlim(xl);
-% yl=[0 ceil(max(tuned_in_time_bins))];
-yl=[0 70];
-
-ylim(yl);
-% text(xl(1)-diff(xl)*0.4,yl(1)-diff(yl)*0.3, sprintf('Location neurons\n              (%%)'), 'FontSize',6,'HorizontalAlignment','left','Rotation',90);
-text(xl(1)-diff(xl)*0.1,yl(1)+diff(yl)*1.3,sprintf('Peak \nresponse-time',numel(peaktime_psth)),'HorizontalAlignment','left', 'FontSize',6,'FontWeight','bold');
-text(xl(1)+diff(xl)*0,yl(1)-diff(yl)*0.5,sprintf('Time to 1st \ncontact-lick (s)'),'HorizontalAlignment','left', 'FontSize',6);
-set(gca,'Xtick',[0,5],'TickLength',[0.05,0.05],'TickDir','out');
-box off
-set(gca,'XTick',[0,5],'Ytick',[yl(1), yl(2)],'TickLength',[0.05,0], 'FontSize',6);
-text(xl(1)-diff(xl)*0.7, yl(1)+diff(yl)*1.35, 'n', ...
-    'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
-shuffle_value=100*sum(idx_positional)/numel(idx_positional);
-plot([time_bins_centers(1),time_bins_centers(end)],[shuffle_value shuffle_value],'-','LineWidth',1,'MarkerSize',5,'Color',[0.5 0.5 0.5])
-text(xl(1)+diff(xl)*0.5,yl(1)+diff(yl)*0.85,sprintf('Expected'),'HorizontalAlignment','left', 'FontSize',6,'Color',[0.5 0.5 0.5]);
+% %% What percentage of temporally tuned neurons are positiionally tuned in -- binned according to preferred temporal bin
+% axes('position',[position_x4(2)+0.02,position_y4(2), panel_width4, panel_height4])
+% hold on
+% time_bin_size=0.5;
+% time_bins1 = floor(psth_time(1)):time_bin_size:ceil(psth_time(end));
+% time_bins=time_bins1(1):time_bin_size:time_bins1(end);
+% try
+%     idx_positional =[D_tuned_temporal.lickmap_regular_odd_vs_even_corr>=lickmap_regular_odd_vs_even_corr_threshold];
+% catch
+%     idx_positional =[D_tuned_temporal.information_per_spike_regular>=information_per_spike_regular_threshold];
+% end
+% tuned_in_time_bins=[];
+% for ib = 1:1:numel(time_bins)-1
+%     idx_time_bin = peaktime_psth>=time_bins(ib) & peaktime_psth<time_bins(ib+1);
+%     % percentage tuned in each time bin
+%     if (100*sum(idx_time_bin)/numel(idx_time_bin))>1 % if there are less than 1% of total cells in the bin we set it to NaN, to avoid spurious values
+%         tuned_in_time_bins(ib) =100*sum(idx_time_bin & idx_positional)/sum(idx_time_bin);
+%     else
+%         tuned_in_time_bins(ib)=NaN;
+%     end
+% end
+% % yyaxis right
+% 
+% time_bins=time_bins1(1):time_bin_size:time_bins1(end);
+% time_bins_centers=time_bins(1:end-1)+mean(diff(time_bins))/2;
+% % plot(time_bins_centers,tuned_in_time_bins,'.-','LineWidth',1,'MarkerSize',5,'Color',[0 0 0])
+% bar(time_bins_centers,tuned_in_time_bins,'FaceColor',[0 0 0],'EdgeColor',[0 0 0])
+% % xlabel(sprintf('Response time of neurons\n relative to first lickport contact (s)'));
+% xl=[time_bins(1),time_bins(end)];
+% xlim(xl);
+% % yl=[0 ceil(max(tuned_in_time_bins))];
+% yl=[0 70];
+% 
+% ylim(yl);
+% % text(xl(1)-diff(xl)*0.4,yl(1)-diff(yl)*0.3, sprintf('Location neurons\n              (%%)'), 'FontSize',6,'HorizontalAlignment','left','Rotation',90);
+% text(xl(1)-diff(xl)*0.1,yl(1)+diff(yl)*1.3,sprintf('Peak \nresponse-time',numel(peaktime_psth)),'HorizontalAlignment','left', 'FontSize',6,'FontWeight','bold');
+% text(xl(1)+diff(xl)*0,yl(1)-diff(yl)*0.5,sprintf('Time to 1st \ncontact-lick (s)'),'HorizontalAlignment','left', 'FontSize',6);
+% set(gca,'Xtick',[0,5],'TickLength',[0.05,0.05],'TickDir','out');
+% box off
+% set(gca,'XTick',[0,5],'Ytick',[yl(1), yl(2)],'TickLength',[0.05,0], 'FontSize',6);
+% text(xl(1)-diff(xl)*0.7, yl(1)+diff(yl)*1.35, 'n', ...
+%     'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
+% shuffle_value=100*sum(idx_positional)/numel(idx_positional);
+% plot([time_bins_centers(1),time_bins_centers(end)],[shuffle_value shuffle_value],'-','LineWidth',1,'MarkerSize',5,'Color',[0.5 0.5 0.5])
+% text(xl(1)+diff(xl)*0.5,yl(1)+diff(yl)*0.85,sprintf('Expected'),'HorizontalAlignment','left', 'FontSize',6,'Color',[0.5 0.5 0.5]);
 
 %% Number of fields
 axes('position',[position_x4(1),position_y4(1), panel_width4, panel_height4])
@@ -109,25 +109,25 @@ text(xl(1)-diff(xl)*0.8, yl(1)+diff(yl)*1.5, 'j', ...
     'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
 
 
-%% Field size
-axes('position',[position_x4(2),position_y4(1), panel_width4, panel_height4])
-[hhh2,edges]=histcounts([D_tuned_positional_4bins.field_size_without_baseline_regular],linspace(0,100,10));
-% [hhh2,edges]=histcounts([D_tuned_positional.field_size_without_baseline_regular],linspace(0,100,10));
-hhh2=100*hhh2/sum(hhh2);
-bar(edges(1:end-1),hhh2,'FaceColor',[0 0 0],'EdgeColor',[0 0 0])
-yl = [0, max(hhh2)];
-yl(2)=30;
-xl = [0,100];
-text(xl(1)+diff(xl)*0.5,yl(1)-diff(yl)*0.4,sprintf('Peak width (%%)'), 'FontSize',6,'HorizontalAlignment','center');
-%             text(xl(1)+diff(xl)*0.5,yl(1)+diff(yl)*1.3,sprintf('Positional \ntuning'), 'FontSize',6,'HorizontalAlignment','center', 'fontweight', 'bold');
-% text(xl(1)-diff(xl)*0.25,yl(1)+diff(yl)*0,sprintf('Percentage'),'Rotation',90, 'FontSize',6,'VerticalAlignment','bottom');
-xlim(xl);
-ylim(yl)
-set(gca,'XTick',[0,100],'Ytick',[0, yl(2)],'TickLength',[0.05,0], 'FontSize',6);
-box off
-%             text(xl(1)-diff(xl)*0.5, yl(1)+diff(yl)*1.5, 'j', ...
-%                 'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
-
+% %% Field size
+% axes('position',[position_x4(2),position_y4(1), panel_width4, panel_height4])
+% [hhh2,edges]=histcounts([D_tuned_positional_4bins.field_size_without_baseline_regular],linspace(0,100,10));
+% % [hhh2,edges]=histcounts([D_tuned_positional.field_size_without_baseline_regular],linspace(0,100,10));
+% hhh2=100*hhh2/sum(hhh2);
+% bar(edges(1:end-1),hhh2,'FaceColor',[0 0 0],'EdgeColor',[0 0 0])
+% yl = [0, max(hhh2)];
+% yl(2)=30;
+% xl = [0,100];
+% text(xl(1)+diff(xl)*0.5,yl(1)-diff(yl)*0.4,sprintf('Peak width (%%)'), 'FontSize',6,'HorizontalAlignment','center');
+% %             text(xl(1)+diff(xl)*0.5,yl(1)+diff(yl)*1.3,sprintf('Positional \ntuning'), 'FontSize',6,'HorizontalAlignment','center', 'fontweight', 'bold');
+% % text(xl(1)-diff(xl)*0.25,yl(1)+diff(yl)*0,sprintf('Percentage'),'Rotation',90, 'FontSize',6,'VerticalAlignment','bottom');
+% xlim(xl);
+% ylim(yl)
+% set(gca,'XTick',[0,100],'Ytick',[0, yl(2)],'TickLength',[0.05,0], 'FontSize',6);
+% box off
+% %             text(xl(1)-diff(xl)*0.5, yl(1)+diff(yl)*1.5, 'j', ...
+% %                 'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
+% 
 
 
 %% Preferred positions

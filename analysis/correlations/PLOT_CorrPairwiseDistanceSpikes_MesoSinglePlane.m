@@ -14,7 +14,7 @@ dir_base = fetch1(IMG.Parameters & 'parameter_name="dir_root_save"', 'parameter_
 dir_current_fig = [dir_base  '\POP\corr_distance_pop\'];
 
 
-rel_data = (POP.CorrPairwiseDistanceSVD & 'threshold_for_event=0')  & (IMG.Mesoscope  - IMG.Volumetric);
+rel_data = (POP.CorrPairwiseDistanceSVD & 'threshold_for_event=1')  & (IMG.Mesoscope  - IMG.Volumetric);
 num_svd_components_removed_vector = [0, 1, 10, 100, 500];
 
 distance_bins = fetch1(rel_data,'distance_bins','LIMIT 1');

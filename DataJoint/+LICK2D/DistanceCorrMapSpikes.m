@@ -4,8 +4,9 @@
 odd_even_corr_threshold               : double   #
 ---
 distance_corr_2d                     :blob      # mat of average pairwise pearson coeff of cells, binned according lateral X axial distance
-distance_corr_lateral                :blob      # binned according lateral X axial distance
-distance_corr_axial_columns           :blob      # correlation binned according to axial distance, for cells  within columns of different size defined by inner and and outer radius, which is the lateral distance of cells included within a column
+distance_corr_lateral                :blob      # binned according lateral distance
+distance_corr_eucledian              :blob      # binned according to eucledian 3d distance
+distance_corr_axial_columns          :blob      # correlation binned according to axial distance, for cells  within columns of different size defined by inner and and outer radius, which is the lateral distance of cells included within a column
 column_inner_radius                  :blob      # inner radius of a column, microns. cells at lateral distance smaller than this radius are not included
 column_outer_radius                  :blob      # outer radius of a column, microns. cells at lateral distance larger than this radius are not included
 axial_distance_bins                  :blob      # axial bins, microns
@@ -34,6 +35,7 @@ classdef DistanceCorrMapSpikes < dj.Computed
             dir_base = fetch1(IMG.Parameters & 'parameter_name="dir_root_save"', 'parameter_value');
             
             odd_even_corr_threshold=[-1, 0, 0.25, 0.5];
+            lickmap_fr_regular_modulation_threshold=25; 
             
             mesoscope_flag=count(IMG.Mesoscope & key);
            if mesoscope_flag==1
@@ -43,7 +45,8 @@ classdef DistanceCorrMapSpikes < dj.Computed
             end
             
             for i_c = 1:1:numel(odd_even_corr_threshold)
-                rel_roi = (IMG.ROI - IMG.ROIBad) & key & (LICK2D.ROILick2DmapStatsSpikes3bins & sprintf('lickmap_regular_odd_vs_even_corr>=%.2f',odd_even_corr_threshold(i_c)));
+                rel_roi = (IMG.ROI - IMG.ROIBad) & key & (LICK2D.ROILick2DmapStatsSpikes3bins & sprintf('lickmap_regular_odd_vs_even_corr>=%.2f',odd_even_corr_threshold(i_c)))...
+                     & (LICK2D.ROILick2DmapSpikes3binsModulation & sprintf('lickmap_fr_regular_modulation>=%.2f',lickmap_fr_regular_modulation_threshold));
                 rel_roi_xy = IMG.ROIPositionETL & rel_roi;
                 rel_data = LICK2D.ROILick2DmapSpikes3bins & rel_roi & key;
                 key.odd_even_corr_threshold = odd_even_corr_threshold(i_c);
@@ -52,6 +55,6 @@ classdef DistanceCorrMapSpikes < dj.Computed
             
         end
     end
-    
+%     
 end
 

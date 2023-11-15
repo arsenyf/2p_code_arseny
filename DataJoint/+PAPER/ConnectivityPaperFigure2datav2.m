@@ -29,12 +29,10 @@ classdef ConnectivityPaperFigure2datav2 < dj.Computed
             rel_reward_small_signif = rel_roi & (LICK2D.ROILick2DPSTHStatsSpikes & sprintf('reward_mean_pval_regular_small<=%.2f',reward_p_value_threshold));
             rel_allreward_signif = rel_roi &  (rel_reward_large_signif | rel_reward_small_signif);
 
-            rel_positional_signif = rel_roi & (LICK2D.ROILick2DmapStatsSpikes3binsShort & sprintf('lickmap_regular_odd_vs_even_corr>=%.2f',lickmap_regular_odd_vs_even_corr_threshold)) & ... 
-                (LICK2D.ROILick2DmapSpikes3binsModulation & sprintf('lickmap_fr_regular_modulation>=%.2f',lickmap_fr_regular_modulation_threshold));
             
+            rel_positional_signif = rel_roi & (LICK2D.ROILick2DmapStatsSpikes3binsShort & sprintf('lickmap_regular_odd_vs_even_corr>=%.2f',lickmap_regular_odd_vs_even_corr_threshold));
             rel_positional_and_allreward_signif = rel_roi & (LICK2D.ROILick2DmapStatsSpikes3binsShort & sprintf('lickmap_regular_odd_vs_even_corr>=%.2f',lickmap_regular_odd_vs_even_corr_threshold)) ...
-                & (LICK2D.ROILick2DmapSpikes3binsModulation & sprintf('lickmap_fr_regular_modulation>=%.2f',lickmap_fr_regular_modulation_threshold)) ...
-                & (rel_reward_large_signif | rel_reward_small_signif);
+                & (LICK2D.ROILick2DmapSpikes3binsModulation & sprintf('lickmap_fr_regular_modulation>=%.2f',lickmap_fr_regular_modulation_threshold)) ...& (rel_reward_large_signif | rel_reward_small_signif);
             
 
             % positional and reward

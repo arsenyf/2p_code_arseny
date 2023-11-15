@@ -33,7 +33,7 @@ idx_lick_contact_time(idx_lick_contact_time==1)=[];
   colormap_g=pink(numel(idx_licks_time_onset)*2);
  for i_l=1:1:numel(idx_licks_time_onset)
      idx_current_lick = idx_licks_time_onset(i_l):1: idx_licks_time_ends (i_l);
-      plot(tongue_y_traj(idx_current_lick),tongue_z_traj(idx_current_lick),'-','Color',[colormap_g(i_l,:)],'LineWidth',1)
+      plot(tongue_y_traj(idx_current_lick),tongue_z_traj(idx_current_lick),'-','Color',[colormap_g(i_l,:)],'LineWidth',0.75)
  end
 %  plot(tongue_y_traj(idx_lick_contact_time),tongue_z_traj(idx_lick_contact_time),'.c','MarkerSize',5);
 set(gca,'YDir', 'reverse');
