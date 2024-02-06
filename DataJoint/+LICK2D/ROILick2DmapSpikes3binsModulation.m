@@ -17,8 +17,9 @@ lickmap_fr_end_modulation=null                     : double   # modulation depth
 classdef ROILick2DmapSpikes3binsModulation < dj.Computed
     properties
 % keySource = (EXP2.SessionEpoch*IMG.FOV) & IMG.ROISpikes & IMG.ROI & EXP2.TrialLickPort & 'session_epoch_type="behav_only"' & EXP2.TrialLickBlock & IMG.Mesoscope;
-keySource = (EXP2.SessionEpoch*IMG.FOV) & LICK2D.ROILick2DmapSpikes3bins - IMG.Mesoscope;
-        
+% keySource = (EXP2.SessionEpoch*IMG.FOV) & LICK2D.ROILick2DmapSpikes3bins - IMG.Mesoscope;
+        keySource = (EXP2.SessionEpoch*IMG.FOV) & LICK2D.ROILick2DmapSpikes3bins;
+
     end
     methods(Access=protected)
         function makeTuples(self, key)
