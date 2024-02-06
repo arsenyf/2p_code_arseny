@@ -1,4 +1,4 @@
-function Supplementary_Figure_6()
+function Supplementary_Figure_6_control_target_distribution()
 dir_base = fetch1(IMG.Parameters & 'parameter_name="dir_root_save"', 'parameter_value');
 dir_current_fig = [dir_base  'Connectivity_paper_figures\plots\'];
 filename = 'Supplementary_Figure_6';
@@ -113,7 +113,7 @@ text((200+scalebar)*1.25,50,['100 \mum'],'FontSize',6, 'fontweight', 'bold','Col
 %% Control target distribution
 axes('position',[position_x1(1)+0.02, position_y1(2)-0.1, panel_width2/2, panel_height2]);
 hold on
-rel=STIMANAL.ControlTargetsIntermingled &  (STIMANAL.SessionEpochsIncludedFinal& IMG.Volumetric & 'stimpower>=100' & 'flag_include=1'  ...
+rel=STIMANAL.ControlTargetsIntermingled &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs& IMG.Volumetric & 'stimpower>=100' & 'flag_include=1'  ...
      & (STIMANAL.NeuronOrControlNumber & 'num_targets_neurons>=25') ...
     & (STIMANAL.NeuronOrControlNumber & 'num_targets_controls>=25'));
 distance_to_closest_responsive_target=fetchn(STIMANAL.ControlTargetsIntermingled,'distance_to_closest_responsive_target');
@@ -123,18 +123,18 @@ xlabel([sprintf('Lateral distance of control target from \n nearest neural targe
 ylabel('Counts')
 set(gca, 'FontSize', 10)
 xlim([0,400])
-
+control_target_average_distance_to_target_neurons = median(distance_to_closest_responsive_target)
 
 %% Connectivity
 
 rel_data = (STIMANAL.InfluenceDistance & 'flag_divide_by_std=0' & 'flag_withold_trials=1' & 'flag_normalize_by_total=1') ...
-    &  (STIMANAL.SessionEpochsIncludedFinal& IMG.Volumetric & 'stimpower>=100' & 'flag_include=1'  ...
+    &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs& IMG.Volumetric & 'stimpower>=100' & 'flag_include=1'  ...
      & (STIMANAL.NeuronOrControlNumber & 'num_targets_neurons>=25') ...
     & (STIMANAL.NeuronOrControlNumber & 'num_targets_controls>=25'));
 
 
 rel_data_control_intermingled = (STIMANAL.InfluenceDistanceIngermingledControl & 'flag_divide_by_std=0' & 'flag_withold_trials=1' & 'flag_normalize_by_total=1') ...
-    &  (STIMANAL.SessionEpochsIncludedFinal& IMG.Volumetric & 'stimpower>=100' & 'flag_include=1'  ...
+    &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs& IMG.Volumetric & 'stimpower>=100' & 'flag_include=1'  ...
      & (STIMANAL.NeuronOrControlNumber & 'num_targets_neurons>=25') ...
     & (STIMANAL.NeuronOrControlNumber & 'num_targets_controls>=25'));
 

@@ -6,9 +6,20 @@ num_frames_pre =  sum(time<0);
 num_frames_post =  sum(time>0);
 for i_stim=1:1:numel(photostim_start_frame)
     s_fr = photostim_start_frame(i_stim);
-    if  (s_fr-num_frames_pre)>0 && (s_fr+num_frames_post)<=length(f_trace) % if the time window is within the full trace
-        counter = counter+1;
+    counter = counter+1;
+    if  (s_fr-num_frames_pre)>0 && (s_fr+num_frames_post)<=length(f_trace) % if the time window is within the range full trace
         F(counter,:)=f_trace(s_fr- num_frames_pre :1:s_fr+num_frames_post-1);
+    elseif (s_fr-num_frames_pre)<=0 % if it's out of range we use the next in-range trial
+        s_fr = photostim_start_frame(i_stim+1);
+        F(counter,:)=f_trace(s_fr- num_frames_pre :1:s_fr+num_frames_post-1);
+    elseif (s_fr+num_frames_post)>length(f_trace) % if it's out of range we use the previous in-range t trial
+        s_fr = photostim_start_frame(i_stim-1);
+        try
+        F(counter,:)=f_trace(s_fr- num_frames_pre :1:s_fr+num_frames_post-1);
+        catch
+            s_fr = photostim_start_frame(i_stim-2);
+            F(counter,:)=f_trace(s_fr- num_frames_pre :1:s_fr+num_frames_post-1);
+        end
     end
 end
 idx_include=1:1:counter;

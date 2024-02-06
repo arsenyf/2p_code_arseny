@@ -35,12 +35,13 @@ bar(edges(1:end-1),hhh1,'FaceColor',[0 0 0],'EdgeColor',[0 0 0])
 yl = [0, max(hhh1)];
 yl(2)=20;
 xl = [floor(psth_time(1)) ceil(psth_time(end))];
-text(xl(1)-diff(xl)*0.2,yl(1)+diff(yl)*0.45,sprintf('%%'),'Rotation',90, 'FontSize',6,'VerticalAlignment','bottom');
+text(xl(1)-diff(xl)*0.3,yl(1)-diff(yl)*0.25,sprintf('Neurons \n  (%%)'),'Rotation',90, 'FontSize',6,'VerticalAlignment','bottom');
 xlim(xl);
 ylim(yl);
 set(gca,'XTick',[],'Ytick',[0, yl(2)],'TickLength',[0.05,0], 'FontSize',6);
 box off;
-title(sprintf('Temporal tuning\n%d cells',numel(peaktime_psth)), 'FontSize',6);
+% title(sprintf('Temporal tuning\n%d cells',numel(peaktime_psth)), 'FontSize',6);
+title(sprintf('Temporal tuning\n'), 'FontSize',6);
 text(xl(1)-diff(xl)*0.7, yl(1)+diff(yl)*1.75, 'g', ...
     'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
 
@@ -154,7 +155,7 @@ colormap(ax11,jet2)
 cb2 = colorbar;
 axis off
 set(cb2,'Ticks',[yl],'TickLabels',[yl], 'FontSize',6);
-text(3.5,+0.5,sprintf('%%'), 'FontSize',6,'HorizontalAlignment','center');
+text(3.5,+0.5,sprintf('%%\n neurons'), 'FontSize',6,'HorizontalAlignment','left');
 set(gca, 'FontSize',6);
 
 
@@ -178,7 +179,7 @@ text(xl(1)-diff(xl)*0.9, yl(1)+diff(yl)*1.35, 'm', ...
 
 
 %% Venn diagram
-axes('position',[position_x4(3)+0.03,position_y4(1)-0.013, panel_width4*1.5, panel_height4*1.25])
+axes('position',[position_x4(3)+0.05,position_y4(1)-0.013, panel_width4*1.5, panel_height4*1.25])
 count_total=numel([D_all.psth_corr_across_position_regular]);
 
 A1=numel([D_tuned_temporal.psth_corr_across_position_regular]);

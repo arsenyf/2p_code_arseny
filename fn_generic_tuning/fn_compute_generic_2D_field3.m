@@ -36,7 +36,7 @@ gaussian_kernel = fspecial('gaussian',hsize,sigma);
 count_XY_video_smoothed = imfilter(count_XY_video,gaussian_kernel);
 count_XY_spikes_smoothed = imfilter(count_XY_spikes,gaussian_kernel);
 
-%% "Legalize" a bin (remove NaN) if the bat visited any of the bin's 8 closest neighbours:
+%% "Legalize" a bin (remove NaN) if there is data in any of the bin's 8 closest neighbours:
 %==========================================================================
 if legalize_by_neighbor_bins_flag ==1
     

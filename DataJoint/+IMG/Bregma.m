@@ -2,8 +2,8 @@
 # Field of View
 -> EXP2.Session
 ---
-bregma_x_cm               : double                # FOV anterior-posterior edge relative to bregma
-bregma_y_cm                : double                # FOV medial-lateral  edge relative to bregma
+bregma_x_mm               : double                # FOV anterior-posterior edge relative to bregma
+bregma_y_mm                : double                # FOV medial-lateral  edge relative to bregma
 %}
 
 
@@ -30,10 +30,35 @@ classdef Bregma < dj.Lookup
             464725 7    3.1   0.25
             464725 8    3.1   0.25
             464725 9    3.1   0.25
-            464725 10   3.1  0.35
+            464725 10   3.1   0.35
             464725 11   3.2   0.25
             464725 12   2.9   0.25
             464725 13   3.1   0.25
+
+            
+            463190 1    3.2   0.25
+            463190 2    3.2   0.25
+            463190 3    3.2   0.25
+            463190 4    3.2   0.25
+            463190 5    3.2   0.35
+            463190 6    2.5   0.25
+            463190 7    2.85  0.6
+            463190 8    2.7   0.5
+            463190 9    2.75  0.5
+            463190 10   2.25  0.25
+            463190 11   2.6   0.25
+            
+            463189 1    2.7   0.4
+            463189 2    2.4   0.4
+            463189 3    2.4   0.4
+            463189 4    2.7   0.4
+            463189 5    2.4   0.5
+            463189 6    2.2   0.5
+            463189 7    2.9   0.4
+            463189 8    3.1   0.4
+            463189 9    3.1   0.4
+            463189 10   3.1   0.4
+            463189 11   3.1   0.4
 
             }
     end

@@ -95,12 +95,12 @@ y=y/0.5;
 
 
 % aligning relative to bregma
-bregma_x_mm=1000*fetchn(IMG.Bregma & key,'bregma_x_cm');
-if ~isempty(bregma_x_mm)
-    bregma_y_mm=1000*fetchn(IMG.Bregma & key,'bregma_y_cm');
+bregma_x_um=1000*fetchn(IMG.Bregma & key,'bregma_x_mm');
+if ~isempty(bregma_x_um)
+    bregma_y_um=1000*fetchn(IMG.Bregma & key,'bregma_y_mm');
 
-    x=x-[max(x) - bregma_x_mm]; % anterior posterior
-    y=y-min(y)+bregma_y_mm; % medial lateral
+    x=x-[max(x) - bregma_x_um]; % anterior posterior
+    y=y-min(y)+bregma_y_um; % medial lateral
     
 end
 
@@ -123,7 +123,7 @@ title(sprintf('anm %d session %d %s', key.subject_id, key.session,  session_epoc
 
 %% PLOT ALLEN MAP
 allen2mm=1000*3.2/160;
-if ~isempty(bregma_x_mm)
+if ~isempty(bregma_x_um)
     allenDorsalMapSM_Musalletal2019 = load('allenDorsalMapSM_Musalletal2019.mat');
     edgeOutline = allenDorsalMapSM_Musalletal2019.dorsalMaps.edgeOutline;
     

@@ -15,6 +15,7 @@ in_out_degree_corr=null             : double          #
 unidirectional_connect_number       : int             # total number of pairs with unidirectional connections
 bidirectional_connect_number        : int             # total number of pairs with bidirectional  connections
 unidirectional_proportion=null      : double          # out of total signficant unidirectional or bidirectonal connections
+number_of_neurons_in_subnetwork     : int             # number of neurons in the subnetwork with some min_outdegree
 %}
 
 
@@ -35,7 +36,7 @@ classdef ConnectivityBetweenDirectlyStimulatedOnlyOverconnected < dj.Imported
             for i_o =1:1:numel(min_outdegree)
                 close;
                 dir_save_figure = [dir_base 'photostim\Graph_analysis\Connectivity_Between_Direct_only\min_outdegree\outdegree_' num2str(i_o) '\'];
-                fn_compute_graph_and_connectivity_stats_min_out_degree (key, p_val_threshold,min_outdegree(i_o), minimal_distance,maximal_distance, dir_save_figure, self)
+                fn_compute_graph_and_connectivity_stats_min_out_degree (key, p_val_threshold,min_outdegree(i_o), minimal_distance, maximal_distance, dir_save_figure, self)
             end
             
         end

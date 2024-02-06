@@ -134,16 +134,16 @@ percentage_large_reward = A_count_largereward/count_total
 percentage_small_reward = B_count_smallreward/count_total
 percentage_reward_position_conjunctive = numel(DATA.D_positional_and_reward.field_size_large)/count_total
 
-[h,v]=venn([A_count_largereward,B_count_smallreward,C_count_positional], [AB, AC, BC, ABC],'FaceColor',{[1 0.5 0],[0 0.7 0.2],[1 0 0]});
+[h,v]=venn([A_count_largereward,B_count_smallreward,C_count_positional], [AB, AC, BC, ABC],'FaceColor',{[1 0.3 0],[0 0.7 0.2],[1 0 0]});
 
 %by itself plots circles with total areas A, and intersection area(s) I. 
 % A is a three element vector [c1 c2 c3], and I is a four element vector [i12 i13 i23 i123], specifiying the two-circle intersection areas i12, i13, i23, and the three-circle intersection i123.
 for i_v=1:1:numel(v.ZonePop)
-text(v.ZoneCentroid(i_v,1)-v.ZoneCentroid(i_v,1)*0.2,v.ZoneCentroid(i_v,2),sprintf('%.0f%%',(100*v.ZonePop(i_v)/count_total)),'Color',[1 1 1],'FontSize',5,'HorizontalAlignment','left');
+text(v.ZoneCentroid(i_v,1)-v.ZoneCentroid(i_v,1)*0.2,v.ZoneCentroid(i_v,2),sprintf('%.0f%%',floor((100*v.ZonePop(i_v)/count_total))),'Color',[1 1 1],'FontSize',5,'HorizontalAlignment','left');
 end
 axis off
 box off
-text(v.Position(1,1)-v.Radius(1)*1.9,v.Position(1,2)-v.Radius(1)*1.4,sprintf('Reward-increase\n modulated'),'Color',[1 0.5 0],'FontSize',6);
+text(v.Position(1,1)-v.Radius(1)*1.9,v.Position(1,2)-v.Radius(1)*1.4,sprintf('Reward-increase\n modulated'),'Color',[1 0.3 0],'FontSize',6);
 text(v.Position(2,1)-v.Radius(1)*0.3,v.Position(2,2)-v.Radius(2)*1.6,sprintf('Reward-omission\n modulated'),'Color',[0 0.7 0.2],'FontSize',6);
 text(v.Position(3,1)-v.Radius(1)*1.3,v.Position(3,2)+v.Radius(3)*1.2,sprintf('Location tuned'),'Color',[1 0 0],'FontSize',6);
 ff=gca;
@@ -163,22 +163,22 @@ reward_large= DATA.D_reward.reward_mean_large;
 change_largereward_signif = 100*((reward_large(idx_large2)./reward_regular(idx_large2))-1);
 change_smallreward_signif = 100*((reward_small(idx_small2)./reward_regular(idx_small2))-1);
 step=10;
-bins2 = [-inf,-90:step:90,inf];
+bins2 = [-inf,-95:step:95,inf];
 bins2_centers=[bins2(2)-step/2, bins2(2:end-1)+step/2];
 
 axes('position',[position_x3(4),position_y3(1), panel_width3, panel_height3])
 yyaxis left
 a=histogram(change_largereward_signif,bins2);
 y =100*a.BinCounts/count_total;
-
+y(bins2_centers==0)=NaN;
 bar(bins2_centers,y,'FaceColor',[1 0.5 0],'EdgeColor',[1 0.5 0]);
 % bar(bins2_centers,y,'FaceColor',[0.5 0.5 0.5],'EdgeColor',[0.5 0.5 0.5]);
 ff=gca;
 xl=ff.XLim;
 yl=ff.YLim;
-text(xl(1)+diff(xl)*0.5,yl(1)-diff(yl)*0.5,sprintf('Activity change (%%)\n [Reward increase - Regular reward] '), 'FontSize',6,'HorizontalAlignment','center')
-text(xl(1)+diff(xl)*0.5,yl(1)+diff(yl)*1.3,sprintf('Reward-increase\n neurons (%%)'), 'FontSize',6,'HorizontalAlignment','center', 'fontweight', 'bold','Color',[1 0.5 0]);
-text(xl(1)-diff(xl)*0.1,yl(1)-diff(yl)*0.2,sprintf('Neurons modulated\n by reward increase (%%)\n'),'Rotation',90, 'FontSize',6,'VerticalAlignment','bottom','Color',[1 0.5 0]);
+text(xl(1)+diff(xl)*0.5,yl(1)-diff(yl)*0.5,sprintf('Reward-increase \nmodulation (%%)'), 'FontSize',6,'HorizontalAlignment','center')
+text(xl(1)+diff(xl)*0.5,yl(1)+diff(yl)*1.3,sprintf('Reward-increase\n neurons (%%)'), 'FontSize',6,'HorizontalAlignment','center', 'fontweight', 'bold','Color',[1 0.3 0]);
+text(xl(1)-diff(xl)*0.1,yl(1)-diff(yl)*0.2,sprintf('Neurons modulated\n by reward increase (%%)\n'),'Rotation',90, 'FontSize',6,'VerticalAlignment','bottom','Color',[1 0.3 0]);
 % set(gca,'Ycolor',[0.5 0.5 0.5],'TickLength',[0.05,0]);
 set(gca,'Ycolor',[1 0.5 0],'TickLength',[0.05,0]);
 
@@ -196,8 +196,8 @@ for ib = 1:1:numel(bins2)-1
     end
 end
 yyaxis right
-
-plot(bins2_centers,smooth(tuned_in_change_bins,5)'+tuned_in_change_bins*0,'.-','LineWidth',2,'MarkerSize',10,'Color',[1 0 0],'Clipping','off')
+% tuned_in_change_bins(bins2_centers==0)=NaN;
+plot(bins2_centers,smooth(tuned_in_change_bins,5)'+tuned_in_change_bins*0,'.-','LineWidth',2,'MarkerSize',1,'Color',[1 0 0],'Clipping','off')
 % xlabel(sprintf('Response time of neurons\n relative to first lickport contact (s)'));
 ff=gca;
 xl=ff.XLim;
@@ -223,11 +223,12 @@ axes('position',[position_x3(4),position_y3(2), panel_width3, panel_height3])
 yyaxis left
 a=histogram(change_smallreward_signif,bins2);
 y =100*a.BinCounts/count_total;
+y(bins2_centers==0)=NaN;
 bar(bins2_centers,y,'FaceColor',[0 0.7 0.2],'EdgeColor',[0 0.7 0.2]);
 ff=gca;
 xl=ff.XLim;
 yl=ff.YLim;
-text(xl(1)+diff(xl)*0.5,yl(1)-diff(yl)*0.5,sprintf('Activity change (%%)\n [Reward Omission - Regular reward] '), 'FontSize',6,'HorizontalAlignment','center')
+text(xl(1)+diff(xl)*0.5,yl(1)-diff(yl)*0.5,sprintf('Reward-omission \nmodulation (%%)'), 'FontSize',6,'HorizontalAlignment','center')
 text(xl(1)+diff(xl)*0.5,yl(1)+diff(yl)*1.3,sprintf('Reward-omission\n neurons (%%)'), 'FontSize',6,'HorizontalAlignment','center', 'fontweight', 'bold','Color',[0 0.7 0.2]);
 text(xl(1)-diff(xl)*0.1,yl(1)-diff(yl)*0.2,sprintf('Neurons modulated\n by reward omission (%%)\n'),'Rotation',90, 'FontSize',6,'VerticalAlignment','bottom','Color',[0 0.7 0.2]);
 set(gca,'Ycolor',[0 0.7 0.2],'TickLength',[0.05,0]);
@@ -246,8 +247,8 @@ for ib = 1:1:numel(bins2)-1
     end
 end
 yyaxis right
-
-plot(bins2_centers,smooth(tuned_in_change_bins,5)'+tuned_in_change_bins*0,'.-','LineWidth',2,'MarkerSize',10,'Color',[1 0 0],'Clipping','off')
+% tuned_in_change_bins(bins2_centers==0)=NaN;
+plot(bins2_centers,smooth(tuned_in_change_bins,5)'+tuned_in_change_bins*0,'.-','LineWidth',2,'MarkerSize',1,'Color',[1 0 0],'Clipping','off')
 % xlabel(sprintf('Response time of neurons\n relative to first lickport contact (s)'));
 ff=gca;
 xl=ff.XLim;

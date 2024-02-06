@@ -1,5 +1,5 @@
 function PLOT_Network_Degree_vs_tuning_final()
-clf
+% clf
 
 dir_base = fetch1(IMG.Parameters & 'parameter_name="dir_root_save"', 'parameter_value');
 dir_current_fig = [dir_base  'Connectivity_paper_figures\plots\'];
@@ -22,7 +22,7 @@ k_corr_local_behav.num_svd_components_removed=0;
 
 rel_session = EXP2.Session & (STIMANAL.OutDegree & IMG.Volumetric) & (EXP2.SessionEpoch& 'session_epoch_type="spont_only"')...
     & (STIMANAL.NeuronOrControl & 'neurons_or_control=1' & 'num_targets>=25')...
-    &  (STIMANAL.SessionEpochsIncludedFinal & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' ) ...
+    &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' ) ...
     & (LICK2D.ROILick2DmapStatsSpikes3binsShort);
 
 
@@ -38,7 +38,7 @@ left_color=[0 0 0];
 right_color=[0 0 0];
 set(gcf,'defaultAxesColorOrder',[left_color; right_color]);
 
-DefaultFontSize=6;
+DefaultFontSize=8;
 
 horizontal_dist=0.25;
 vertical_dist=0.22;
@@ -156,8 +156,16 @@ signal4.mean_dff = DATA_SIGNAL_ALL4.mean_dff;
 out_degree_excitatory = DATA_DEGREE_ALL.out_degree_excitatory;
 out_degree_inhibitory= DATA_DEGREE_ALL.out_degree_inhibitory;
 
-out_degree_excitatory = (out_degree_excitatory./num_neurons_in_radius)*mean(num_neurons_in_radius);
-out_degree_inhibitory= (out_degree_inhibitory./num_neurons_in_radius)*mean(num_neurons_in_radius);
+significant_connection_pairs=sum(out_degree_excitatory)
+
+% Done to correct for uneven density of cells
+relative_cell_density=num_neurons_in_radius/mean(num_neurons_in_radius);
+out_degree_excitatory = out_degree_excitatory./relative_cell_density;
+out_degree_inhibitory= out_degree_inhibitory./relative_cell_density;
+
+
+% out_degree_excitatory = (out_degree_excitatory./num_neurons_in_radius)*mean(num_neurons_in_radius);
+% out_degree_inhibitory= (out_degree_inhibitory./num_neurons_in_radius)*mean(num_neurons_in_radius);
 
 
 number_of_bins=9;

@@ -20,7 +20,7 @@ response_fanofactor                 : float                # fanto factor of tha
 response_distance_axial_um          : float                # (um) axial (Z) distance from target to a given ROI
 response_distance_3d_um             : float                # (um)  3D distance from target to a given ROI
 
-num_of_target_trials_used        : int                     # number of target photostim trials used to compute response
+num_of_target_trials_used           : int                  # number of target photostim trials used to compute response
 %}
 
 

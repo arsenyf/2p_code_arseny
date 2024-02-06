@@ -3,8 +3,8 @@
 -> IMG.Plane
 ---
 flag_mesoscope      : smallint                      # 1 if mesoscope, 0 if not
-x_pos_relative      : double                        # relative plane coordinates, in um (doublecheck, units)
-y_pos_relative      : double                        # relative plane coordinates, in um (doublecheck, units)
+x_pos_relative      : double                        # relative plane coordinates, in pixels (doublecheck, units)
+y_pos_relative      : double                        # relative plane coordinates, in pixels (doublecheck, units)
 z_pos_relative      : double                        # relative plane depth, in um
 %}
 

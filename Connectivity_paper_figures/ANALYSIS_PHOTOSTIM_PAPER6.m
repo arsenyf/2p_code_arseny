@@ -1,7 +1,7 @@
 function ANALYSIS_PHOTOSTIM_PAPER6()
 
 STIMANAL.SessionEpochsIncludedFinal %% manually update session info here
-
+STIMANAL.SessionEpochsIncludedFinalUniqueEpochs
 % photostim_direct_new()
 % distance_dependence_new()
 
@@ -14,8 +14,17 @@ populate(STIM.ROIResponseDirectUnique);
 populate(STIMANAL.NeuronOrControl);
 populate(STIMANAL.NeuronOrControlNumber);
 populate(STIMANAL.ConnectivityBetweenDirectlyStimulatedOnly);
+populate(ConnectivityBetweenDirectlyStimulatedOnlyOverconnected);
 populate(STIMANAL.ControlTargetsIntermingled);
 populate(STIMANAL.InfluenceDistanceIngermingledControl);
+
+populate(STIMANAL.ROIResponseDirectVariability)
+populate(STIMANAL.ROIInfluenceVariability) % follows the signficance definition criteria in the paper
+populate(STIMANAL.ROIInfluenceVariability2) % also plots the response, for more significant neurons
+populate(STIMANAL.ROIInfluenceVariability3) 
+
+populate(STIMANAL.ROIResponseDirectVariabilitySpikes)
+populate(STIMANAL.ROIInfluenceVariabilitySpikes)
 
 populate(STIMANAL.InfluenceDistance);
 populate(STIMANAL.InfluenceDistanceNoZscore);
@@ -49,9 +58,6 @@ fn_analysis_connectivity_versus_outdegree
 
 Plot_in_out_degree_and_bidirectional_connectivity
 
-
-Supplementary_Figure_6
-Supplementary_Figure_7
 
 
 %% Influence versus noise correlations 

@@ -67,7 +67,7 @@ for  i_x=1:1:number_of_bins
         if current_plot ==1
             if ~isempty(cell_number2d)
                 %                             text(-2,8,sprintf('Cell %d field-size %.1f %%',cell_number2d, field_size_regular),'HorizontalAlignment','left', 'FontSize',6);
-                text(-2,7.8,sprintf('Cell %d',cell_number2d),'HorizontalAlignment','left', 'FontSize',6, 'fontweight', 'bold');
+                text(-2,7,sprintf('Cell %d',cell_number2d),'HorizontalAlignment','left', 'FontSize',6, 'fontweight', 'bold');
             end
             if xlabel_flag==1
                 text(-2,-2.2,sprintf('Time to 1st contact-lick (s)'),'HorizontalAlignment','left', 'FontSize',6);

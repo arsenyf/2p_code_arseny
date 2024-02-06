@@ -6,8 +6,8 @@ colors=inferno(numel(num_svd_components_removed_vector));
 %% Distance dependence
 idxnan=isnan(rho);
 rho(idxnan)=0;  %because logical cannot be NaNs
-temp=logical(tril(rho));
-idx_up_triangle=~temp; 
+temp=logical(tril(rho)); 
+idx_up_triangle=~temp; %% we are taking the upper triangular without the diagonal
 rho(idxnan)=NaN;  %because logical cannot be NaNs
 
 all_corr = rho(idx_up_triangle);

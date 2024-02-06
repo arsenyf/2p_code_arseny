@@ -1,17 +1,18 @@
 %{
-# Response trace to each photostim group, averaged across rois
+# Response traces of all neurons to target neuron photostimulation, regardless of connection significance
 -> IMG.PhotostimGroup
-num_svd_components_removed      : int         # how many of the first svd components were removed
-flag_distance                   : int         # 0 (0-25um), 1 (25-100um), 2 (100-200um), 3 (>200 um)
-response_sign                   : varchar(200)# all, excited, or inhibited pairs
-response_p_val                  : double      # response p-value for inclusion. 1 means we take all pairs
+num_svd_components_removed                            : int         # how many of the first svd components were removed
 ---
-num_pairs                       : int         #
-response_trace_mean             : blob        #  trial-average  response trace to photostimulation with response to control sites subtracted
-response_trace_mean_odd         : blob        #
-response_trace_mean_even        : blob        # 
-baseline_trace_mean             : blob        # trial-average response trace to control site photostimulation
-responseraw_trace_mean          : blob        # trial-average  response trace to photostimulation without subtracting control sites
+all_neurons_response_trace_matrix                     : largeblob   #  matrix of trial-averaged responses of all other neurons to photostimulation of this target neuron, every row is a neuron, all neurons are included regardless of connection significance
+all_neurons_response_trace_matrix_without_baseline    : largeblob   # matrix of trial-averaged responses of all other neurons to photostimulation of this target neuron, every row is a neuron, all neurons are included regardless of connection significance, after subtracting the baseline
+all_neurons_roi_numbers                               : blob        #  all other neurons, roi numbers of 
+all_neurons_connection_strength                       : blob        #   all other neurons, connection strength
+all_neurons_response_significance                     : blob        #  all other neurons, response signficance 
+all_neurons_distance_lateral                          : blob        #  all other neurons, lateral distance um
+all_neurons_distance_axial                            : blob        #  all other neurons, axial distance um
+all_neurons_distance_3D                               : blob        #  all other neurons, distance eucledian in 3d um
+time_vector                                           : blob        #  time vector relative to photostimulation time for the response trace
+
 %} 
 
 classdef ROIInfluenceTrace < dj.Computed

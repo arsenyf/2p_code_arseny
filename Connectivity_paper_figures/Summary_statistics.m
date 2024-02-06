@@ -1,0 +1,84 @@
+function Summary_statistics ()
+
+
+%% Number of Animals
+subjects_with_both_photostim_and_behavior=fetch((LAB.Subject & STIMANAL.SessionEpochsIncludedFinalUniqueEpochs)  & PAPER.ROILICK2DInclusion)
+subjects_with_photostim_only=fetch((LAB.Subject & STIMANAL.SessionEpochsIncludedFinalUniqueEpochs) -  PAPER.ROILICK2DInclusion)
+subjects_with_behav_only= fetch((LAB.Subject & PAPER.ROILICK2DInclusion) - (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs))
+
+%% Number of Sessions
+sessions_with_both_photostim_and_behavior=count((EXP2.Session & STIMANAL.SessionEpochsIncludedFinalUniqueEpochs)  & PAPER.ROILICK2DInclusion)
+sessions_with_photostim_only= count((EXP2.Session & STIMANAL.SessionEpochsIncludedFinalUniqueEpochs) -  PAPER.ROILICK2DInclusion)
+sessions_with_behav_only= count((EXP2.Session & PAPER.ROILICK2DInclusion) - (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs))
+
+list_subjects_genes= fetch(LAB.Subject*LAB.SubjectGeneModification & rel_roi & (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & 'flag_include=1'));
+
+
+%% Number of cells
+% cells behavior
+cells_with_behavior = count(PAPER.ROILICK2DInclusion)
+unique(fetchn(EXP2.TrialLickBlock & PAPER.ROILICK2DInclusion,'num_trials_in_block'))
+% cells photostim
+cells_with_photostim = count((IMG.ROI-IMG.ROIBad) & (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs  & IMG.Volumetric  & 'flag_include=1')) % we didn't restrict by IMG.ROIGood here, but we did it for the neurons that went into the analysis of behavior
+% cells_with_photostim = count((IMG.ROI-IMG.ROIBad) & (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs  & IMG.Volumetric  & 'flag_include=1') & IMG.ROIGood) 
+
+% cells behavior and photostim
+rel_roi = (IMG.ROI-IMG.ROIBad) & (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs  & IMG.Volumetric  & 'flag_include=1');
+cells_with_photostim =  count(rel_roi & EXP2.TrialLickPort & EXP2.TrialLickBlock & (IMG.ROIGood-IMG.ROIBad) )
+
+%% Field of view size in photostim experiments
+zoom_session_epochs = fetch(IMG.FOVEpoch  & (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & 'flag_include=1') ,'*');
+
+%% Total and Average number of target neurons
+
+rel_data =(STIMANAL.NeuronOrControlNumber )  ...
+    &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs& IMG.Volumetric & 'stimpower>=100' & 'flag_include=1');
+% a=fetch(rel_data & 'num_targets_neurons<=25')
+mean_target_neurons_per_sessioon = mean(fetchn(rel_data,'num_targets_neurons'))
+total_target_neurons_across_sessions = sum(fetchn(rel_data,'num_targets_neurons'))
+
+% a=fetch(rel_data & 'num_targets_neurons<=25')
+mean_controls_per_sessions = mean(fetchn(rel_data,'num_targets_controls'))
+total_controls_across_sessions = sum(fetchn(rel_data,'num_targets_controls'))
+
+
+
+%% Total number of connections probed
+rel_group_targets =  IMG.PhotostimGroup & (STIMANAL.NeuronOrControl & 'neurons_or_control=1');
+rel_conn =(STIM.ROIInfluence2 & 'response_distance_lateral_um>25')  ...
+    &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs& IMG.Volumetric & 'stimpower>=100' & 'flag_include=1') & rel_group_targets ;
+count(rel_conn)
+% 
+% rel_conn =STIM.ROIInfluence2  ...
+%     &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs& IMG.Volumetric & 'stimpower>=100' & 'flag_include=1'); % ;
+% % count(rel_conn);
+
+
+
+% rel_data =(STIMANAL.NeuronOrControlNumber & 'num_targets_neurons>=25' & 'num_targets_controls>=25')  ...
+%     &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs& IMG.Volumetric & 'stimpower>=100' & 'flag_include=1') ;
+% mean(fetchn(rel_data,'num_targets_neurons'))
+
+
+
+
+%% Behavioral Trials per session
+rel_roi=PAPER.ROILICK2DInclusion;
+rel_trial = EXP2.BehaviorTrial & rel_roi & EXP2.ActionEvent ;
+list_sessions = fetch(EXP2.Session*EXP2.SessionID & rel_trial);
+trial_per_session=[];
+for i_s = 1:1:numel(list_sessions)
+    k_session=list_sessions(i_s);
+    rel_trial_session=rel_trial & k_session;
+    trial_per_session(i_s) = count(rel_trial_session);
+end
+
+session_with_maximal_behav_trials = max(trial_per_session)
+mean_behav_trials_per_session = mean(trial_per_session)
+stem_behav_trials_per_session = std(trial_per_session)./sqrt(numel(list_sessions))
+
+
+
+
+
+

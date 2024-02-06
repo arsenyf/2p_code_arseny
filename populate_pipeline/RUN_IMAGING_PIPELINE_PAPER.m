@@ -211,6 +211,9 @@ populate(PLOTS.Cells2DTuningSpikesRewardSignif);
 populate(PLOTS.Cells2DTuningSpikesPhotostimulated);
 populate(PLOTS.Cells2DTuningSpikesPhotostimulated2);
 
+populate(PLOTS.Cells2DTuningSpikesFirstBehavioralSession);
+
+
 populate(PLOTS.MultipleCells2DTuningSpikes); %Multiple 2D tunings map on cells
 
 populate(LICK2D.ROILick2DmapRewardSpikes); %populating also LICK2D.ROILick2DmapRewardStatsSpikes

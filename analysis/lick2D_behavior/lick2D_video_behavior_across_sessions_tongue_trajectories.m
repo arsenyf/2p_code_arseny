@@ -2,7 +2,7 @@ function    lick2D_video_behavior_across_sessions_tongue_trajectories()
 close all
 
 dir_base = fetch1(IMG.Parameters & 'parameter_name="dir_root_save"', 'parameter_value');
-dir_current_fig = [dir_base  '\Connectivity_paper_figures\plots\behavior_sessions_tongue_trajectories\'];
+dir_current_fig = [dir_base  'Connectivity_paper_figures\plots\behavior_sessions_tongue_trajectories\'];
 
 filename=[sprintf('Tongue_trajectories')];
 %% Graphics
@@ -18,10 +18,10 @@ set(gcf,'color',[1 1 1]);
 
 panel_width1=0.05;
 panel_height1=0.1;
-horizontal_dist1=0.07;
+horizontal_dist1=0.085;
 vertical_dist1=0.3;
 position_x1(1)=0.1;
-position_x1(end+1)=position_x1(end)+horizontal_dist1*1.2;
+position_x1(end+1)=position_x1(end)+horizontal_dist1;
 position_x1(end+1)=position_x1(end)+horizontal_dist1;
 position_x1(end+1)=position_x1(end)+horizontal_dist1;
 position_x1(end+1)=position_x1(end)+horizontal_dist1;
@@ -95,7 +95,7 @@ for i_sub = 1:1:numel(subject_list)
             xlabel(sprintf('Lick time (s),\n relative to target appearence', 'FontSize',8,'FontWeight','Bold'));
             ylabel('Trials', 'FontSize',8,'FontWeight','Bold');
         else
-            axis off;
+%             axis off;
         end
         %         ylabel(sprintf('Lick time (s),\n relative to target appearence'));
         %         title(sprintf('Reaction time'),'FontWeight','Bold', 'FontSize',8);

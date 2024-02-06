@@ -1,5 +1,4 @@
-function [StimStat] = fn_compute_photostim_delta_influence5 (f_trace, photostim_start_frame,baseline_start_frame, timewind_response,time)
-
+function [StimStat, StimTrace] = fn_compute_photostim_delta_influence5 (f_trace, photostim_start_frame,baseline_start_frame, timewind_response,time)
 
 
 % target sites
@@ -113,9 +112,9 @@ StimStat.response_mean_over_std_even = mean(delta_response_trials_even)/std(f_tr
 
 
 
-% % StimTrace.F_trials = single(F);
+% StimTrace.F_trials = single(F);
 % StimTrace.response_trace_mean = single(mean(delta_trace_trials,1));
-% % StimTrace.response_trace_stem = single(std(delta_trace_trials,1)./sqrt(size(delta_trace_trials,1)));
+% StimTrace.response_trace_stem = single(std(delta_trace_trials,1)./sqrt(size(delta_trace_trials,1)));
 % StimTrace.response_trace_mean_odd = single(mean(delta_trace_trials(idx_odd_trials,:),1));
 % StimTrace.response_trace_mean_even = single(mean(delta_trace_trials(idx_even_trials,:),1));
 
@@ -123,8 +122,8 @@ StimStat.response_mean_over_std_even = mean(delta_response_trials_even)/std(f_tr
 % StimTrace.response_trace_mean_over_std_odd = single(mean(delta_trace_trials(idx_odd_trials,:),1)/std(f_trace));
 % StimTrace.response_trace_mean_over_std_even = single(mean(delta_trace_trials(idx_even_trials,:),1)/std(f_trace));
 
-% StimTrace.baseline_trace_mean = single(F_baseline_mean);
-% StimTrace.responseraw_trace_mean = single(mean(F,1));
+StimTrace.baseline_trace_mean = single(F_baseline_mean);
+StimTrace.responseraw_trace_mean = single(mean(F,1));
 
 
 

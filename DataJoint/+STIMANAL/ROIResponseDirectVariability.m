@@ -3,8 +3,8 @@
 -> IMG.PhotostimGroup
 -> IMG.ROI
 ---
-response_mean_trials        : blob                # response amlitude (mean over response window) at each trial
-response_peak_trials        : blob                # response amlitude (peak at response window) at each trial
+response_mean_trials   : blob                # response amlitude (mean over response window) at each trial
+response_peak_trials   : blob                # response amlitude (peak at response window) at each trial
 response_trace_trials  : longblob          # response trace at each trial
 time_vector            : blob                # response amlitude at each trial
 %}

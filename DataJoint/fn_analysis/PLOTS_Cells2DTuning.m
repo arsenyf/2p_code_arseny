@@ -100,8 +100,8 @@ panel_height3=0.15;
 
 %Graphics
 %---------------------------------
-figure;
-% figure("Visible",false);
+% figure;
+figure("Visible",false);
 set(gcf,'DefaultAxesFontName','helvetica');
 set(gcf,'PaperUnits','centimeters','PaperPosition',[0 0 23 30]);
 set(gcf,'PaperOrientation','portrait');
@@ -205,7 +205,7 @@ for i_roi=1:plot_one_in_x_cell:numel(roi_number)
     
     
     
-    
+    try
     %% PSTH by Reward size, averaged across all positions
     %Real tuning
     axes('position',[position_x2(1),position_y2(1), panel_width2, panel_height2])
@@ -227,7 +227,8 @@ for i_roi=1:plot_one_in_x_cell:numel(roi_number)
     plot_legend_flag=0;
     fn_plot_psth_by_reward_size (M_resampled_likepoisson,psth_time_poisson,i_roi, plot_legend_flag)
     title(sprintf('Real resampled like Poisson \nReward Omission p = %.3f \nReward Increase p = %.3f\n\n', M_resampled_likepoisson.reward_mean_pval_regular_small(i_roi),M_resampled_likepoisson.reward_mean_pval_regular_large(i_roi)), 'FontSize',10);
-    
+    catch
+    end
     
     
     
@@ -426,7 +427,7 @@ for i_roi=1:plot_one_in_x_cell:numel(roi_number)
     set(gca, 'FontSize',10);
     axis off
     
-    
+    try
     %% Maps reward increase
     axes('position',[position_x2_grid(2),position_y2(2), panel_width3, panel_height3])
     mmm=M.lickmap_fr_large{i_roi};
@@ -447,8 +448,10 @@ for i_roi=1:plot_one_in_x_cell:numel(roi_number)
     set(gca,'YDir','normal');
     set(gca, 'FontSize',10);
     axis off
+    catch
+    end
     
-    
+    try
     %% Maps reward omission
     axes('position',[position_x3_grid(3),position_y2(2), panel_width3, panel_height3])
     mmm=M.lickmap_fr_small{i_roi};
@@ -469,7 +472,8 @@ for i_roi=1:plot_one_in_x_cell:numel(roi_number)
     set(gca,'YDir','normal');
     set(gca, 'FontSize',10);
     axis off
-    
+    catch
+    end
     
     %% Map regular reward stability
     

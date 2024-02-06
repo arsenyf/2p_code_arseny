@@ -43,9 +43,9 @@ min_session_per_bin=5;
 title_string = 'Noise Correlations, rest';
 
 rel_data = STIMANAL.InfluenceVsCorrTraceSpont*EXP2.SessionID  & 'num_pairs>=0' & 'num_targets>=0' ...
-    &  (STIMANAL.SessionEpochsIncludedFinal & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' & 'session_epoch_number=2');
+    &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' );
 rel_shuffled = STIMANAL.InfluenceVsCorrTraceSpontShuffled*EXP2.SessionID & 'num_pairs>=0' & 'num_targets>=0' ...
-    &  (STIMANAL.SessionEpochsIncludedFinal & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' & 'session_epoch_number=2');
+    &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' );
 
 % Target Neurons
 key.neurons_or_control=1;
@@ -98,9 +98,9 @@ plot(xl,[0 0],'k')
 axes('position',[position_x1(2),position_y1(1), panel_width1, panel_height1])
 
 rel_data = STIMANAL.InfluenceVsCorrTraceBehav*EXP2.SessionID  & 'num_pairs>=0' & 'num_targets>=0' ...
-    &  (STIMANAL.SessionEpochsIncludedFinal & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' & 'session_epoch_number=2');
+    &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' );
 rel_shuffled = STIMANAL.InfluenceVsCorrTraceBehavShuffled*EXP2.SessionID & 'num_pairs>=0' & 'num_targets>=0' ...
-    &  (STIMANAL.SessionEpochsIncludedFinal & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' & 'session_epoch_number=2');
+    &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' );
 
 % Target Neurons
 key.neurons_or_control=1;
@@ -181,10 +181,10 @@ min_session_per_bin=5;
 key.neurons_or_control=1;
 key.response_p_val=1;
 rel_data = STIMANAL.InfluenceVsCorrMap3*EXP2.SessionID  & 'num_pairs>=0' & 'num_targets>=0' ...
-    &  (STIMANAL.SessionEpochsIncludedFinal & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' & 'session_epoch_number=2');
+    &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' );
 
 rel_shuffled = STIMANAL.InfluenceVsCorrMapShuffled3*EXP2.SessionID & 'num_pairs>=0' & 'num_targets>=0' ...
-    &  (STIMANAL.SessionEpochsIncludedFinal & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' & 'session_epoch_number=2');
+    &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' );
 
 title_string = 'Positional tuning';
 ax5=axes('position',[position_x1(3),position_y1(1), panel_width1, panel_height1])
@@ -231,4 +231,8 @@ eval(['print ', figure_name_out, ' -dpdf -r300']);
 eval(['print ', figure_name_out, ' -dtiff  -r300']);
 
 
+PLOT_Network_Degree_vs_tuning_final()
+
+
+Plot_in_out_degree_and_bidirectional_connectivity()
 

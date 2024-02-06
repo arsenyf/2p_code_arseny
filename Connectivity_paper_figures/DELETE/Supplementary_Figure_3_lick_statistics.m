@@ -6,7 +6,12 @@ dir_current_fig = [dir_base  'Connectivity_paper_figures\plots\'];
             
             filename=[sprintf('Supplementary_Figure_3_lick_statistics')];
 
+            
+            
 rel_behavior_trial = (EXP2.BehaviorTrialEvent*EXP2.SessionTrial  & 'trial_event_type="go"' & EXP2.TrialRewardSize) - TRACKING.TrackingTrialBad - IMG.Mesoscope;
+
+
+
 % rel_behavior_trial = (EXP2.BehaviorTrialEvent*EXP2.SessionTrial  & 'trial_event_type="go"' & EXP2.TrialRewardSize) - TRACKING.TrackingTrialBad & IMG.Mesoscope;
 
 time_go = fetchn(rel_behavior_trial ,'trial_event_time','ORDER BY trial'); %relative to trial start

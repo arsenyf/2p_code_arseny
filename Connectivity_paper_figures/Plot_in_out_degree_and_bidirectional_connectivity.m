@@ -1,11 +1,13 @@
 function Plot_in_out_degree_and_bidirectional_connectivity()
-close;
+% close;
+
+min_number_of_neurons_in_subnetwork=25;
 
 
 dir_base = fetch1(IMG.Parameters & 'parameter_name="dir_root_save"', 'parameter_value');
 dir_current_fig = [dir_base  '\Photostim\Connectivity\'];
 filename = 'In_out_degree_and_bidirectional_connectivity';
-DefaultFontSize =6;
+DefaultFontSize =15;
 
 
 %Graphics
@@ -39,8 +41,9 @@ position_y1(end+1)=position_y1(end)-vertical_dist;
 
 min_outdegree=[0,1,2,3,4,5,6,7,8,9,10,15,20];
 
-rel1= STIMANAL.ConnectivityBetweenDirectlyStimulatedOnlyOverconnected   &  (STIMANAL.SessionEpochsIncludedFinal & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' );
-rel = rel1  & (STIMANAL.NeuronOrControl & 'neurons_or_control=1' & 'num_targets>=50');
+rel1= STIMANAL.ConnectivityBetweenDirectlyStimulatedOnlyOverconnected   &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' );
+rel = rel1  & (STIMANAL.NeuronOrControl & 'neurons_or_control=1' & 'num_targets>=25');
+total_sessions_per_min_outdegree = [];
 in_out_degree_corr_mean=[];
 in_out_degree_corr_stem=[];
 bidirectional_proportion_mean=[];
@@ -51,18 +54,25 @@ bidirectional_observed_to_expected_mean=[];
 bidirectional_observed_to_expected_stem=[];
 
 for i_m=1:1:numel(min_outdegree)
-    temp=fetchn (rel & sprintf('min_outdegree=%d',min_outdegree(i_m)) & 'unidirectional_connect_number>10','in_out_degree_corr');
+%     temp=fetchn (rel & sprintf('min_outdegree=%d',min_outdegree(i_m)) & 'unidirectional_connect_number>10','in_out_degree_corr');
+    temp=fetchn (rel & sprintf('min_outdegree=%d',min_outdegree(i_m)) & sprintf('number_of_neurons_in_subnetwork>=%d',min_number_of_neurons_in_subnetwork) ,'in_out_degree_corr');
+    
+    total_sessions_per_min_outdegree (i_m) = sum(~isnan(temp));
     in_out_degree_corr_mean (i_m) =nanmean( temp);
     in_out_degree_corr_stem (i_m) = nanstd (temp)/sqrt(numel(temp(~isnan(temp))));
-    
-    temp=1-fetchn (rel & sprintf('min_outdegree=%d',min_outdegree(i_m)) & 'unidirectional_connect_number>10','unidirectional_proportion');
+      temp=1-fetchn (rel & sprintf('min_outdegree=%d',min_outdegree(i_m)) & sprintf('number_of_neurons_in_subnetwork>=%d',min_number_of_neurons_in_subnetwork) ,'unidirectional_proportion');
+%     temp=1-fetchn (rel & sprintf('min_outdegree=%d',min_outdegree(i_m)) & 'unidirectional_connect_number>10','unidirectional_proportion');
     bidirectional_proportion_mean (i_m) =nanmean( temp);
     bidirectional_proportion_stem (i_m) = nanstd (temp)/sqrt(numel(temp(~isnan(temp))));
     
-    unidirectional_connect_number=fetchn (rel & sprintf('min_outdegree=%d',min_outdegree(i_m)) & 'unidirectional_connect_number>10','unidirectional_connect_number');
-    bidirectional_connect_number=fetchn (rel & sprintf('min_outdegree=%d',min_outdegree(i_m)) & 'unidirectional_connect_number>10','bidirectional_connect_number');
-    
-    out_degree_list=fetchn (rel & sprintf('min_outdegree=%d',min_outdegree(i_m)) & 'unidirectional_connect_number>10','out_degree_list');
+    unidirectional_connect_number=fetchn (rel & sprintf('min_outdegree=%d',min_outdegree(i_m)) & sprintf('number_of_neurons_in_subnetwork>=%d',min_number_of_neurons_in_subnetwork) ,'unidirectional_connect_number');
+    bidirectional_connect_number=fetchn (rel & sprintf('min_outdegree=%d',min_outdegree(i_m)) & sprintf('number_of_neurons_in_subnetwork>=%d',min_number_of_neurons_in_subnetwork) ,'bidirectional_connect_number');
+%     unidirectional_connect_number=fetchn (rel & sprintf('min_outdegree=%d',min_outdegree(i_m)) & 'unidirectional_connect_number>10','unidirectional_connect_number');
+%     bidirectional_connect_number=fetchn (rel & sprintf('min_outdegree=%d',min_outdegree(i_m)) & 'unidirectional_connect_number>10','bidirectional_connect_number');
+
+    out_degree_list=fetchn (rel & sprintf('min_outdegree=%d',min_outdegree(i_m)) & sprintf('number_of_neurons_in_subnetwork>=%d',min_number_of_neurons_in_subnetwork) ,'out_degree_list');
+%     out_degree_list=fetchn (rel & sprintf('min_outdegree=%d',min_outdegree(i_m)) & 'unidirectional_connect_number>10','out_degree_list');
+
     num_cells=[];
     out_degree_total=[];
     for i_r=1:1:numel(out_degree_list)
@@ -85,23 +95,27 @@ for i_m=1:1:numel(min_outdegree)
     
 end
 
+total_sessions_per_min_outdegree
+
 axes('position',[position_x1(1), position_y1(1), panel_width1, panel_height1]);
-temp=fetchn (rel & sprintf('min_outdegree=%d',0) & 'unidirectional_connect_number>10','in_out_degree_corr');
+temp=fetchn (rel & sprintf('min_outdegree=%d',0) & sprintf('number_of_neurons_in_subnetwork>=%d',min_number_of_neurons_in_subnetwork) ,'in_out_degree_corr');
 % temp=fetchn (rel & sprintf('min_outdegree=%d',0) & 'unidirectional_connect_number>10','in_out_degree_corr');
 histogram(temp,8)
 xlim([-0.7,0.7])
-title('In out degree corr')
+title(sprintf('In out degree corr\n'))
 xlabel('Corr, In vs. Out degree')
 ylabel('Counts (sessions)')
+box off
 
 axes('position',[position_x1(2), position_y1(1), panel_width1, panel_height1]);
 lineProps.col={[0 0 0]};
 lineProps.style='-';
 lineProps.width=0.25;
 mseb(min_outdegree,smooth(in_out_degree_corr_mean,5)',smooth(in_out_degree_corr_stem,5)',lineProps);
-title('In out degree corr')
+title(sprintf('In out degree corr\n'))
 xlabel('Minimal Out-degree')
 ylabel('Corr, In vs. Out degree')
+box off
 
 
 
@@ -115,13 +129,17 @@ mseb(min_outdegree,smooth(bidirectional_proportion_mean,5)',smooth(bidirectional
 title('Bidirectional connectivity')
 ylabel('Bidirectional connection proportion')
 xlabel('Minimal Out-degree')
+box off
 
 axes('position',[position_x1(1), position_y1(2), panel_width1, panel_height1]);
-temp=1-fetchn (rel & sprintf('min_outdegree=%d',0) & 'unidirectional_connect_number>10','unidirectional_proportion');
+% temp=1-fetchn (rel & sprintf('min_outdegree=%d',0) & 'unidirectional_connect_number>10','unidirectional_proportion');
+temp=1-fetchn (rel & sprintf('min_outdegree=%d',0) & sprintf('number_of_neurons_in_subnetwork>=%d',min_number_of_neurons_in_subnetwork) ,'unidirectional_proportion');
+
 histogram(temp,8)
 xlim([0,0.5])
 title('Bidirectional connection proportion')
 xlabel('Out-degree')
+box off
 
 axes('position',[position_x1(2), position_y1(2), panel_width1, panel_height1]);
 lineProps.col={[0 0 0]};
@@ -129,6 +147,7 @@ lineProps.style='-';
 lineProps.width=0.25;
 mseb(min_outdegree,smooth(unidirectional_observed_to_expected_mean,5)',smooth(unidirectional_observed_to_expected_stem,5)',lineProps);
 title('Unidirectional observed/expected')
+box off
 
 axes('position',[position_x1(3), position_y1(3), panel_width1, panel_height1]);
 lineProps.col={[0 0 0]};
@@ -136,6 +155,7 @@ lineProps.style='-';
 lineProps.width=0.25;
 mseb(min_outdegree,smooth(bidirectional_observed_to_expected_mean,5)',smooth(bidirectional_observed_to_expected_stem,5)',lineProps);
 title('Bidirectional observed/expected')
+box off
 
 fig = gcf;    %or one particular figure whose handle you already know, or 0 to affect all figures
 set( findall(fig, '-property', 'fontsize'), 'fontsize', DefaultFontSize)

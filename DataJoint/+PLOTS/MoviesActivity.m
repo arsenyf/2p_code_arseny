@@ -107,14 +107,14 @@ classdef MoviesActivity < dj.Computed
             
             
             % aligning relative to bregma
-            bregma_x_mm=1000*fetchn(IMG.Bregma & key,'bregma_x_cm');
-            if ~isempty(bregma_x_mm)
-                bregma_y_mm=1000*fetchn(IMG.Bregma & key,'bregma_y_cm');
+            bregma_x_um=1000*fetchn(IMG.Bregma & key,'bregma_x_mm');
+            if ~isempty(bregma_x_um)
+                bregma_y_um=1000*fetchn(IMG.Bregma & key,'bregma_y_mm');
                 x_all_max= max(x_all);
                 y_all_min= min(y_all);
                 
-                x_all=x_all-[x_all_max - bregma_x_mm]; % anterior posterior
-                y_all=y_all-y_all_min+bregma_y_mm; % medial lateral
+                x_all=x_all-[x_all_max - bregma_x_um]; % anterior posterior
+                y_all=y_all-y_all_min+bregma_y_um; % medial lateral
                 
             end
             x_all_max = [x_all_max + (3300-max(x_all))]/image_rescaling_factor;
@@ -187,7 +187,7 @@ classdef MoviesActivity < dj.Computed
                 %% PLOT ALLEN MAP
                 allen2mm=[1000*3.2/160]/image_rescaling_factor;
                 edgeOutline=[];
-                if ~isempty(bregma_x_mm)
+                if ~isempty(bregma_x_um)
                     allenDorsalMapSM_Musalletal2019 = load('allenDorsalMapSM_Musalletal2019.mat');
                     edgeOutline = allenDorsalMapSM_Musalletal2019.dorsalMaps.edgeOutline;
                     

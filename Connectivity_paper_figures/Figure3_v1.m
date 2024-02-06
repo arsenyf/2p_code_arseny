@@ -74,7 +74,8 @@ axis equal;
 try
     zoom =fetch1(IMG.FOVEpoch & key_fov,'zoom');
     kkk.scanimage_zoom = zoom;
-    pix2dist=  fetch1(IMG.Zoom2Microns & kkk,'fov_microns_size_y') / fetch1(IMG.FOV & key_fov, 'fov_x_size');
+    pix2dist=  fetch1(IMG.Zoom2Microns & kkk,'fov_microns_size_x') / fetch1(IMG.FOV & key_fov, 'fov_x_size');
+    %     pix2dist=  fetch1(IMG.Zoom2Microns & kkk,'fov_microns_size_y') / fetch1(IMG.FOV & key_fov, 'fov_x_size');
 catch
     pix2dist= fetch1(IMG.Parameters & 'parameter_name="fov_size_microns_z1.1"', 'parameter_value')/fetch1(IMG.FOV & key_fov, 'fov_x_size');
 end
@@ -87,7 +88,7 @@ text((200+scalebar)*1.25,50,['100 \mum'],'FontSize',6, 'fontweight', 'bold','Col
 
 
 rel_data = (STIMANAL.InfluenceDistanceEucledian & 'flag_divide_by_std=0' & 'flag_withold_trials=1' & 'flag_normalize_by_total=1') ...
-    &  (STIMANAL.SessionEpochsIncludedFinal& IMG.Volumetric & 'stimpower>=150' & 'flag_include=1'  ...
+    &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs& IMG.Volumetric & 'stimpower>=150' & 'flag_include=1'  ...
      & (STIMANAL.NeuronOrControlNumber & 'num_targets_neurons>=25') ...
     & (STIMANAL.NeuronOrControlNumber & 'num_targets_controls>=25'));
 
@@ -146,7 +147,7 @@ xlabel([sprintf('Eucledian Distance ') '(\mum)']);
 
 %% Influence distance
 rel_data = (STIMANAL.InfluenceDistance & 'flag_divide_by_std=0' & 'flag_withold_trials=0' & 'flag_normalize_by_total=1') ...
-    &  (STIMANAL.SessionEpochsIncludedFinal & IMG.Volumetric & 'stimpower=150' & 'flag_include=1' )  ...
+    &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower=150' & 'flag_include=1' )  ...
     & (STIMANAL.NeuronOrControlNumber & 'num_targets_neurons>=25') ...
     & (STIMANAL.NeuronOrControlNumber & 'num_targets_controls>=25');
 

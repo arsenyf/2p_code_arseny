@@ -15,7 +15,7 @@ plot([0,0],[0,1],'-k','linewidth',0.25)
 lineProps.style='-';
 lineProps.width=0.05;
 
-lineProps.col={[ 1 0.5 0]};
+lineProps.col={[ 1 0.3 0]};
 mseb(psth_time,psth_large, psth_large_stem,lineProps);
 
 

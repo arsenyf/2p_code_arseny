@@ -48,7 +48,7 @@ for  i_x=1:1:number_of_bins
         %large
         temp_mean=smooth(P.psth_per_position_large{i_z,i_x},3)'./psth_max_all;
         temp_stem=smooth(P.psth_per_position_large_stem{i_z,i_x},3)'./psth_max_all;
-        lineProps.col={[ 1 0.5 0]};
+        lineProps.col={[ 1 0.3 0]};
         mseb(psth_time,temp_mean, temp_stem,lineProps);
         
         %small
@@ -76,7 +76,7 @@ for  i_x=1:1:number_of_bins
                 text(-2,6,sprintf('Cell %d',cell_number2d),'HorizontalAlignment','left', 'FontSize',6, 'fontweight', 'bold');
             end
             if xlabel_flag==1
-                text(-2,-1.5,sprintf('Time to 1st tongue contact (s)'),'HorizontalAlignment','left', 'FontSize',6);
+                text(-2,-1.5,sprintf('Time to 1st contact-lick (s)'),'HorizontalAlignment','left', 'FontSize',6);
             end
             if ylabel_flag==1
                 text(-8,0,'Activity (norm.)','HorizontalAlignment','left','Rotation',90, 'FontSize',6);

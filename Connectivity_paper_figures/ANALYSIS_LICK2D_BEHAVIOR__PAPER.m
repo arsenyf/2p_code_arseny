@@ -1,3 +1,9 @@
+%% Supplementary Figure 1 -- connectivity paper
+lick2D_video_behavior_across_trial_time %showin in Sup Fig 1 of the connectivity paper
+lick2D_video_behavior_across_sessions_tongue_trajectories %showin in Sup Fig 1 of the connectivity paper
+
+
+
 %% Behavior main analysis
 lick2D_video_behavior_across_sessions 
 lick2D_video_behavior_across_sessions_z
@@ -5,8 +11,6 @@ lick2D_video_behavior_across_sessions_z_touch %based on the tongue position duri
 
 lick2D_video_behavior_across_blocks
 lick2D_electric_behavior_across_blocks %this is the same version as lick2D_video_behavior_across_blocks, but based on electric touch, and not video
-lick2D_video__behavior_across_trial_time
-lick2D_video_behavior_across_sessions_tongue_trajectories
 
 % Behavior data
 lick2D_behaviorperform

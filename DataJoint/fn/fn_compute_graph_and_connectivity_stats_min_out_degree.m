@@ -137,6 +137,7 @@ key.unidirectional_connect_number   = unidirectional_connect_number;
 key.bidirectional_connect_number    = bidirectional_connect_number;
 key.unidirectional_proportion = unidirectional_proportion;
 key.min_outdegree = min_outdegree;
+key.number_of_neurons_in_subnetwork = numel(roi_num);
 
 insert(self,key);
 

@@ -28,7 +28,7 @@ classdef ROILick2DmapPSTHSpikesExample < dj.Computed
     end
     methods(Access=protected)
         function makeTuples(self, key)
-            % Computed in Lick2D.ROILick2DmapSpikesExample
+            % Computed in LICK2D.ROILick2DmapSpikesExample
         end
     end
 end

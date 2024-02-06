@@ -72,8 +72,8 @@ title([ 'anm' num2str(key.subject_id) ' s' num2str(key.session) ' ' session_date
 
 %% PLOT ALLEN MAP
 allen2mm=1000*3.2/160;
-bregma_x_mm=1000*fetchn(IMG.Bregma & key,'bregma_x_cm');
-if ~isempty(bregma_x_mm)
+bregma_x_um=1000*fetchn(IMG.Bregma & key,'bregma_x_mm');
+if ~isempty(bregma_x_um)
     allenDorsalMapSM_Musalletal2019 = load('allenDorsalMapSM_Musalletal2019.mat');
     edgeOutline = allenDorsalMapSM_Musalletal2019.dorsalMaps.edgeOutline;
     

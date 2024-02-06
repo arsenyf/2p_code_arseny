@@ -15,13 +15,14 @@ in_out_degree_corr=null             : double          #
 unidirectional_connect_number       : int             # total number of pairs with unidirectional connections
 bidirectional_connect_number        : int             # total number of pairs with bidirectional  connections
 unidirectional_proportion=null      : double          # out of total signficant unidirectional or bidirectonal connections
+number_of_neurons_in_subnetwork     : int             # number of neurons in the subnetwork with some min_outdegree
 %}
 
 
-classdef ConnectivityBetweenDirectlyStimulatedOnlyOverconnected2 < dj.Imported
+classdef ConnectivityBetweenDirectlyStimulatedOnlyOverconnected3 < dj.Imported
     properties
         %         keySource = IMG.PhotostimGroup;
-        keySource = EXP2.SessionEpoch & 'flag_photostim_epoch =1' & IMG.FOV & STIMANAL.NeuronOrControl;
+        keySource = EXP2.SessionEpoch & 'flag_photostim_epoch =1' & IMG.FOV & STIMANAL.NeuronOrControl  &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1');
     end
     methods(Access=protected)
         function makeTuples(self, key)
@@ -29,13 +30,13 @@ classdef ConnectivityBetweenDirectlyStimulatedOnlyOverconnected2 < dj.Imported
             
             p_val_threshold = 0.05;
             minimal_distance = 25; %in microns
-            maximal_distance =100; %in microns
+            maximal_distance =1000; %in microns
             min_outdegree = [0,1,2,3,4,5,6,7,8,9,10,15,20];
 
             for i_o =1:1:numel(min_outdegree)
                 close;
-                dir_save_figure = [dir_base 'photostim\Graph_analysis\Connectivity_Between_Direct_only_max_distance_100\min_outdegree\outdegree_' num2str(i_o) '\'];
-                fn_compute_graph_and_connectivity_stats_min_out_degree (key, p_val_threshold,min_outdegree(i_o), minimal_distance,maximal_distance, dir_save_figure, self)
+                dir_save_figure = [dir_base 'photostim\Graph_analysis\Connectivity_Between_Direct_only\min_outdegree2\outdegree_' num2str(i_o) '\'];
+                fn_compute_graph_and_connectivity_stats_min_out_degree_test (key, p_val_threshold,min_outdegree(i_o), minimal_distance, maximal_distance, dir_save_figure, self)
             end
             
         end
