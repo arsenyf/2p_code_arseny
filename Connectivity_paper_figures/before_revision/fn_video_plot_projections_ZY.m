@@ -1,0 +1,48 @@
+function [y1_tongue_range, lickport_y_center ] = fn_video_plot_projections_ZY (key_tongue_trial1, Zpix2mm, Xpix2mm, key_tongue_session)
+
+% Lick trial trajectory Z-Y1
+hold on;
+key_tongue_trial1.bodypart_name='tongue';
+rel_behavior_trial = (EXP2.BehaviorTrialEvent & key_tongue_trial1 & 'trial_event_type="go"') - TRACKING.TrackingTrialBad ;
+tongue_z_traj=fetch1(TRACKING.VideoBodypartTrajectTrial & key_tongue_trial1,'traj_z').*Zpix2mm.slope + Zpix2mm.intercept;
+lickport_z_center=fetch1(TRACKING.VideoLickportPositionTrial  & key_tongue_trial1, 'lickport_z').*Zpix2mm.slope + Zpix2mm.intercept;
+z_offset = nanmin(tongue_z_traj);
+tongue_z_traj =  tongue_z_traj - z_offset;
+lickport_z_center =  lickport_z_center- z_offset;
+
+
+tongue_y_traj =fetch1(TRACKING.VideoBodypartTrajectTrial & key_tongue_trial1,'traj_y1').*Xpix2mm.slope + Xpix2mm.intercept;
+lickport_y_center=fetch1(TRACKING.VideoLickportPositionTrial  & key_tongue_trial1, 'lickport_y1').*Xpix2mm.slope + Xpix2mm.intercept;
+lickport_y_center_all=fetchn(TRACKING.VideoLickportPositionTrial & key_tongue_session,'lickport_y1').*Xpix2mm.slope + Xpix2mm.intercept;
+y_lickport_median = prctile(lickport_y_center_all(100:end),50);
+y_offset = prctile(lickport_y_center_all(100:end),2) -3;
+tongue_y_traj = ((tongue_y_traj) /(lickport_y_center/y_lickport_median))  -y_offset;
+lickport_y_center = ((lickport_y_center) /(lickport_y_center/y_lickport_median)) -y_offset;
+
+
+
+[t,idx_lick_contact_time, idx_licks_time_onset, idx_licks_time_ends ] = fn_lick_time_alignment (rel_behavior_trial, key_tongue_trial1);
+
+idx_non_early = t(idx_licks_time_onset)>=-0.1;
+idx_licks_time_onset = idx_licks_time_onset(idx_non_early);
+idx_licks_time_ends = idx_licks_time_ends(idx_non_early);
+idx_lick_contact_time = idx_lick_contact_time(idx_non_early);
+idx_lick_contact_time(idx_lick_contact_time==1)=[];
+
+%  colormap_g=winter(numel(idx_licks_time_onset));
+  colormap_g=pink(numel(idx_licks_time_onset)*2);
+ for i_l=1:1:numel(idx_licks_time_onset)
+     idx_current_lick = idx_licks_time_onset(i_l):1: idx_licks_time_ends (i_l);
+      plot(tongue_y_traj(idx_current_lick),tongue_z_traj(idx_current_lick),'-','Color',[colormap_g(i_l,:)],'LineWidth',0.75)
+ end
+%  plot(tongue_y_traj(idx_lick_contact_time),tongue_z_traj(idx_lick_contact_time),'.c','MarkerSize',5);
+set(gca,'YDir', 'reverse');
+xl=[0,4];
+xlim(xl);
+yl=[0,5];
+ylim(yl);
+set(gca,'XTick',[ 0, xl(2)],'Ytick',[0, yl(2)],'TickLength',[0.05,0], 'FontSize',6);
+box off;
+
+y1_tongue_range = [nanmin(tongue_y_traj),nanmax(tongue_y_traj)];
+plot(lickport_y_center,lickport_z_center,'ob','MarkerSize',5);

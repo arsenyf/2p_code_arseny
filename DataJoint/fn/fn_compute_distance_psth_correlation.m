@@ -52,7 +52,11 @@ session_date = fetch1(EXP2.Session & key,'session_date');
 try
     filename = sprintf('anm%d_s%d_%s_threshold%d',key.subject_id,key.session, session_date, 100*key.odd_even_corr_threshold);
 catch
-    filename = sprintf('anm%d_s%d_%s_vnmises%d',key.subject_id,key.session, session_date, 100*goodness_of_fit_vmises_threshold);
+    try
+        filename = sprintf('anm%d_s%d_%s_vnmises%d',key.subject_id,key.session, session_date, 100*goodness_of_fit_vmises_threshold);
+    catch
+        filename = sprintf('anm%d_s%d_%s_threshold%d',key.subject_id,key.session, session_date, 100*key.p_value_threshold);
+    end
 end
 
 %% Loading Data
@@ -222,133 +226,139 @@ ylabel([sprintf('Axial      \nDistance ') '(\mum)        ']);
 try
     title(sprintf('anm%d s%d %s \nodd even corr threshold >= %.2f \n',key.subject_id,key.session, session_date, key.odd_even_corr_threshold));
 catch
-    title(sprintf('anm%d s%d %s \ngoodness of fit Vonmises >= %.2f \n',key.subject_id,key.session, session_date, goodness_of_fit_vmises_threshold));
+    try
+        title(sprintf('anm%d s%d %s \ngoodness of fit Vonmises >= %.2f \n',key.subject_id,key.session, session_date,key.p_value_threshold));
+        
+    catch
+        title(sprintf('anm%d s%d %s \ngoodness of fit Vonmises >= %.2f \n',key.subject_id,key.session, session_date, goodness_of_fit_vmises_threshold));
+        
+    end
 end
-
-%colorbar
-ax2=axes('position',[position_x1(1)+0.2, position_y1(1)+0.07, panel_width1*0.2, panel_height1*0.45]);
-colormap(ax2, inferno)
-caxis(c_lim);
-cb1=colorbar;
-text(8, 0.2, ['Correlation'],'Rotation',90);
-axis off
-
-%% 2D thresholded -- only showing negative correlations to check for potential lateral inhibition
-distance_corr_2d_negative=distance_corr_2d;
-distance_corr_2d_negative(distance_corr_2d(:)>=0)=0;
-
-
-ax3=axes('position',[position_x1(2), position_y1(1), panel_width1, panel_height1]);
-
-imagesc(bins_lateral_center,axial_distance_bins,  distance_corr_2d_negative)
-xlabel('Lateral Distance (um)');
-ylabel('Axial Distance (um)');
-% colorbar
-colormap(inferno)
-c_lim(1)=nanmin([distance_corr_2d_negative(:);-0.01]);
-c_lim(2) = nanmax(0);
-caxis([c_lim]);
-
-axis tight
-axis equal
-% set(gca,'XTick',OUT1.distance_lateral_bins_centers)
-xlabel([sprintf('Lateral Distance ') '(\mum)']);
-% ylabel([sprintf('Axial Distance ') '(\mum)']);
-% colorbar
-% set(gca,'YTick',[],'XTick',[20,100:100:500]);
-set(gca,'YTick',[axial_distance_bins],'XTick',[0,50:50:200]);
-ylabel([sprintf('Axial      \nDistance ') '(\mum)        ']);
-
-title(sprintf('Negative correlations thresholded'));
-
-%colorbar
-ax4=axes('position',[position_x1(2)+0.2, position_y1(1)+0.07, panel_width1*0.2, panel_height1*0.45]);
-colormap(ax3, inferno)
-caxis(c_lim);
-cb2=colorbar;
-text(8, 0.2, ['Correlation'],'Rotation',90);
-axis off
-
-
-%Lateral marginal
-axes('position',[position_x2(1), position_y1(2), panel_width2, panel_height2]);
-plot(bins_lateral_center,distance_corr_lateral,'.-k')
-xlabel('Lateral Distance (um)');
-ylabel('Correlation');
-
-%Eucledian marginal
-bins_eucledian_center = eucledian_distance_bins(1:end-1) + mean(diff(eucledian_distance_bins))/2;
-axes('position',[0.1, 0.7, panel_width2, panel_height2]);
-plot(bins_eucledian_center,distance_corr_eucledian,'.-k')
-xlabel('Lateral Distance (um)');
-ylabel('Correlation');
-
-
-%Axial marginal, in various column sizes
-column_id=1;
-axes('position',[position_x2(2), position_y1(2), panel_width2, panel_height2]);
-plot(axial_distance_bins,distance_corr_axial_columns(:,column_id),'.-k')
-xlabel('Axial Distance (um)');
-title(sprintf('Column radius\n%.0f=<r<%.0fum',column_inner_radius(column_id), column_outer_radius(column_id)))
-
-%Axial marginal, in various column sizes
-column_id=2;
-axes('position',[position_x2(3), position_y1(2), panel_width2, panel_height2]);
-plot(axial_distance_bins,distance_corr_axial_columns(:,column_id),'.-k')
-xlabel('Axial Distance (um)');
-title(sprintf('Column radius\n%.0f<=r<%.0fum',column_inner_radius(column_id), column_outer_radius(column_id)))
-
-%Axial marginal, in various column sizes
-column_id=3;
-axes('position',[position_x2(4), position_y1(2), panel_width2, panel_height2]);
-plot(axial_distance_bins,distance_corr_axial_columns(:,column_id),'.-k')
-xlabel('Axial Distance (um)');
-title(sprintf('Column radius\n%.0f<=r<%.0fum',column_inner_radius(column_id), column_outer_radius(column_id)))
-
-%Axial marginal, in various column sizes
-column_id=4;
-axes('position',[position_x2(5), position_y1(2), panel_width2, panel_height2]);
-plot(axial_distance_bins,distance_corr_axial_columns(:,column_id),'.-k')
-xlabel('Axial Distance (um)');
-title(sprintf('Column radius\n%.0f<=r<%.0fum',column_inner_radius(column_id), column_outer_radius(column_id)))
-
-
-%Axial marginal, in various column sizes
-column_id=10;
-axes('position',[position_x2(6), position_y1(2), panel_width2, panel_height2]);
-plot(axial_distance_bins,distance_corr_axial_columns(:,column_id),'.-k')
-xlabel('Axial Distance (um)');
-title(sprintf('Column radius\n%.0f<=r<%.0fum',column_inner_radius(column_id), column_outer_radius(column_id)))
-
-
-if isempty(dir(dir_save_fig))
-    mkdir (dir_save_fig)
-end
-
-
-fig = gcf;    %or one particular figure whose handle you already know, or 0 to affect all figures
-set( findall(fig, '-property', 'fontsize'), 'fontsize', DefaultFontSize)
-
-
-
-figure_name_out=[dir_save_fig filename];
-eval(['print ', figure_name_out, ' -dtiff  -r300']);
-% eval(['print ', figure_name_out, ' -dpdf -r200']);
-clf;
-
-try
-    key.goodness_of_fit_vmises = goodness_of_fit_vmises_threshold;
-catch
-end
-key.lateral_distance_bins=lateral_distance_bins;
-key.num_cells_included = numel(roi_list);
-key.distance_corr_2d=distance_corr_2d;
-key.distance_corr_lateral=distance_corr_lateral;
-key.distance_corr_eucledian=distance_corr_eucledian;
-key.distance_corr_axial_columns  = distance_corr_axial_columns;
-key.column_inner_radius = column_inner_radius;
-key.column_outer_radius = column_outer_radius;
-key.eucledian_distance_bins=eucledian_distance_bins;
-insert(self,key);
-
+    
+    %colorbar
+    ax2=axes('position',[position_x1(1)+0.2, position_y1(1)+0.07, panel_width1*0.2, panel_height1*0.45]);
+    colormap(ax2, inferno)
+    caxis(c_lim);
+    cb1=colorbar;
+    text(8, 0.2, ['Correlation'],'Rotation',90);
+    axis off
+    
+    %% 2D thresholded -- only showing negative correlations to check for potential lateral inhibition
+    distance_corr_2d_negative=distance_corr_2d;
+    distance_corr_2d_negative(distance_corr_2d(:)>=0)=0;
+    
+    
+    ax3=axes('position',[position_x1(2), position_y1(1), panel_width1, panel_height1]);
+    
+    imagesc(bins_lateral_center,axial_distance_bins,  distance_corr_2d_negative)
+    xlabel('Lateral Distance (um)');
+    ylabel('Axial Distance (um)');
+    % colorbar
+    colormap(inferno)
+    c_lim(1)=nanmin([distance_corr_2d_negative(:);-0.01]);
+    c_lim(2) = nanmax(0);
+    caxis([c_lim]);
+    
+    axis tight
+    axis equal
+    % set(gca,'XTick',OUT1.distance_lateral_bins_centers)
+    xlabel([sprintf('Lateral Distance ') '(\mum)']);
+    % ylabel([sprintf('Axial Distance ') '(\mum)']);
+    % colorbar
+    % set(gca,'YTick',[],'XTick',[20,100:100:500]);
+    set(gca,'YTick',[axial_distance_bins],'XTick',[0,50:50:200]);
+    ylabel([sprintf('Axial      \nDistance ') '(\mum)        ']);
+    
+    title(sprintf('Negative correlations thresholded'));
+    
+    %colorbar
+    ax4=axes('position',[position_x1(2)+0.2, position_y1(1)+0.07, panel_width1*0.2, panel_height1*0.45]);
+    colormap(ax3, inferno)
+    caxis(c_lim);
+    cb2=colorbar;
+    text(8, 0.2, ['Correlation'],'Rotation',90);
+    axis off
+    
+    
+    %Lateral marginal
+    axes('position',[position_x2(1), position_y1(2), panel_width2, panel_height2]);
+    plot(bins_lateral_center,distance_corr_lateral,'.-k')
+    xlabel('Lateral Distance (um)');
+    ylabel('Correlation');
+    
+    %Eucledian marginal
+    bins_eucledian_center = eucledian_distance_bins(1:end-1) + mean(diff(eucledian_distance_bins))/2;
+    axes('position',[0.1, 0.7, panel_width2, panel_height2]);
+    plot(bins_eucledian_center,distance_corr_eucledian,'.-k')
+    xlabel('Lateral Distance (um)');
+    ylabel('Correlation');
+    
+    
+    %Axial marginal, in various column sizes
+    column_id=1;
+    axes('position',[position_x2(2), position_y1(2), panel_width2, panel_height2]);
+    plot(axial_distance_bins,distance_corr_axial_columns(:,column_id),'.-k')
+    xlabel('Axial Distance (um)');
+    title(sprintf('Column radius\n%.0f=<r<%.0fum',column_inner_radius(column_id), column_outer_radius(column_id)))
+    
+    %Axial marginal, in various column sizes
+    column_id=2;
+    axes('position',[position_x2(3), position_y1(2), panel_width2, panel_height2]);
+    plot(axial_distance_bins,distance_corr_axial_columns(:,column_id),'.-k')
+    xlabel('Axial Distance (um)');
+    title(sprintf('Column radius\n%.0f<=r<%.0fum',column_inner_radius(column_id), column_outer_radius(column_id)))
+    
+    %Axial marginal, in various column sizes
+    column_id=3;
+    axes('position',[position_x2(4), position_y1(2), panel_width2, panel_height2]);
+    plot(axial_distance_bins,distance_corr_axial_columns(:,column_id),'.-k')
+    xlabel('Axial Distance (um)');
+    title(sprintf('Column radius\n%.0f<=r<%.0fum',column_inner_radius(column_id), column_outer_radius(column_id)))
+    
+    %Axial marginal, in various column sizes
+    column_id=4;
+    axes('position',[position_x2(5), position_y1(2), panel_width2, panel_height2]);
+    plot(axial_distance_bins,distance_corr_axial_columns(:,column_id),'.-k')
+    xlabel('Axial Distance (um)');
+    title(sprintf('Column radius\n%.0f<=r<%.0fum',column_inner_radius(column_id), column_outer_radius(column_id)))
+    
+    
+    %Axial marginal, in various column sizes
+    column_id=10;
+    axes('position',[position_x2(6), position_y1(2), panel_width2, panel_height2]);
+    plot(axial_distance_bins,distance_corr_axial_columns(:,column_id),'.-k')
+    xlabel('Axial Distance (um)');
+    title(sprintf('Column radius\n%.0f<=r<%.0fum',column_inner_radius(column_id), column_outer_radius(column_id)))
+    
+    
+    if isempty(dir(dir_save_fig))
+        mkdir (dir_save_fig)
+    end
+    
+    
+    fig = gcf;    %or one particular figure whose handle you already know, or 0 to affect all figures
+    set( findall(fig, '-property', 'fontsize'), 'fontsize', DefaultFontSize)
+    
+    
+    
+    figure_name_out=[dir_save_fig filename];
+    eval(['print ', figure_name_out, ' -dtiff  -r300']);
+    % eval(['print ', figure_name_out, ' -dpdf -r200']);
+    clf;
+    
+    try
+        key.goodness_of_fit_vmises = goodness_of_fit_vmises_threshold;
+    catch
+    end
+    key.lateral_distance_bins=lateral_distance_bins;
+    key.num_cells_included = numel(roi_list);
+    key.distance_corr_2d=distance_corr_2d;
+    key.distance_corr_lateral=distance_corr_lateral;
+    key.distance_corr_eucledian=distance_corr_eucledian;
+    key.distance_corr_axial_columns  = distance_corr_axial_columns;
+    key.column_inner_radius = column_inner_radius;
+    key.column_outer_radius = column_outer_radius;
+    key.eucledian_distance_bins=eucledian_distance_bins;
+    insert(self,key);
+    
 end

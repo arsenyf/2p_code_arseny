@@ -1,7 +1,7 @@
 function Figure1_v11
 close all;
 
-DATA=fetch1(PAPER.ConnectivityPaperFigure1datav6shuffle,'figure_data');
+DATA=fetch1(PAPER.ConnectivityPaperFigure1datav5,'figure_data');
 lickmap_regular_odd_vs_even_corr_threshold=0.25; % will only affect panel m
 %             information_per_spike_regular_threshold=0.02; % will only affect panel m
 D_tuned_temporal=DATA.D_tuned_temporal;

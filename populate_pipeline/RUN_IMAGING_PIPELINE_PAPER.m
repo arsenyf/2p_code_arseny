@@ -178,15 +178,29 @@ populate(STIMANAL.ConnectivityBetweenDirectlyStimulatedOnly);
 
 populate(LICK2D.ROILick2DangleSpikes3bins); %also populates LICK2D.ROILick2DangleBlockSpikes3bins LICK2D.ROILick2DangleStatsSpikes3bins LICK2D.ROILick2DangleBlockStatsSpikes3bins
 populate(LICK2D.ROILick2DPSTHSpikes); % also populates LICK2D.ROILick2DPSTHStatsSpikes LICK2D.ROILick2DPSTHBlockSpikes LICK2D.ROILick2DPSTHBlockStatsSpikes
-populate(LICK2D.ROILick2DPSTHSpikesModulation) % modulation depth of the 1D tuning (PSTH)
+populate(LICK2D.ROILick2DPSTHSpikesModulation); % modulation depth of the 1D tuning (PSTH)
+populate(LICK2D.ROILick2DPSTHSpikesPvalue); % p_value of stability and modulation depth of the 1D tuning (PSTH); also populates LICK2D.ROILick2DPSTHSpikesShuffledDistribution
+
+% PSTH aligned to the last contact lick
+populate(LICK2D.ROILick2DPSTHSpikesLastLick); % also populates LICK2D.ROILick2DPSTHStatsSpikesLastLick
+populate(LICK2D.ROILick2DPSTHSpikesModulationLastLick) % modulation depth of the 1D tuning (PSTH)
+
+% PSTH aligned to lick port presentation
+populate(LICK2D.ROILick2DPSTHSpikesLickport); % also populates LICK2D.ROILick2DPSTHStatsSpikesLickport
+populate(LICK2D.ROILick2DPSTHSpikesModulationLickport) % modulation depth of the 1D tuning (PSTH)
+
+
 
 populate(LICK2D.ROILick2DmapSpikes); %also populates LICK2D.ROILick2DmapPSTHSpikes LICK2D.ROILick2DmapPSTHStabilitySpikes LICK2D.ROILick2DmapStatsSpikes LICK2D.ROILick2DSelectivitySpikes LICK2D.ROILick2DSelectivityStatsSpikes
 populate(LICK2D.ROILick2DmapStatsSpikeShort);
 populate(LICK2D.ROILick2DmapUnimodalitySpikes);
+populate(LICK2D.ROILick2DPSTHSpikesPvalue); % p_value of stability and modulation depth of the 1D tuning (PSTH); also populates LICK2D.ROILick2DPSTHSpikesShuffledDistribution
 
 populate(LICK2D.ROILick2DmapSpikes3bins); %also populates LICK2D.ROILick2DmapPSTHSpikes3bins LICK2D.ROILick2DmapPSTHStabilitySpikes3bins LICK2D.ROILick2DmapStatsSpikes3bins LICK2D.ROILick2DSelectivitySpikes3bins LICK2D.ROILick2DSelectivityStatsSpikes3bins
- populate(LICK2D.ROILick2DmapStatsSpikes3binsShort);
- populate(LICK2D.LICK2D.ROILick2DmapSpikes3binsModulation) % modulation depth of the 2D tuning (map)
+populate(LICK2D.ROILick2DmapStatsSpikes3binsShort);
+populate(LICK2D.ROILick2DmapSpikes3binsModulation) % modulation depth of the 2D tuning (map)
+populate(LICK2D.ROILick2DmapSpikes3binsPvalue); %also populates LICK2D.ROILick2DmapSpikesShuffledDistribution
+
 
 populate(LICK2D.ROILick2DPSTHSpikesPoisson); % also populates LICK2D.ROILick2DPSTHStatsSpikesPoisson LICK2D.ROILick2DPSTHBlockSpikesPoisson LICK2D.ROILick2DPSTHBlockStatsSpikesPoisson
 populate(LICK2D.ROILick2DPSTHSpikesResampledlikePoisson); % also populates LICK2D.ROILick2DPSTHStatsSpikesResampledlikePoisson LICK2D.ROILick2DPSTHBlockSpikesResampledlikePoisson LICK2D.ROILick2DPSTHBlockStatsSpikesResampledlikePoisson

@@ -1,7 +1,7 @@
-function Figure1_v11
+function Figure1_v10
 close all;
 
-DATA=fetch1(PAPER.ConnectivityPaperFigure1datav6shuffle,'figure_data');
+DATA=fetch1(PAPER.ConnectivityPaperFigure1datav5,'figure_data');
 lickmap_regular_odd_vs_even_corr_threshold=0.25; % will only affect panel m
 %             information_per_spike_regular_threshold=0.02; % will only affect panel m
 D_tuned_temporal=DATA.D_tuned_temporal;
@@ -485,7 +485,7 @@ xlim(xl);
 ylim(yl)
 set(gca,'XTick',[0,250,500],'XTickLabel',[0,250, 500],'Ytick',[yl],'TickLength',[0.05,0], 'FontSize',6);
 box off;
-text(xl(1)-diff(xl)*0.6, yl(1)+diff(yl)*1.35, 'o', ...
+text(xl(1)-diff(xl)*0.6, yl(1)+diff(yl)*1.35, 'n', ...
         'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
 text(xl(1)+diff(xl)*0.25, yl(1)+diff(yl)*0.15, 'Shuffled', 'fontsize', 6, 'fontname', 'helvetica','Color',[0.5 0.5 0.5]);
 %  text(xl(1)+diff(xl)*0.25, yl(1)+diff(yl)*0.75, 'Eucledian',  'fontsize', 6, 'fontname', 'helvetica','Color',[1 .25 .25]);
