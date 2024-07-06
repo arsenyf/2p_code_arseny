@@ -37,7 +37,7 @@ licks_delta_z = null          : blob               # maximal change in the tongu
 
 %}
 
-classdef VideoTongueTrial < dj.Computed
+classdef VideoTongueTrialMesoscope < dj.Computed
     properties
         keySource = (EXP2.Session  & TRACKING.VideoFiducialsTrial & IMG.Mesoscope) ;
     end

@@ -9,8 +9,6 @@ lick_number_bins = 0:1:6;
 rel_ROI = (IMG.ROI-IMG.ROIBad) & key;
 key_ROI1=fetch(rel_ROI,'ORDER BY roi_number'); % LICK2D.ROILick2DPSTHSpikes
 key_ROI2=fetch(rel_ROI,'ORDER BY roi_number'); % LICK2D.ROILick2DPSTHStatsSpikes
-key_ROI3=fetch(rel_ROI,'ORDER BY roi_number'); % LICK2D.ROILick2DPSTHBlockSpikes
-key_ROI4=fetch(rel_ROI,'ORDER BY roi_number'); % LICK2D.ROILick2DPSTHBlockStatsSpikes
 
 rel_data =rel_data & rel_ROI & key;
 
@@ -32,12 +30,8 @@ if isfield(S,'spikes_trace') % to be able to run the code both on dff and on dec
     [S.dff_trace] = S.spikes_trace;
     S = rmfield(S,'spikes_trace');
     self2=LICK2D.ROILick2DPSTHStatsSpikesPoisson;
-    self3=LICK2D.ROILick2DPSTHBlockSpikesPoisson;
-    self4=LICK2D.ROILick2DPSTHBlockStatsSpikesPoisson;
+
 else
-%     self2=LICK2D.ROILick2DPSTHStatsSpikes;
-%     self3=LICK2D.ROILick2DPSTHBlockSpikes;
-%     self4=LICK2D.ROILick2DPSTHBlockStatsSpikes;
 end
 
 % num_trials = numel(TrialsStartFrame);
@@ -66,29 +60,7 @@ end
 idx_odd_regular = idx_regular(1:2:numel(idx_regular));
 idx_even_regular = idx_regular(2:2:numel(idx_regular));
 
-try
-    % idx order in a block
-    num_trials_in_block=mode([Block.num_trials_in_block]); %the most frequently occurring number of trials per block (in case num trials in block change within session)
-    begin_mid_end_bins = linspace(2,num_trials_in_block,4);
-    idx_first = find([Block.current_trial_num_in_block]==1 & idx_response & idx_regular_temp);
-    idx_begin = find(([Block.current_trial_num_in_block]>=begin_mid_end_bins(1) & [Block.current_trial_num_in_block]<=floor(begin_mid_end_bins(2)) ) & idx_response & idx_regular_temp);
-    idx_mid=   find(([Block.current_trial_num_in_block]>begin_mid_end_bins(2) & [Block.current_trial_num_in_block]<=round(begin_mid_end_bins(3)) ) & idx_response & idx_regular_temp);
-    idx_end=   find(([Block.current_trial_num_in_block]>begin_mid_end_bins(3) & [Block.current_trial_num_in_block]<=ceil(begin_mid_end_bins(4)) ) & idx_response & idx_regular_temp);
-    
-    
-    idx_odd_first = idx_regular(1:2:numel(idx_first));
-    idx_even_first = idx_regular(2:2:numel(idx_first));
-    
-    idx_odd_begin = idx_regular(1:2:numel(idx_begin));
-    idx_even_begin = idx_regular(2:2:numel(idx_begin));
-    
-    idx_odd_mid = idx_regular(1:2:numel(idx_mid));
-    idx_even_mid = idx_regular(2:2:numel(idx_mid));
-    
-    idx_odd_end = idx_regular(1:2:numel(idx_end));
-    idx_even_end = idx_regular(2:2:numel(idx_end));
-catch
-end
+
 
 for i_roi=1:1:size(S,1)
     
@@ -98,13 +70,9 @@ for i_roi=1:1:size(S,1)
     key_ROI2(i_roi).session_epoch_type = key.session_epoch_type;
     key_ROI2(i_roi).session_epoch_number = key.session_epoch_number;
     
-    key_ROI3(i_roi).session_epoch_type = key.session_epoch_type;
-    key_ROI3(i_roi).session_epoch_number = key.session_epoch_number;
+ 
     
-    key_ROI4(i_roi).session_epoch_type = key.session_epoch_type;
-    key_ROI4(i_roi).session_epoch_number = key.session_epoch_number;
-    
-
+   
     %% PSTH, time resampled
     spikes=S(i_roi).dff_trace;
     time_new_bins = [fr_interval(1):time_resample_bin:fr_interval(end)];
@@ -253,131 +221,11 @@ for i_roi=1:1:size(S,1)
     catch
     end
     
-    try
-        %% BLOCK
-        % Taking the mean PSTH across trials
-        psth_first =   nanmean(cell2mat(psth_all_poisson(idx_first)'),1);
-        psth_first_stem = nanstd(cell2mat(psth_all_poisson(idx_first)'),[],1)/sqrt(numel(idx_first));
-         
-        psth_begin =  nanmean(cell2mat(psth_all_poisson(idx_begin)'),1);
-        psth_begin_stem = nanstd(cell2mat(psth_all_poisson(idx_begin)'),[],1)/sqrt(numel(idx_begin));
-
-        psth_mid =  nanmean(cell2mat(psth_all_poisson(idx_mid)'),1);
-        psth_mid_stem = nanstd(cell2mat(psth_all_poisson(idx_mid)'),[],1)/sqrt(numel(idx_mid));
-        
-        psth_end =  nanmean(cell2mat(psth_all_poisson(idx_end)'),1);
-        psth_end_stem = nanstd(cell2mat(psth_all_poisson(idx_end)'),[],1)/sqrt(numel(idx_end));
-             
-        
-        key_ROI3(i_roi).psth_first_poisson = psth_first;
-        key_ROI3(i_roi).psth_first_stem_poisson = psth_first_stem;
-               
-        key_ROI3(i_roi).psth_begin_poisson = psth_begin;
-        key_ROI3(i_roi).psth_begin_stem_poisson = psth_begin_stem;
-               
-        key_ROI3(i_roi).psth_mid_poisson = psth_mid;
-        key_ROI3(i_roi).psth_mid_stem_poisson = psth_mid_stem;
-           
-        key_ROI3(i_roi).psth_end_poisson = psth_end;
-        key_ROI3(i_roi).psth_end_stem_poisson = psth_end_stem;
-             
-
-        %Between conditions
-        r = corr([psth_first(:),psth_begin(:)],'Rows' ,'pairwise');
-        key_ROI4(i_roi).psth_first_vs_begin_corr_poisson = r(2);
-        
-        r = corr([psth_first(:),psth_mid(:)],'Rows' ,'pairwise');
-        key_ROI4(i_roi).psth_first_vs_mid_corr_poisson = r(2);
-        
-        r = corr([psth_first(:),psth_end(:)],'Rows' ,'pairwise');
-        key_ROI4(i_roi).psth_first_vs_end_corr_poisson = r(2);
-        
-        r = corr([psth_begin(:),psth_end(:)],'Rows' ,'pairwise');
-        key_ROI4(i_roi).psth_begin_vs_end_corr_poisson = r(2);
-        
-        r = corr([psth_begin(:),psth_mid(:)],'Rows' ,'pairwise');
-        key_ROI4(i_roi).psth_begin_vs_mid_corr_poisson = r(2);
-        
-        r = corr([psth_mid(:),psth_end(:)],'Rows' ,'pairwise');
-        key_ROI4(i_roi).psth_mid_vs_end_corr_poisson = r(2);
-        
-        
-        [~,idx_peak_first]=max(psth_first);
-        key_ROI4(i_roi).peaktime_psth_first_poisson = time_new(idx_peak_first);
-        [~,idx_peak_begin]=max(psth_begin);
-        key_ROI4(i_roi).peaktime_psth_begin_poisson = time_new(idx_peak_begin);
-        [~,idx_peak_mid]=max(psth_mid);
-        key_ROI4(i_roi).peaktime_psth_mid_poisson = time_new(idx_peak_mid);
-        [~,idx_peak_end]=max(psth_end);
-        key_ROI4(i_roi).peaktime_psth_end_poisson = time_new(idx_peak_end);
-        
-        % single trials, averaged across all time duration in a specific time interval (e.g. after the  licport onset (t>=0))
-        idx_onset = time_new>=fr_interval_limit(1) & time_new <fr_interval_limit(2);
-        temp=cell2mat(psth_all_poisson(idx_first)');
-        psth_first_trials =  nanmean(temp(:,idx_onset),2);
-        temp=cell2mat(psth_all_poisson(idx_begin)');
-        psth_begin_trials =  nanmean(temp(:,idx_onset),2);
-        temp=cell2mat(psth_all_poisson(idx_mid)');
-        psth_mid_trials =  nanmean(temp(:,idx_onset),2);
-        temp=cell2mat(psth_all_poisson(idx_end)');
-        psth_end_trials =  nanmean(temp(:,idx_onset),2);
-        
-
-        key_ROI4(i_roi).block_mean_first_poisson = nanmean(psth_first_trials);
-        key_ROI4(i_roi).block_mean_begin_poisson = nanmean(psth_begin_trials);
-        key_ROI4(i_roi).block_mean_mid_poisson = nanmean(psth_mid_trials);
-        key_ROI4(i_roi).block_mean_end_poisson = nanmean(psth_end_trials);
-        
-        [p,~] = ranksum(psth_first_trials,psth_begin_trials);
-        key_ROI4(i_roi).block_mean_pval_first_begin_poisson = p;
-        [p,~] = ranksum(psth_first_trials,psth_end_trials);
-        key_ROI4(i_roi).block_mean_pval_first_end_poisson = p;
-        [p,~] = ranksum(psth_begin_trials,psth_end_trials);
-        key_ROI4(i_roi).block_mean_pval_begin_end_poisson = p;
-        
-        
-        % at peak response time
-        temp =  cell2mat(psth_all_poisson(idx_first)');
-        psth_first_trials_peak = temp(:,idx_peak_first);
-        temp =  cell2mat(psth_all_poisson(idx_begin)');
-        psth_begin_trials_peak = temp(:,idx_peak_begin);
-        temp =  cell2mat(psth_all_poisson(idx_mid)');
-        psth_mid_trials_peak = temp(:,idx_peak_mid);
-        temp =  cell2mat(psth_all_poisson(idx_end)');
-        psth_end_trials_peak = temp(:,idx_peak_end);
-        
-        key_ROI4(i_roi).block_peak_first_poisson = nanmean(psth_first_trials_peak);
-        key_ROI4(i_roi).block_peak_begin_poisson = nanmean(psth_begin_trials_peak);
-        key_ROI4(i_roi).block_peak_mid_poisson = nanmean(psth_mid_trials_peak);
-        key_ROI4(i_roi).block_peak_end_poisson = nanmean(psth_end_trials_peak);
-        
-        [p,~] = ranksum(psth_first_trials_peak,psth_begin_trials_peak);
-        key_ROI4(i_roi).block_peak_pval_first_begin_poisson = p;
-        [p,~] = ranksum(psth_first_trials_peak,psth_end_trials_peak);
-        key_ROI4(i_roi).block_peak_pval_first_end_poisson = p;
-        [p,~] = ranksum(psth_begin_trials_peak,psth_end_trials_peak);
-        key_ROI4(i_roi).block_peak_pval_begin_end_poisson = p;
-        
-        
-        %         k2=key_ROI4(i_roi);
-        %         insert(self4, k2);
-        
-    catch
-    end
     
-    %     k2=key_ROI1(i_roi);
-    %     insert(self, k2);
-    %     k2=key_ROI2(i_roi);
-    %     insert(self2, k2);
+        
+     
+  
     
 end
 insert(self, key_ROI1);
 insert(self2, key_ROI2);
-try
-    insert(self3, key_ROI3);
-catch
-end
-try
-    insert(self4, key_ROI4);
-catch
-end

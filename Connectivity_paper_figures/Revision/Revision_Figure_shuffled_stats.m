@@ -10,7 +10,10 @@ PAPER_graphics_definition_Sup_Figure2
 
 rel_roi=PAPER.ROILICK2DInclusion;
 
-rel_signif = LICK2D.ROILick2DPSTHSpikesPvalue & 'psth_regular_modulation_pval>=0.05' & rel_roi;
+rel_signif = LICK2D.ROILick2DPSTHSpikesPvalue & 'psth_regular_modulation_pval<=0.05' & rel_roi;
+
+rel_signif2 = LICK2D.ROILick2DPSTHSpikesModulation & 'psth_regular_modulation>=25' & rel_roi;
+
 
 % Temporal modulation
 axes('position',[position_x1(1),position_y1(1), panel_width1, panel_height1])

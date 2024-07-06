@@ -38,9 +38,7 @@ classdef ROILick2DPSTHSpikesPoisson2ModelsRevision < dj.Imported
             
             %Also populates: 
             % LICK2D.ROILick2DPSTHStatsSpikesPoisson
-            % LICK2D.ROILick2DPSTHBlockSpikesPoisson 
-            % LICK2D.ROILick2DPSTHBlockStatsSpikesPoisson
-            
+
         end
     end
 end

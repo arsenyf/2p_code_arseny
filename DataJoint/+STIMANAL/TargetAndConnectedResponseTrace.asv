@@ -14,7 +14,7 @@ connection_p_value                 : double          # p_value of the connection
 
 classdef TargetAndConnectedResponseTrace < dj.Computed
     properties
-        keySource = EXP2.SessionEpoch &   (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1');
+        keySource = EXP2.SessionEpoch & (STIMANAL.ROIResponseDirectUnique & 'response_p_value1<=0.05') &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1');
     end
     methods(Access=protected)
         function makeTuples(self, key)
