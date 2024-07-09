@@ -1,399 +1,256 @@
 %{
-# ROI responses to each photostim group.
+# ROI responses to each photostim group. We only take groups based on unique target with signficance response of target, and significant response of connected neurons. Response of connected neurons can be positive or negative. Data is based on z-score traces of deconvolved df/f trace
 -> IMG.PhotostimGroup
--> IMG.ROI                # ROI number of the target neuron
----
 -> IMG.ROI                # ROI number of the connected neuron
-target_response_trace_trials       : longblob        # response trace at each trial
-connected_response_trace_trials    : longblob        # mean postsynpatic response trace, for all trials
-legit_trials_index                 : longblob        # legit trials for each target, that are not contaminated by stimulation of other nearby targets
-time_vector                        : blob            # time vector (seconds) of the response, 0 is target photostimulation time
-connection_p_value                 : double          # p_value of the connection
+---
+target_response_p_value1=null           : double      # p_value of the target neuron at peak
+target_response_peak_mean=null          : float       # target neuron response during the 1s photostimulation time window, average across trial
+target_response_trace_mean=null         : blob        # target neuron response trace , average across trial
+target_response_trace_trials=null       : longblob    # target neuron response trace at each trial
+connected_response_p_value1=null        : double      # p_value of the response of the connected neuron at peak
+connected_response_peak_mean=null       : float       # connected neuron response during the 1s photostimulation time window, average across trial
+connected_response_trace_mean=null      : blob        # connected neuron response trace, average across trial
+connected_response_trace_trials=null    : longblob    # connected neuron response trace, average across trial
+connected_distance_lateral_um=null      : float       # (um) lateral (X-Y) distance from target to a connected neuron
+connected_distance_axial_um=null        : float       # (um) axial (Z) distance from target to a connected neuron
+connected_distance_3d_um=null           : float       # (um)  3D distance from target to a connected neuron
+time_vector=null                        : blob        # time vector (seconds) of the response, 0 is target photostimulation time
+legit_trials_index=null                 : blob        # legit trials for each connected neuron, that are not contaminated by stimulation of other nearby targets
+num_of_target_trials_used=null          : blob        # total number of legit trials for each connected neuron, that are not contaminated by stimulation of other nearby targets
+
+
 %}
 
 
 classdef TargetAndConnectedResponseTrace < dj.Computed
     properties
-        keySource = EXP2.SessionEpoch &   (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1');
+        keySource = EXP2.SessionEpoch & (STIM.ROIResponseDirectUnique & 'response_p_value1<=0.05') &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1');
     end
     methods(Access=protected)
         function makeTuples(self, key)
             
-            dir_base = fetch1(IMG.Parameters & 'parameter_name="dir_root_save"', 'parameter_value');
-            dir_current_fig = [dir_base  '\Photostim\photostim_traces\coupled_analysis_for_ilan_paper_new_all\'];
-            
-            session_date = fetch1(EXP2.Session & key,'session_date');
-            dir_current_fig = [dir_current_fig '\anm' num2str(key.subject_id) '\session_' num2str(key.session) '_' session_date  '\epoch' num2str(key.session_epoch_number) '\'];
-            
-            
             min_distance_to_closest_target=25; % in microns
-            
-            close all;
-            frame_window_short=[40,40]/4;
-            frame_window_long=[56,110]/2;
+            frame_window_long=[56,220]/2;
             flag_baseline_trial_or_avg=0; %1 baseline per trial, 0 - baseline averaged across trials
+            
+            %             rel=STIM.ROIInfluence2 & 'response_p_value1<=0.05' & sprintf('response_distance_lateral_um >%.2f', min_distance_to_closest_target) & 'response_mean>0';
+            
+            
+            
+            %%
+            distance_to_exclude_all=50; %microns; Excluding all frames during stimulation of other targets in the vicinity (distance_to_exclude_all) of the potentially connected cell
+            
+            minimal_number_of_clean_trials=20; %to include; trials that are not affected by random stimulations of nearby targets
+            
+            rel_roi = (IMG.ROI-IMG.ROIBad)  & key;
+            rel_roi_xy = (IMG.ROIPositionETL-IMG.ROIBad)  & key; % XYZ coordinate correction of ETL abberations based on ETL callibration
+            
+            
+            rel_data = (IMG.ROISpikes -IMG.ROIBad)  & key;
+            %             rel_data = IMG.ROIdeltaF;
+            
+            
+            try
+                frame_rate= fetch1(IMG.FOVEpoch & key, 'imaging_frame_rate');
+            catch
+                frame_rate = fetch1(IMG.FOV & key, 'imaging_frame_rate');
+            end
+            group_list = fetchn((IMG.PhotostimGroup & key),'photostim_group_num','ORDER BY photostim_group_num');
+            G=fetch(IMG.PhotostimGroupROI & (STIM.ROIResponseDirectUnique & (STIMANAL.NeuronOrControl & 'neurons_or_control=1')) & key ,'*','ORDER BY photostim_group_num');
+            group_list=[G.photostim_group_num];
+            
+            photostim_protocol =  fetch(IMG.PhotostimProtocol & key,'*');
+            if ~isempty(photostim_protocol)
+                timewind_response=[0.05,0.5];
+            else %default, only if protocol is missing
+                timewind_response=[0.05,0.5];
+            end
+            time=(-frame_window_long(1):1:frame_window_long(2)-1)/frame_rate;
+            
+            %             time =[-3:1:3]./frame_rate;
             
             
             zoom =fetch1(IMG.FOVEpoch & key,'zoom');
             kkk.scanimage_zoom = zoom;
-            %             pix2dist=  fetch1(IMG.Zoom2Microns & kkk,'fov_microns_size_x') / fetch1(IMG.FOV & key, 'fov_x_size');
+            pix2dist=  fetch1(IMG.Zoom2Microns & kkk,'fov_microns_size_x') / fetch1(IMG.FOV & key, 'fov_x_size');
+            
+            %  distance_to_closest_neuron = distance_to_closest_neuron/pix2dist; % in pixels
+            
+            roi_list=fetchn(rel_roi,'roi_number','ORDER BY roi_number');
+            roi_plane_num=fetchn(rel_roi,'plane_num','ORDER BY roi_number');
+            roi_z=fetchn(rel_roi*IMG.ROIdepth,'z_pos_relative','ORDER BY roi_number');
+            
+            % to correct for ETL abberations
+            R_x = fetchn(rel_roi_xy ,'roi_centroid_x_corrected','ORDER BY roi_number');
+            R_y = fetchn(rel_roi_xy ,'roi_centroid_y_corrected','ORDER BY roi_number');
+            
             try
-                frame_rate= fetch1(IMG.FOVEpoch & key, 'imaging_frame_rate');
+                F_original = fetchn(rel_data ,'dff_trace','ORDER BY roi_number');
             catch
-                frame_rate= fetch1(IMG.FOV & key, 'imaging_frame_rate');
+                F_original = fetchn(rel_data ,'spikes_trace','ORDER BY roi_number');
             end
-            %             min_distance_to_closest_target_pixels=min_distance_to_closest_target/pix2dist;
-            
-            rel=STIM.ROIInfluence2 & 'response_p_value1<=0.05' & sprintf('response_distance_lateral_um >%.2f', min_distance_to_closest_target) & 'response_mean>0';
-            
-            if flag_baseline_trial_or_avg==0 %baseline averaged across trials
-                dir_suffix= 'baseline_avg';
-            elseif flag_baseline_trial_or_avg==1 % baseline per trial
-                dir_suffix= 'baseline_trial';
-            elseif flag_baseline_trial_or_avg==2 % global baseline
-                dir_suffix= 'baseline_global';
-            end
-            session_date = fetch1(EXP2.Session & key,'session_date');
+            F_original=cell2mat(F_original);
             
             
             
-            smooth_bins=2;
+            temp = fetch(IMG.Plane & key);
+            key.fov_num =  temp.fov_num;
+            key.plane_num =  1; % we will put the actual plane_num later
+            key.channel_num =  temp.channel_num;
+            
+            %             if time_bin>0
+            %                 bin_size_in_frame=ceil(time_bin*frame_rate);
+            %                 bins_vector=1:bin_size_in_frame:size(F_original,2);
+            %                 bins_vector=bins_vector(2:1:end);
+            %                 for  i= 1:1:numel(bins_vector)
+            %                     ix1=(bins_vector(i)-bin_size_in_frame):1:(bins_vector(i)-1);
+            %                     F_binned(:,i)=mean(F_original(:,ix1),2);
+            %                 end
+            %                 time = time(1:bin_size_in_frame:end);
+            %             else
+            %                 F_binned=F_original;
+            bin_size_in_frame=1;
+            %             end
+            
+            %             F_binned = gpuArray((F_binned));
+            %             F_binned = F_binned-mean(F_binned,2);
+            F=zscore(F_original,[],2);
+            %             [U,S,V]=svd(F_binned); % S time X neurons; % U time X time;  V neurons x neurons
             
             
             
+            rel_all_sites=(IMG.PhotostimGroup& key);
+            rel_all_sites=rel_all_sites* IMG.PhotostimGroupROI;
+            
+            allsites_num =(fetchn(rel_all_sites,'photostim_group_num','ORDER BY photostim_group_num')');
+            allsites_center_x =(fetchn(rel_all_sites,'photostim_center_x','ORDER BY photostim_group_num')');
+            allsites_center_y =(fetchn(rel_all_sites,'photostim_center_y','ORDER BY photostim_group_num')');
+            
+            allsites_photostim_frames =(fetchn(rel_all_sites,'photostim_start_frame','ORDER BY photostim_group_num')');
+            allsites_photostim_frames_unique = unique(floor(cell2mat(allsites_photostim_frames)./bin_size_in_frame));
             
             
             
-            %
-            %             %Graphics
-            %             %---------------------------------
-            %             figure;
-            %             set(gcf,'DefaultAxesFontName','helvetica');
-            %             set(gcf,'PaperUnits','centimeters','PaperPosition',[0 0 23 30]);
-            %             set(gcf,'PaperOrientation','portrait');
-            %             set(gcf,'Units','centimeters','Position',get(gcf,'paperPosition')+[3 0 0 0]);
-            %             set(gcf,'color',[1 1 1]);
-            %
-            %             panel_width=0.3;
-            %             panel_height=0.3;
-            %             horizontal_distance=0.4;
-            %             vertical_distance=0.35;
-            %
-            %             position_x(1)=0.13;
-            %             position_x(end+1)=position_x(end) + horizontal_distance;
-            %
-            %             position_y(1)=0.5;
-            %             position_y(end+1)=position_y(end) - vertical_distance;
-            
-            
-            G=fetch(IMG.PhotostimGroupROI & (STIM.ROIResponseDirectUnique & (STIMANAL.NeuronOrControl & 'neurons_or_control=1')) & key ,'*','ORDER BY photostim_group_num');
-            
-            group_list=[G.photostim_group_num];
-            
-            
-            
-            
-            time=(-frame_window_long(1):1:frame_window_long(2)-1)/frame_rate;
-            
-            
-            
-            for i_g=1:1:numel(group_list)
-                key.photostim_group_num = group_list(i_g);
-                
-                
+            for i_g = 1:1:numel(group_list) %parfor
                 k1=key;
-                signif_roi=[];
-                %     signif_roi = fetchn(rel & k1 ,'roi_number','ORDER BY roi_number');
-                %     response_p_value = fetchn(rel & k1 ,'response_p_value','ORDER BY roi_number');
-                %     response_mean = fetchn(rel & k1 ,'response_mean','ORDER BY roi_number');
-                %     response_distance_pixels = fetchn(rel & k1 ,'response_distance_pixels','ORDER BY roi_number');  % in pixels
-                %     response_distance_pixels = response_distance_pixels * pix2dist; % in microns
-                DATA =fetch(rel & k1 ,'*','ORDER BY roi_number');
-                signif_roi = [DATA.roi_number];
-                %     flag_distance_flag=5
-                %         if flag_distance_flag==0 % lateral distance
-                %         distance=[DATA.response_distance_pixels];
-                %         distance=pix2dist*distance;
-                %     elseif flag_distance_flag==1 % axial distance
-                %         distance=[DATA.response_distance_axial_um];
-                %     elseif flag_distance_flag==2 % 3D distance
-                %         distance=[DATA.response_distance_3d_um];
-                %         end
+                k1.photostim_group_num = group_list(i_g);
+                
+                %Response of the directly stimulated cell
+                %--------------------------------------------------------------
+                photostim_start_frame = fetch1(IMG.PhotostimGroup &  STIM.ROIResponseDirectUnique & k1,'photostim_start_frame');
+                roi_number_direct_unique = fetch1(STIM.ROIResponseDirectUnique & k1,'roi_number');
+                target_response_peak_mean = fetch1(STIM.ROIResponseDirectUnique & k1,'response_mean');
+                target_response_p_value1 = fetch1(STIM.ROIResponseDirectUnique & k1,'response_p_value1');
+                target_photostim_frames = fetch1(IMG.PhotostimGroup & k1,'photostim_start_frame');
+                target_photostim_frames=floor(target_photostim_frames./bin_size_in_frame);
+                
+                f_trace_direct=F(roi_number_direct_unique,:);
+                %         global_baseline=mean(movmin(f_trace_direct(i_epoch,:),1009));
+                global_baseline=mean( f_trace_direct);
+                
+                %                 timewind_response = [ 0 2];
+                timewind_response = [ 0 2];
+                timewind_baseline1 = [ -5 0];
+                timewind_baseline2  = [-5 0] ;
+                timewind_baseline3  = [ -5 0];
+                [StimStat_direct,StimTrace_direct] = fn_compute_photostim_response_variability (f_trace_direct , photostim_start_frame, timewind_response, timewind_baseline1,timewind_baseline2,timewind_baseline3, flag_baseline_trial_or_avg, global_baseline, time);
                 
                 
-                response_trials_direct = fetchn(STIMANAL.ROIResponseDirectVariability & key,'response_peak_trials');
-                response_trials_direct=response_trials_direct{1};
-                %                 idx_weak = response_trials_direct<=0.25;
-                %                 idx_strong = response_trials_direct>=0.75;
                 
-                weak_response_threshold = prctile(response_trials_direct,20);
-                strong_response_threshold = prctile(response_trials_direct,80);
-                
-                idx_weak = response_trials_direct<=weak_response_threshold;
-                idx_strong = response_trials_direct>=strong_response_threshold;
-                %                 idx_no_response = response_trials_direct<=0.25;
-                
-                
-                response_trace_trials_direct = fetch1(STIMANAL.ROIResponseDirectVariability & key,'response_trace_trials');
-                time_vector_direct = fetch1(STIMANAL.ROIResponseDirectVariability & key,'time_vector');
+                g_x = fetch1(IMG.PhotostimGroupROI & k1,'photostim_center_x');
+                g_y = fetch1(IMG.PhotostimGroupROI & k1,'photostim_center_y');
                 
                 
                 
                 
-                for i_r = 1:1:numel(signif_roi)  %parfor
-                    kk_insert = fetch( STIM.ROIResponseDirect2 & key);
-                    kk_insert.roi_number =DATA(i_r).roi_number;
-                    kk_insert.plane_num = DATA(i_r).plane_num;
+                rel_connected_cells=STIM.ROIInfluence2 & 'response_p_value1<=0.05' & sprintf('response_distance_lateral_um >%.2f', min_distance_to_closest_target) & k1;
+                CONNECTED = fetch(rel_connected_cells, 'roi_number','response_mean', 'response_p_value1','response_distance_lateral_um','response_distance_axial_um','response_distance_3d_um', 'ORDER BY roi_number');
+                roi_number_connected = [CONNECTED.roi_number];
+                
+                
+                k_response = repmat(k1,numel(roi_number_connected),1);
+                
+                for i_r= 1:1:numel(roi_number_connected)
+                    idx_roi_in_list = find(roi_list==roi_number_connected(i_r));
+                    k_response(i_r).roi_number = roi_number_connected(i_r);
+                    k_response(i_r).plane_num = roi_plane_num(idx_roi_in_list);
+                    f_trace=F(idx_roi_in_list,:);
                     
                     
-                    %% response direct
-                    %__________________________________________________________
+                    % Excluding all frames during stimulation of other targets in the vicinity of the potentially connected cell
+                    dx = allsites_center_x - R_x(idx_roi_in_list);
+                    dy = allsites_center_y - R_y(idx_roi_in_list);
+                    distance2D = sqrt(dx.^2 + dy.^2)*pix2dist; %
+                    idx_allsites_near = distance2D<=distance_to_exclude_all   & ~ (allsites_num== group_list(i_g));
+                    allsites_photostim_frames_near = cell2mat(allsites_photostim_frames(idx_allsites_near));
+                    allsites_photostim_frames_near = unique(floor(allsites_photostim_frames_near./bin_size_in_frame));
+                    %                         idx_allsites_far = distance2D>distance_to_exclude_all   & ~ (allsites_num== group_list(i_g));
+                    %                         allsites_photostim_frames_far = cell2mat(allsites_photostim_frames(idx_allsites_far));
+                    %                         allsites_photostim_frames_far = unique(floor(allsites_photostim_frames_far./bin_size_in_frame));
                     
-                    %                     ax1=axes('position',[position_x(1), position_y(1), panel_width, panel_height]);
+                    % Finding baseline frames (not during target stimulation) that are not affected by stimulation of other targets in the vicinity in the vicinity of the potentially connected cell
+                    baseline_frames_clean=allsites_photostim_frames_unique(~ismember(allsites_photostim_frames_unique, [allsites_photostim_frames_near-1, allsites_photostim_frames_near, allsites_photostim_frames_near+1]));
+                    baseline_frames_clean=baseline_frames_clean(~ismember(baseline_frames_clean, [target_photostim_frames-1, target_photostim_frames, target_photostim_frames+1]));
                     
-                    %% all
-                    y=response_trace_trials_direct;
-                    %                     y_smooth=  movmean(mean(y),[smooth_bins 0], 2, 'omitnan','Endpoints','shrink');
-                    %                     ystem=std(y)./sqrt(size(y,1));
-                    %                     ystem_smooth=  movmean(ystem,[smooth_bins 0], 2, 'omitnan','Endpoints','shrink');
-                    %
-                    %                     max_epoch=max(y_smooth);
-                    %                     min_epoch=min(y_smooth);
-                    %                     hold on;
-                    %                     plot(time_vector_direct,y_smooth,'Color',[ 0 0 0],'LineWidth',3);
-                    %                     shadedErrorBar(time_vector_direct,y_smooth,ystem_smooth,'lineprops',{'-','Color',[0 0 0]})
+                    %                         if numel(baseline_frames_clean)<100
+                    %                             baseline_frames_clean=allsites_photostim_frames_far;
+                    %                             k_response(i_r).num_of_baseline_trials_used =  0;
+                    %                         else
+                    %                             k_response(i_r).num_of_baseline_trials_used =  numel(baseline_frames_clean);
+                    %                         end
+                    %                         if numel(baseline_frames_clean)>3
+                    %                             baseline_frames_clean(1)=[];
+                    %                             baseline_frames_clean(end)=[];
+                    %                         end
                     
+                    % Finding frames during target stimulation that are not affected by stimulation of other targets in the vicinity of the potentially connected cells
+                    target_photostim_frames_clean=target_photostim_frames(~ismember(target_photostim_frames, [allsites_photostim_frames_near-1, allsites_photostim_frames_near, allsites_photostim_frames_near+1]));
                     
-                    %% below 25 response percentile
-                    y=response_trace_trials_direct(idx_weak,:);
-                    %                     y_smooth=  movmean(mean(y),[smooth_bins 0], 2, 'omitnan','Endpoints','shrink');
-                    %                     ystem=std(y)./sqrt(size(y,1));
-                    %                     ystem_smooth=  movmean(ystem,[smooth_bins 0], 2, 'omitnan','Endpoints','shrink');
-                    %
-                    %                     max_epoch=max(y_smooth);
-                    %                     min_epoch=min(y_smooth);
-                    %                     hold on;
-                    %                     plot(time_vector_direct,y_smooth,'Color',[ 0 0 1],'LineWidth',3);
-                    %                     shadedErrorBar(time_vector_direct,y_smooth,ystem_smooth,'lineprops',{'-','Color',[0.5 0.5 1]})
-                    
-                    
-                    %                     %% no response
-                    %                     if sum(idx_no_response)>=2
-                    %                         y=response_trace_trials_direct(idx_no_response,:);
-                    %                     y_smooth=  movmean(mean(y),[smooth_bins 0], 2, 'omitnan','Endpoints','shrink');
-                    %                     ystem=std(y)./sqrt(size(y,1));
-                    %                     ystem_smooth=  movmean(ystem,[smooth_bins 0], 2, 'omitnan','Endpoints','shrink');
-                    %
-                    %                     max_epoch=max(y_smooth);
-                    %                     min_epoch=min(y_smooth);
-                    %                     hold on;
-                    %                      plot(time_vector_direct,y_smooth,'Color',[ 0 0 1]);
-                    % %                     shadedErrorBar(time_vector_direct,y_smooth,ystem_smooth,'lineprops',{'-','Color',[0 0 0]})
-                    %
-                    %                     end
-                    
-                    %% above 75 response percentile
-                    y=response_trace_trials_direct(idx_strong,:);
-                    %                     y_smooth=  movmean(mean(y),[smooth_bins 0], 2, 'omitnan','Endpoints','shrink');
-                    %                     ystem=std(y)./sqrt(size(y,1));
-                    %                     ystem_smooth=  movmean(ystem,[smooth_bins 0], 2, 'omitnan','Endpoints','shrink');
-                    %
-                    %                     max_epoch=max(y_smooth+ystem);
-                    %                     min_epoch=min(y_smooth-ystem);
-                    %                     hold on;
-                    %                     plot(time_vector_direct,y_smooth,'Color',[ 1 0 0],'LineWidth',3);
-                    %                     %                     shadedErrorBar(time_vector_direct,y_smooth,ystem_smooth,'lineprops',{'-','Color',[1 0 0]})
-                    %
-                    %
-                    %
-                    %                     ylim ([min([-0.2,min_epoch]),max([1 ,max_epoch])]);
-                    %                     xlabel('        Time from photostimulation (s)');
-                    %                     ylabel('Response (\DeltaF/F)')
-                    %                     %         title(sprintf('Coupled responses \n Target # %d   ROI=%d \n Distance = %.1f (um), Amplitude %.2f, p-val=%.6f  \n',G(i_g).photostim_group_num, k2.roi_number, DATA(i_r).response_distance_pixels * pix2dist,  DATA(i_r).response_mean,  DATA(i_r).response_p_value));
-                    %
-                    %
-                    %                     %         title(sprintf('Photostim group=%d    ROI=%d    \n p=%.6f  distance = %.1f (pixels) response mean %.2f',G(i_g).photostim_group_num, k2.roi_number, response_p_value(i_r), response_distance_pixels(i_r), response_mean(i_r)));
-                    %                     set(gca,'FontSize',24);
-                    %                     %                     title(sprintf('anm %d, session %d \n Coupled responses \n Target # %d   ROI=%d \n Distance lateral = %.1f (um) \n Distance axial = %.1f (um) \n Distance 3D = %.1f (um)\n Amplitude %.2f, p-val=%.6f  \n \n \n',k2.subject_id,k2.session, G(i_g).photostim_group_num, k2.roi_number, DATA(i_r).response_distance_lateral_um, DATA(i_r).response_distance_axial_um, DATA(i_r).response_distance_3d_um, DATA(i_r).response_mean,  DATA(i_r).response_p_value1),'FontSize',10);
-                    %
-                    %                     set(gca,'Ytick',[0, 1]);
-                    %
-                    %                     xlim ([-5,10]);
-                    %
-                    %                     %                    title(sprintf('Photostim group=%d    ROI=%d    \n p=%.6f  distance = %.1f (pixels) response mean %.2f',G(i_g).photostim_group_num, k2.roi_number, response_p_value(i_r), response_distance_pixels(i_r), response_mean(i_r)));
-                    %
-                    %
-                    %                     title([sprintf('''Pre-synaptic''')]);
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    %%
-                    
-                    
-                    %% response coupled
-                    %__________________________________________________________
-                    k2=k1;
-                    k2.roi_number = signif_roi(i_r);
-                    
-                    
-                    
-                    photostim_start_frame = fetch1(IMG.PhotostimGroup & STIM.ROIResponseDirect2 & k2,'photostim_start_frame');
-                    
-                    f_trace_direct = fetch1(IMG.ROITrace & k2,'f_trace');
-                    
-                    global_baseline=mean( f_trace_direct);
-                    
-                    timewind_response = [ 0 2];
-                    timewind_baseline1 = [ -5 0];
-                    timewind_baseline2  = [-5 0] ;
-                    timewind_baseline3  = [ -5 0];
-                    [StimStat,StimTrace] = fn_compute_photostim_response_variability (f_trace_direct , photostim_start_frame, timewind_response, timewind_baseline1,timewind_baseline2,timewind_baseline3, flag_baseline_trial_or_avg, global_baseline, time);
-                    
-                    response_trials_coupled = StimStat.response_peak_trials;
-                    
-                    
-                    %                     hold on;
-                    %
-                    %
-                    %
-                    %
-                    %                     %% POST_SYNAPTIC TRACE
-                    %
-                    %                     ax1=axes('position',[position_x(2), position_y(1), panel_width, panel_height]);
-                    %% all
-                    y=StimTrace.response_trace_trials;
-                    y_smooth=  movmean(mean(y),[smooth_bins 0], 2, 'omitnan','Endpoints','shrink');
-                    ystem=std(y)./sqrt(size(y,1));
-                    ystem_smooth=  movmean(ystem,[smooth_bins 0], 2, 'omitnan','Endpoints','shrink');
-                    
-                    %                     max_epoch=max(y_smooth);
-                    %                     min_epoch=min(y_smooth);
-                    %                     hold on;
-                    %                     plot(time(1:end-1),y_smooth,'Color',[ 0 0 0],'LineWidth',3);
-                    %                     shadedErrorBar(time(1:end-1),y_smooth,ystem_smooth,'lineprops',{'-','Color',[0 0 0]})
-                    
-                    kk_insert.response_trace_mean_all = mean(y);
-                    kk_insert.response_trace_stem_all = ystem;
-                    
-                    
-                    
-                    
-                    %% below 25 response percentile
-                    y=StimTrace.response_trace_trials(idx_weak,:);
-                    y_smooth=  movmean(mean(y),[smooth_bins 0], 2, 'omitnan','Endpoints','shrink');
-                    ystem=std(y)./sqrt(size(y,1));
-                    ystem_smooth=  movmean(ystem,[smooth_bins 0], 2, 'omitnan','Endpoints','shrink');
-                    
-                    %                     max_epoch=max(y_smooth);
-                    %                     min_epoch=min(y_smooth);
-                    %                     hold on;
-                    %                     plot(time(1:end-1),y_smooth,'Color',[ 0 0 1],'LineWidth',3);
-                    %                     %                     shadedErrorBar(time(1:end-1),y_smooth,ystem_smooth,'lineprops',{'-','Color',[0.5 0.5 1]})
-                    
-                    kk_insert.response_trace_mean_presynaptic_weak = mean(y);
-                    kk_insert.response_trace_stem_presynaptic_weak = ystem;
-                    
-                    
-                    
-                    %                     %% no response
-                    %                     if sum(idx_no_response)>=2
-                    %                         y=StimTrace.response_trace_trials(idx_no_response,:);
-                    %                         y_smooth=  movmean(mean(y),[smooth_bins 0], 2, 'omitnan','Endpoints','shrink');
-                    %                         ystem=std(y)./sqrt(size(y,1));
-                    %                         ystem_smooth=  movmean(ystem,[smooth_bins 0], 2, 'omitnan','Endpoints','shrink');
-                    %
-                    %                         max_epoch=max(y_smooth);
-                    %                         min_epoch=min(y_smooth);
-                    %                         hold on;
-                    % %                         plot(time(1:end-1),y_smooth,'Color',[ 1 0 0]);
-                    %                         shadedErrorBar(time(1:end-1),y_smooth,ystem_smooth,'lineprops',{'-','Color',[0 0 0]})
-                    %                     end
-                    
-                    
-                    %% above 75 response percentile
-                    y=StimTrace.response_trace_trials(idx_strong,:);
-                    y_smooth=  movmean(mean(y),[smooth_bins 0], 2, 'omitnan','Endpoints','shrink');
-                    ystem=std(y)./sqrt(size(y,1));
-                    ystem_smooth=  movmean(ystem,[smooth_bins 0], 2, 'omitnan','Endpoints','shrink');
-                    %                     max_epoch=max(y_smooth+ystem);
-                    %                     min_epoch=min(y_smooth-ystem);
-                    %                     hold on;
-                    %                     plot(time(1:end-1),y_smooth,'Color',[ 1 0 0],'LineWidth',3);
-                    %                     %                     shadedErrorBar(time(1:end-1),y_smooth,ystem_smooth,'lineprops',{'-','Color',[1 0 0]})
-                    %                     ylim ([min([-0.2,min_epoch]),max([1 ,max_epoch])]);
-                    %                     %                     xlabel('Time from photostimulation(s)');
-                    %                     %                     ylabel('Response(\Delta F/F)')
-                    %                     %         title(sprintf('Coupled responses \n Target # %d   ROI=%d \n Distance = %.1f (um), Amplitude %.2f, p-val=%.6f  \n',G(i_g).photostim_group_num, k2.roi_number, DATA(i_r).response_distance_pixels * pix2dist,  DATA(i_r).response_mean,  DATA(i_r).response_p_value));
-                    %                     title([sprintf('''Post-synaptic''')]);
-                    %                     set(gca,'FontSize',24);
-                    %                     set(gca,'Ytick',[0, 1]);
-                    %                     xlim ([-5,10]);
-                    %                     text(0,1.5,sprintf('anm %d, session %d \n Coupled responses \n Target # %d   ROI=%d \n Distance lateral = %.1f (um) \n Distance axial = %.1f (um) \n Distance 3D = %.1f (um)\n Amplitude %.2f, p-val=%.6f  \n ',k2.subject_id,k2.session, G(i_g).photostim_group_num, k2.roi_number, DATA(i_r).response_distance_lateral_um, DATA(i_r).response_distance_axial_um, DATA(i_r).response_distance_3d_um, DATA(i_r).response_mean,  DATA(i_r).response_p_value1),'FontSize',10);
-                    
-                    kk_insert.response_trace_mean_presynaptic_strong = mean(y);
-                    kk_insert.response_trace_stem_presynaptic_strong = ystem;
-                    
-                    
-                    %                     %% histogram
-                    %                     ax1=axes('position',[position_x(1), position_y(2), panel_width, panel_height/2]);
-                    %                     hold on
-                    %                     hist_bins=linspace(-max(response_trials_direct),max(response_trials_direct),15);
-                    %                     hhh=histogram(response_trials_direct,hist_bins,'FaceColor',[0.5 0.5 0.5]);
-                    %                     %                     xlabel([sprintf('''Pre-synaptic'' response \n peak ') ('(\Delta F/F)')]);
-                    %                     xlabel([sprintf('Response peak ') ('(\Delta F/F)')]);
-                    %                     title([sprintf('''Pre-synaptic''')]);
-                    %
-                    %                     ylabel('Counts (trials)');
-                    %                     set(gca,'FontSize',24);
-                    %                     plot([weak_response_threshold weak_response_threshold], [0,max(hhh.Values)*1.2],'Color',[0 0 1],'LineWidth',3)
-                    %                     plot([strong_response_threshold strong_response_threshold], [0,max(hhh.Values)*1.2],'Color',[1 0 0],'LineWidth',3)
-                    
-                    try
-                        r=corr(response_trials_direct,response_trials_coupled);
-                    catch
-                        r=NaN;
+                    if numel(target_photostim_frames_clean)<minimal_number_of_clean_trials % if there are too few trials, we don't analyze this pair
+                        target_photostim_frames_clean=target_photostim_frames;
+                        k_response(i_r).num_of_target_trials_used =  0;
+                    else
+                        k_response(i_r).num_of_target_trials_used =  numel(target_photostim_frames_clean);
                     end
-                    %                     ax2=axes('position',[position_x(2), position_y(2), panel_width, panel_height/2]);
-                    %                     hist_bins=linspace(-max(response_trials_coupled),max(response_trials_coupled),15);
-                    %                     histogram(response_trials_coupled,hist_bins,'FaceColor',[0.5 0.5 0.5]);
-                    % %                     xlabel([sprintf('''Post-synaptic'' response \n peak ') ('(\Delta F/F)')]);
-                    % %                     ylabel('Counts (trials)');
-                    %                     set(gca,'FontSize',24);
-                    %                     title(sprintf('  <pre-synaptic,post-synaptic> \n correlation r = %.2f',r),'FontSize',16)
+                    legit_trials_index = ismember(target_photostim_frames,target_photostim_frames_clean);
+                    
+                    dx = g_x - R_x(idx_roi_in_list);
+                    dy = g_y - R_y(idx_roi_in_list);
+                    distance2D = sqrt(dx.^2 + dy.^2); %pixels
+                    distance3D = sqrt( (dx*pix2dist).^2 + (dy*pix2dist).^2 + roi_z(idx_roi_in_list).^2); %um
+                    
+                    %                         i_r
+                    %                         single(distance2D*pix2dist)
+%                     k_response(i_r).response_distance_lateral_um = single(distance2D*pix2dist);
+%                     k_response(i_r).response_distance_axial_um = single(roi_z(idx_roi_in_list));
+%                     k_response(i_r).response_distance_3d_um = single(distance3D);
                     
                     
-                    %                     if isempty(dir(dir_current_fig))
-                    %                         mkdir (dir_current_fig)
-                    %                     end
-                    %                     %
-                    %                     filename=['photostim_group_' num2str(group_list(i_g)) '_roi_' num2str(signif_roi(i_r))];
-                    %                     figure_name_out=[ dir_current_fig filename];
-                    %                     eval(['print ', figure_name_out, ' -dtiff  -r100']);
-                    %
-                    %
-                    %                     clf
-                    %
+                    %Response of the connected neuron
+                    %----------------------------------------------------------------------------------------------------
+                    [StimStat_connected StimTrace_connected] = fn_compute_photostim_delta_influence5_single_trials (f_trace, target_photostim_frames_clean,baseline_frames_clean, timewind_response, time);
                     
+                    k_response(i_r).target_response_peak_mean =target_response_peak_mean;
+                    k_response(i_r).target_response_p_value1 =target_response_p_value1;
+                    k_response(i_r).target_response_trace_mean = StimTrace_direct.response_trace_mean;
+                    k_response(i_r).target_response_trace_trials =StimTrace_direct.response_trace_trials;
                     
-                    kk_insert.response_trace_trials = StimTrace.response_trace_trials;
-                    
-                    kk_insert.response_mean_trials = StimStat.response_trials;
-                    kk_insert.response_peak_trials = StimStat.response_peak_trials;
-                    
-                    kk_insert.pre_post_synaptic_response_correlation = r;
-                    
-                    kk_insert.time_vector = time(1:end-1);
-                    insert(self, kk_insert);
-                    
-                    
+                    k_response(i_r).connected_response_trace_mean = StimTrace_connected.response_trace_mean;
+                    k_response(i_r).connected_response_trace_trials =StimTrace_connected.response_trace_trials;
+                    k_response(i_r).connected_response_p_value1 = CONNECTED(i_r).response_p_value1;
+                    k_response(i_r).connected_response_peak_mean = CONNECTED(i_r).response_mean;
+                    k_response(i_r).connected_distance_lateral_um = CONNECTED(i_r).response_distance_lateral_um;
+                    k_response(i_r).connected_distance_axial_um = CONNECTED(i_r).response_distance_axial_um;
+                    k_response(i_r).connected_distance_3d_um = CONNECTED(i_r).response_distance_3d_um;
+
+                    k_response(i_r).legit_trials_index =legit_trials_index;
+                    k_response(i_r).time_vector =time;
+                end
+                if numel(roi_number_connected>0)
+                    insert(self, k_response);
                 end
             end
-            
-            
         end
     end
 end
+
