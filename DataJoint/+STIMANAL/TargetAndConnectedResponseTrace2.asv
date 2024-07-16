@@ -22,30 +22,12 @@ num_of_target_trials_used=null          : blob        # total number of legit tr
 %}
 
 
-classdef TargetAndConnectedResponseTrace < dj.Computed
+classdef TargetAndConnectedResponseTrace2 < dj.Computed
     properties
         keySource = EXP2.SessionEpoch & (STIM.ROIResponseDirectUnique & 'response_p_value1<=0.05') &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1');
     end
     methods(Access=protected)
         function makeTuples(self, key)
-            
-%             %% Example code how to use this table:
-%             % Plot response of directly stimulated cells
-%             Response_all_direct=fetchn(STIMANAL.TargetAndConnectedResponseTrace & 'target_response_p_value1<0.01' & 'target_response_peak_mean>0','target_response_trace_mean');
-%             Response_all_direct = cell2mat(Response_all_direct);
-%             time_vector = fetch1(STIMANAL.TargetAndConnectedResponseTrace,'time_vector', 'LIMIT 1');
-%             plot(time_vector,mean(Response_all_direct ),'-r');
-
-%             % Plot response of connected cells cells
-%             hold on
-%             Response_all_connected=fetchn(STIMANAL.TargetAndConnectedResponseTrace & 'connected_response_p_value1<0.01' & 'connected_response_peak_mean>0','connected_response_trace_mean');
-%             Response_all_connected = cell2mat(Response_all_connected);
-%             time_vector = fetch1(STIMANAL.TargetAndConnectedResponseTrace,'time_vector', 'LIMIT 1')
-%             plot(time_vector,mean(Response_all_connected ),'-b')
-%             
-%            
-%             
-            
             
             min_distance_to_closest_target=25; % in microns
             frame_window_long=[56,220]/2;
@@ -148,7 +130,7 @@ classdef TargetAndConnectedResponseTrace < dj.Computed
             
             
             
-            parfor i_g = 1:1:numel(group_list) %parfor
+            for i_g = 1:1:numel(group_list) %parfor
                 k1=key;
                 k1.photostim_group_num = group_list(i_g);
                 
@@ -186,10 +168,11 @@ classdef TargetAndConnectedResponseTrace < dj.Computed
                 
                 
                 k_response = repmat(k1,numel(roi_number_connected),1);
+                counter=1;
                 for i_r= 1:1:numel(roi_number_connected)
                     idx_roi_in_list = find(roi_list==roi_number_connected(i_r));
-                    k_response(i_r).roi_number = roi_number_connected(i_r);
-                    k_response(i_r).plane_num = roi_plane_num(idx_roi_in_list);
+                    k_response(counter).roi_number = roi_number_connected(i_r);
+                    k_response(counter).plane_num = roi_plane_num(idx_roi_in_list);
                     f_trace=F(idx_roi_in_list,:);
                     
                     
@@ -222,11 +205,11 @@ classdef TargetAndConnectedResponseTrace < dj.Computed
                     % Finding frames during target stimulation that are not affected by stimulation of other targets in the vicinity of the potentially connected cells
                     target_photostim_frames_clean=target_photostim_frames(~ismember(target_photostim_frames, [allsites_photostim_frames_near-1, allsites_photostim_frames_near, allsites_photostim_frames_near+1]));
                     
-                    if numel(target_photostim_frames_clean)<minimal_number_of_clean_trials % if there are too few trials, we don't analyze this pair. We don't suppose to get any such pairs because we include only pairs with more trials then minimal_number_of_clean_trials
+                    if numel(target_photostim_frames_clean)<minimal_number_of_clean_trials % if there are too few trials, we don't analyze this pair
                         target_photostim_frames_clean=target_photostim_frames;
-                        k_response(i_r).num_of_target_trials_used =  0;
+                        k_response(counter).num_of_target_trials_used =  0;
                     else
-                        k_response(i_r).num_of_target_trials_used =  numel(target_photostim_frames_clean);
+                        k_response(counter).num_of_target_trials_used =  numel(target_photostim_frames_clean);
                     end
                     legit_trials_index = ismember(target_photostim_frames,target_photostim_frames_clean);
                     
@@ -246,15 +229,15 @@ classdef TargetAndConnectedResponseTrace < dj.Computed
                     %----------------------------------------------------------------------------------------------------
                     [StimStat_connected StimTrace_connected] = fn_compute_photostim_delta_influence5_single_trials (f_trace, target_photostim_frames_clean,baseline_frames_clean, timewind_response, time);
                     
-                    k_response(i_r).target_response_peak_mean =target_response_peak_mean;
-                    k_response(i_r).target_response_p_value1 =target_response_p_value1;
-                    k_response(i_r).target_response_trace_mean = StimTrace_direct.response_trace_mean;
-                    k_response(i_r).target_response_trace_trials =StimTrace_direct.response_trace_trials;
+                    k_response(counter).target_response_peak_mean =target_response_peak_mean;
+                    k_response(counter).target_response_p_value1 =target_response_p_value1;
+                    k_response(counter).target_response_trace_mean = StimTrace_direct.response_trace_mean;
+                    k_response(counter).target_response_trace_trials =StimTrace_direct.response_trace_trials;
                     
-                    k_response(i_r).connected_response_trace_mean = StimTrace_connected.response_trace_mean;
-                    k_response(i_r).connected_response_trace_trials =StimTrace_connected.response_trace_trials;
-                    k_response(i_r).connected_response_p_value1 = CONNECTED(i_r).response_p_value1;
-                    k_response(i_r).connected_response_peak_mean = CONNECTED(i_r).response_mean;
+                    k_response(counter).connected_response_trace_mean = StimTrace_connected.response_trace_mean;
+                    k_response(counter).connected_response_trace_trials =StimTrace_connected.response_trace_trials;
+                    k_response(counter).connected_response_p_value1 = CONNECTED(i_r).response_p_value1;
+                    k_response(counter).connected_response_peak_mean = CONNECTED(i_r).response_mean;
                     k_response(i_r).connected_distance_lateral_um = CONNECTED(i_r).response_distance_lateral_um;
                     k_response(i_r).connected_distance_axial_um = CONNECTED(i_r).response_distance_axial_um;
                     k_response(i_r).connected_distance_3d_um = CONNECTED(i_r).response_distance_3d_um;

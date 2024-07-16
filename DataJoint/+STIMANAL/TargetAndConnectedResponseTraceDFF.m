@@ -22,7 +22,7 @@ num_of_target_trials_used=null          : blob        # total number of legit tr
 %}
 
 
-classdef TargetAndConnectedResponseTrace < dj.Computed
+classdef TargetAndConnectedResponseTraceDFF < dj.Computed
     properties
         keySource = EXP2.SessionEpoch & (STIM.ROIResponseDirectUnique & 'response_p_value1<=0.05') &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1');
     end
@@ -64,7 +64,7 @@ classdef TargetAndConnectedResponseTrace < dj.Computed
             rel_roi_xy = (IMG.ROIPositionETL-IMG.ROIBad)  & key; % XYZ coordinate correction of ETL abberations based on ETL callibration
             
             
-            rel_data = (IMG.ROISpikes -IMG.ROIBad)  & key;
+            rel_data = (IMG.ROIdeltaF -IMG.ROIBad)  & key;
             %             rel_data = IMG.ROIdeltaF;
             
             
@@ -78,9 +78,13 @@ classdef TargetAndConnectedResponseTrace < dj.Computed
             
             photostim_protocol =  fetch(IMG.PhotostimProtocol & key,'*');
             if ~isempty(photostim_protocol)
-                timewind_response=[0.05,0.5];
+                timewind_response=[0.05,2];
+%                 timewind_response=[0.05,1];
+
             else %default, only if protocol is missing
-                timewind_response=[0.05,0.5];
+%                 timewind_response=[0.05,0.5];
+                  timewind_response=[0.05,2];
+
             end
             time=(-frame_window_long(1):1:frame_window_long(2)-1)/frame_rate;
             
@@ -165,8 +169,6 @@ classdef TargetAndConnectedResponseTrace < dj.Computed
                 %         global_baseline=mean(movmin(f_trace_direct(i_epoch,:),1009));
                 global_baseline=mean( f_trace_direct);
                 
-                %                 timewind_response = [ 0 2];
-                timewind_response = [ 0 2];
                 timewind_baseline1 = [ -5 0];
                 timewind_baseline2  = [-5 0] ;
                 timewind_baseline3  = [ -5 0];

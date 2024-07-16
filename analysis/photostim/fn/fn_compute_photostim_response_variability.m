@@ -1,32 +1,49 @@
 function [StimStat, StimTrace] = fn_compute_photostim_response_variability (f_trace, photostim_start_frame, timewind_response, timewind_baseline1,timewind_baseline2,timewind_baseline3, flag_baseline_trial_or_avg, global_baseline, time)
 
-
-counter=0;
 num_frames_pre =  sum(time<0);
-num_frames_post =  sum(time>0);
+num_frames_post =  sum(time>=0);
+photostim_start_frame=photostim_start_frame((photostim_start_frame-num_frames_pre>0) & (photostim_start_frame+num_frames_post<=numel(f_trace)));
+F=zeros(numel(photostim_start_frame),(num_frames_pre+num_frames_post));
 for i_stim=1:1:numel(photostim_start_frame)
     s_fr = photostim_start_frame(i_stim);
-    counter = counter+1;
-    if  (s_fr-num_frames_pre)>0 && (s_fr+num_frames_post)<=length(f_trace) % if the time window is within the range full trace
-        F(counter,:)=f_trace(s_fr- num_frames_pre :1:s_fr+num_frames_post-1);
-    elseif (s_fr-num_frames_pre)<=0 % if it's out of range we use the next in-range trial
-        s_fr = photostim_start_frame(i_stim+1);
-        F(counter,:)=f_trace(s_fr- num_frames_pre :1:s_fr+num_frames_post-1);
-    elseif (s_fr+num_frames_post)>length(f_trace) % if it's out of range we use the previous in-range t trial
-        s_fr = photostim_start_frame(i_stim-1);
-        try
-        F(counter,:)=f_trace(s_fr- num_frames_pre :1:s_fr+num_frames_post-1);
-        catch
-            s_fr = photostim_start_frame(i_stim-2);
-            F(counter,:)=f_trace(s_fr- num_frames_pre :1:s_fr+num_frames_post-1);
-        end
-    end
+    F(i_stim,:)=f_trace(s_fr- num_frames_pre :1:s_fr+num_frames_post-1);
 end
-idx_include=1:1:counter;
-idx_1half_trials=idx_include(1:1:(ceil(counter/2)));
-idx_2half_trials=idx_include((ceil(counter/2)+1):1:end);
-idx_odd_trials=idx_include(1:2:end);
-idx_even_trials=idx_include(2:2:end);
+% toc
+num_trials_used = numel(photostim_start_frame);
+idx_trials = 1:1:num_trials_used;
+
+idx_1half_trials=idx_trials(1:1:(ceil(num_trials_used/2)));
+idx_2half_trials=idx_trials((ceil(num_trials_used/2)+1):1:end);
+idx_odd_trials=idx_trials(1:2:end);
+idx_even_trials=idx_trials(2:2:end);
+
+
+% counter=0;
+% num_frames_pre =  sum(time<0);
+% num_frames_post =  sum(time>0);
+% for i_stim=1:1:numel(photostim_start_frame)
+%     s_fr = photostim_start_frame(i_stim);
+%     counter = counter+1;
+%     if  (s_fr-num_frames_pre)>0 && (s_fr+num_frames_post)<=length(f_trace) % if the time window is within the range full trace
+%         F(counter,:)=f_trace(s_fr- num_frames_pre :1:s_fr+num_frames_post-1);
+%     elseif (s_fr-num_frames_pre)<=0 % if it's out of range we use the next in-range trial
+%         s_fr = photostim_start_frame(i_stim+1);
+%         F(counter,:)=f_trace(s_fr- num_frames_pre :1:s_fr+num_frames_post-1);
+%     elseif (s_fr+num_frames_post)>length(f_trace) % if it's out of range we use the previous in-range t trial
+%         s_fr = photostim_start_frame(i_stim-1);
+%         try
+%         F(counter,:)=f_trace(s_fr- num_frames_pre :1:s_fr+num_frames_post-1);
+%         catch
+%             s_fr = photostim_start_frame(i_stim-2);
+%             F(counter,:)=f_trace(s_fr- num_frames_pre :1:s_fr+num_frames_post-1);
+%         end
+%     end
+% end
+% idx_include=1:1:counter;
+% idx_1half_trials=idx_include(1:1:(ceil(counter/2)));
+% idx_2half_trials=idx_include((ceil(counter/2)+1):1:end);
+% idx_odd_trials=idx_include(1:2:end);
+% idx_even_trials=idx_include(2:2:end);
 
 
 idx_response(1)=find(time>(timewind_response(1)),1,'first');
@@ -50,7 +67,9 @@ if flag_baseline_trial_or_avg<3
     elseif flag_baseline_trial_or_avg==2 % global baseline
         baseline= global_baseline;
     end
-    F =(F- baseline)./baseline;
+%     F =(F- baseline)./baseline; %check why there was a division before
+    F =(F- baseline);
+
 elseif flag_baseline_trial_or_avg==3
     F=F;
 end
