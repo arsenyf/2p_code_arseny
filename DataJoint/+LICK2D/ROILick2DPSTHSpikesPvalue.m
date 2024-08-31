@@ -1,5 +1,7 @@
 %{
 # P-value of stability and modulation depth of PSTHs based on shuffled distributions
+# Shuffling is done by shifting spikes, without shuffling trial identity
+
 -> EXP2.SessionEpoch
 -> IMG.ROI
 ---

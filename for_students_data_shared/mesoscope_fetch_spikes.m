@@ -54,7 +54,7 @@ Data.cell_pos_y=[R.roi_centroid_y_um_relative2bregma];
 Data.cell_pos_z = [R.roi_centroid_z_um];
 Data.brain_area={R.brain_area}';
 Data.brain_area_legend=brain_area_legend;
-Data.Comment = 'spikes_spont & spikes_behav are NeuronsXFrames matrix of neural activity (deconvoled and neuropil subtracted deltaF/F, calcium imaging) of the same cells imaged during spontaneous and behavioral session; imaging_frame_rate in Hz; cell_pos_x & cell_pos_y cell_pos_z represent antatomical coordinates of each neuron  in microns relative to bregam and the top imaged planne';
+Data.Comment = 'dff_spikes & dff_spikes are NeuronsXFrames matrix of neural activity (deconvolved deltaF/F, calcium imaging) of the same cells imaged during spontaneous and behavioral session; imaging_frame_rate in Hz; cell_pos_x cell_pos_y cell_pos_z represent antatomical coordinates of each neuron  in microns, relative to Bregma, and for z -- relative to  top  plane';
 
 
 save([dir_save filename],'Data')

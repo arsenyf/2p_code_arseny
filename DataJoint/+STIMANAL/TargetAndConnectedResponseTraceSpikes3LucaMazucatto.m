@@ -1,36 +1,50 @@
 %{
 # ROI responses to each photostim group. We only take groups based on unique target with signficance response of target, and significant response of connected neurons. Response of connected neurons can be positive or negative. Data is based on z-score traces of deconvolved df/f trace
 -> IMG.PhotostimGroup
----
 -> IMG.ROI                # ROI number of the connected neuron
+---
+roi_number_target                       :int          # ROI number of the target neuron
 target_response_p_value1=null           : double      # p_value of the target neuron at peak
-target_response_peak_mean=null          : float       # target neuron response during the 1s photostimulation time window, average across trial
 target_response_trace_mean=null         : blob        # target neuron response trace , average across trial
-target_response_trace_trials=null       : longblob    # target neuron response trace at each trial
 connected_response_p_value1=null        : double      # p_value of the response of the connected neuron at peak
 connected_response_peak_mean=null       : float       # connected neuron response during the 1s photostimulation time window, average across trial
 connected_response_trace_mean=null      : blob        # connected neuron response trace, average across trial
-connected_response_trace_trials=null    : longblob    # connected neuron response trace, average across trial
 connected_distance_lateral_um=null      : float       # (um) lateral (X-Y) distance from target to a connected neuron
 connected_distance_axial_um=null        : float       # (um) axial (Z) distance from target to a connected neuron
 connected_distance_3d_um=null           : float       # (um)  3D distance from target to a connected neuron
 time_vector=null                        : blob        # time vector (seconds) of the response, 0 is target photostimulation time
-legit_trials_index=null                 : blob        # legit trials for each connected neuron, that are not contaminated by stimulation of other nearby targets
-num_of_target_trials_used=null          : blob        # total number of legit trials for each connected neuron, that are not contaminated by stimulation of other nearby targets
-
-
 %}
 
 
-classdef TargetAndConnectedResponseTrace < dj.Computed
+classdef TargetAndConnectedResponseTraceSpikes3LucaMazucatto < dj.Computed
     properties
-        keySource = EXP2.SessionEpoch & (STIM.ROIResponseDirectUnique & 'response_p_value1<=0.05') &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1');
+        keySource = EXP2.SessionEpoch & (STIM.ROIResponseDirectUnique & 'response_p_value1<=0.05') &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1') & STIM.ROIInfluence3;
     end
     methods(Access=protected)
         function makeTuples(self, key)
             
+%             %% Example code how to use this table:
+%             % Plot response of directly stimulated cells
+%             Response_all_direct=fetchn(STIMANAL.TargetAndConnectedResponseTrace & 'target_response_p_value1<0.01' & 'target_response_peak_mean>0','target_response_trace_mean');
+%             Response_all_direct = cell2mat(Response_all_direct);
+%             time_vector = fetch1(STIMANAL.TargetAndConnectedResponseTrace,'time_vector', 'LIMIT 1');
+%             plot(time_vector,mean(Response_all_direct ),'-r');
+
+%             % Plot response of connected cells cells
+%             hold on
+%             Response_all_connected=fetchn(STIMANAL.TargetAndConnectedResponseTrace & 'connected_response_p_value1<0.01' & 'connected_response_peak_mean>0','connected_response_trace_mean');
+%             Response_all_connected = cell2mat(Response_all_connected);
+%             time_vector = fetch1(STIMANAL.TargetAndConnectedResponseTrace,'time_vector', 'LIMIT 1')
+%             plot(time_vector,mean(Response_all_connected ),'-b')
+%             
+%            
+%             
+            
+            
             min_distance_to_closest_target=25; % in microns
-            frame_window_long=[56,220]/2;
+%             frame_window_long=[56,220]/2;
+            frame_window_long=[56,110]/2;
+
             flag_baseline_trial_or_avg=0; %1 baseline per trial, 0 - baseline averaged across trials
             
             %             rel=STIM.ROIInfluence2 & 'response_p_value1<=0.05' & sprintf('response_distance_lateral_um >%.2f', min_distance_to_closest_target) & 'response_mean>0';
@@ -46,7 +60,7 @@ classdef TargetAndConnectedResponseTrace < dj.Computed
             rel_roi_xy = (IMG.ROIPositionETL-IMG.ROIBad)  & key; % XYZ coordinate correction of ETL abberations based on ETL callibration
             
             
-            rel_data = (IMG.ROISpikes -IMG.ROIBad)  & key;
+            rel_data = (IMG.ROIdeltaF -IMG.ROIBad)  & key;
             %             rel_data = IMG.ROIdeltaF;
             
             
@@ -55,15 +69,18 @@ classdef TargetAndConnectedResponseTrace < dj.Computed
             catch
                 frame_rate = fetch1(IMG.FOV & key, 'imaging_frame_rate');
             end
-            group_list = fetchn((IMG.PhotostimGroup & key),'photostim_group_num','ORDER BY photostim_group_num');
             G=fetch(IMG.PhotostimGroupROI & (STIM.ROIResponseDirectUnique & (STIMANAL.NeuronOrControl & 'neurons_or_control=1')) & key ,'*','ORDER BY photostim_group_num');
             group_list=[G.photostim_group_num];
             
             photostim_protocol =  fetch(IMG.PhotostimProtocol & key,'*');
             if ~isempty(photostim_protocol)
-                timewind_response=[0.05,0.5];
+                timewind_response=[0.05,2];
+%                 timewind_response=[0.05,1];
+
             else %default, only if protocol is missing
-                timewind_response=[0.05,0.5];
+%                 timewind_response=[0.05,0.5];
+                  timewind_response=[0.05,2];
+
             end
             time=(-frame_window_long(1):1:frame_window_long(2)-1)/frame_rate;
             
@@ -131,12 +148,14 @@ classdef TargetAndConnectedResponseTrace < dj.Computed
             
             
             
-            for i_g = 1:1:numel(group_list) %parfor
+            parfor i_g = 1:1:numel(group_list) %parfor
                 k1=key;
                 k1.photostim_group_num = group_list(i_g);
-                
+                k1=rmfield(k1,'plane_num');
                 %Response of the directly stimulated cell
                 %--------------------------------------------------------------
+                roi_number_target = fetch1( STIM.ROIResponseDirectUnique & k1,'roi_number');
+
                 photostim_start_frame = fetch1(IMG.PhotostimGroup &  STIM.ROIResponseDirectUnique & k1,'photostim_start_frame');
                 roi_number_direct_unique = fetch1(STIM.ROIResponseDirectUnique & k1,'roi_number');
                 target_response_peak_mean = fetch1(STIM.ROIResponseDirectUnique & k1,'response_mean');
@@ -148,8 +167,6 @@ classdef TargetAndConnectedResponseTrace < dj.Computed
                 %         global_baseline=mean(movmin(f_trace_direct(i_epoch,:),1009));
                 global_baseline=mean( f_trace_direct);
                 
-                %                 timewind_response = [ 0 2];
-                timewind_response = [ 0 2];
                 timewind_baseline1 = [ -5 0];
                 timewind_baseline2  = [-5 0] ;
                 timewind_baseline3  = [ -5 0];
@@ -163,16 +180,18 @@ classdef TargetAndConnectedResponseTrace < dj.Computed
                 
                 
                 
-                rel_connected_cells=STIM.ROIInfluence2 & 'response_p_value1<=0.05' & sprintf('response_distance_lateral_um >%.2f', min_distance_to_closest_target) & k1;
-                CONNECTED = fetch(rel_connected_cells, 'roi_number','response_mean', 'response_p_value1','response_distance_lateral_um','response_distance_axial_um','response_distance_3d_um', 'ORDER BY roi_number');
+                rel_connected_cells=STIM.ROIInfluence3 & 'response_p_value1<=0.05' & 'response_mean>0' & sprintf('response_distance_lateral_um >%.2f', min_distance_to_closest_target) & sprintf('num_of_target_trials_used >%d', minimal_number_of_clean_trials) & k1;
+                CONNECTED = fetch(rel_connected_cells, 'roi_number','response_mean', 'response_p_value1','response_distance_lateral_um','response_distance_axial_um','response_distance_3d_um','num_of_target_trials_used', 'ORDER BY roi_number');
                 roi_number_connected = [CONNECTED.roi_number];
                 
                 
                 k_response = repmat(k1,numel(roi_number_connected),1);
-                
                 for i_r= 1:1:numel(roi_number_connected)
                     idx_roi_in_list = find(roi_list==roi_number_connected(i_r));
+                    k_response(i_r).roi_number_target = roi_number_target;
+
                     k_response(i_r).roi_number = roi_number_connected(i_r);
+
                     k_response(i_r).plane_num = roi_plane_num(idx_roi_in_list);
                     f_trace=F(idx_roi_in_list,:);
                     
@@ -206,11 +225,11 @@ classdef TargetAndConnectedResponseTrace < dj.Computed
                     % Finding frames during target stimulation that are not affected by stimulation of other targets in the vicinity of the potentially connected cells
                     target_photostim_frames_clean=target_photostim_frames(~ismember(target_photostim_frames, [allsites_photostim_frames_near-1, allsites_photostim_frames_near, allsites_photostim_frames_near+1]));
                     
-                    if numel(target_photostim_frames_clean)<minimal_number_of_clean_trials % if there are too few trials, we don't analyze this pair
+                    if numel(target_photostim_frames_clean)<minimal_number_of_clean_trials % if there are too few trials, we don't analyze this pair. We don't suppose to get any such pairs because we include only pairs with more trials then minimal_number_of_clean_trials
                         target_photostim_frames_clean=target_photostim_frames;
-                        k_response(i_r).num_of_target_trials_used =  0;
+%                         k_response(i_r).num_of_target_trials_used =  0;
                     else
-                        k_response(i_r).num_of_target_trials_used =  numel(target_photostim_frames_clean);
+%                         k_response(i_r).num_of_target_trials_used =  numel(target_photostim_frames_clean);
                     end
                     legit_trials_index = ismember(target_photostim_frames,target_photostim_frames_clean);
                     
@@ -224,27 +243,26 @@ classdef TargetAndConnectedResponseTrace < dj.Computed
 %                     k_response(i_r).response_distance_lateral_um = single(distance2D*pix2dist);
 %                     k_response(i_r).response_distance_axial_um = single(roi_z(idx_roi_in_list));
 %                     k_response(i_r).response_distance_3d_um = single(distance3D);
-                    
+
                     
                     %Response of the connected neuron
                     %----------------------------------------------------------------------------------------------------
                     [StimStat_connected StimTrace_connected] = fn_compute_photostim_delta_influence5_single_trials (f_trace, target_photostim_frames_clean,baseline_frames_clean, timewind_response, time);
                     
-                    k_response(i_r).target_response_peak_mean =target_response_peak_mean;
+%                     k_response(i_r).target_response_peak_mean =target_response_peak_mean;
                     k_response(i_r).target_response_p_value1 =target_response_p_value1;
-                    k_response(i_r).target_response_trace_mean = StimTrace_connected.responseraw_trace_mean;
-                    k_response(i_r).target_connected_response_trace_trials =StimTrace_connected.responseraw_trace_single_trials;
+                    k_response(i_r).target_response_trace_mean = smooth(StimTrace_direct.response_trace_mean,3)';
+%                     k_response(i_r).target_response_trace_trials =StimTrace_direct.response_trace_trials;
                     
-                    k_response(i_r).connected_response_trace_mean = StimTrace_connected.responseraw_trace_mean;
-                    k_response(i_r).connected_response_trace_trials =StimTrace_connected.responseraw_trace_single_trials;
+                    k_response(i_r).connected_response_trace_mean = smooth(StimTrace_connected.response_trace_mean,3)';
+%                     k_response(i_r).connected_response_trace_trials =StimTrace_connected.response_trace_trials;
                     k_response(i_r).connected_response_p_value1 = CONNECTED(i_r).response_p_value1;
                     k_response(i_r).connected_response_peak_mean = CONNECTED(i_r).response_mean;
                     k_response(i_r).connected_distance_lateral_um = CONNECTED(i_r).response_distance_lateral_um;
                     k_response(i_r).connected_distance_axial_um = CONNECTED(i_r).response_distance_axial_um;
                     k_response(i_r).connected_distance_3d_um = CONNECTED(i_r).response_distance_3d_um;
-                    k_response(i_r).connected_distance_3d_um =target_photostim_frames;
-                    k_response(i_r).connected_distance_3d_um =target_photostim_frames;
-                    k_response(i_r).legit_trials_index =legit_trials_index;
+
+%                     k_response(i_r).legit_trials_index =legit_trials_index;
                     k_response(i_r).time_vector =time;
                 end
                 if numel(roi_number_connected>0)

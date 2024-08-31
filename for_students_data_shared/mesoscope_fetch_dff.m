@@ -36,11 +36,7 @@ dff_behav=cell2mat(fetchn(rel_trace, 'dff_trace','ORDER BY roi_number'));
 
 
 %% Anatomical Coordinates in microns
-R=fetch(rel,'roi_centroid_x','roi_centroid_y','x_pos_relative','y_pos_relative','brain_area','ORDER BY roi_number');
-x = [R.roi_centroid_x] + [R.x_pos_relative];
-y = [R.roi_centroid_y] + [R.y_pos_relative];
-x=x/0.75;
-y=y/0.5;
+R=fetch(rel,'roi_centroid_x_um_relative2bregma','roi_centroid_y_um_relative2bregma','brain_area','ORDER BY roi_number');
 
 brain_area_legend=fetch(LAB.BrainArea & IMG.ROIBrainArea,'*');
 
@@ -52,11 +48,12 @@ Data.session_date = session_date;
 Data.dff_spont=dff_spont;
 Data.dff_behav=dff_behav;
 Data.imaging_frame_rate = imaging_frame_rate;
-Data.cell_pos_x=x';
-Data.cell_pos_y=y';
+Data.cell_pos_x=[R.roi_centroid_x_um_relative2bregma];
+Data.cell_pos_y=[R.roi_centroid_y_um_relative2bregma];
+Data.cell_pos_z = [R.roi_centroid_z_um];
 Data.brain_area={R.brain_area}';
 Data.brain_area_legend=brain_area_legend;
-Data.Comment = 'dff_spont & dff_behav are NeuronsXFrames matrix of neural activity (deltaF/F, calcium imaging) of the same cells imaged during spontaneous and behavioral session; imaging_frame_rate in Hz; cell_x & cell_y represent antatomical coordinates of each neuron  in microns';
+Data.Comment = 'dff_spont & dff_behav are NeuronsXFrames matrix of neural activity (deltaF/F, calcium imaging) of the same cells imaged during spontaneous and behavioral session; imaging_frame_rate in Hz; cell_pos_x cell_pos_y cell_pos_z represent antatomical coordinates of each neuron  in microns, relative to Bregma, and for z -- relative to  top  plane';
 
 
 save([dir_save filename],'Data')

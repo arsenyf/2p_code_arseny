@@ -15,7 +15,7 @@ time_vector                                           : blob        #  time vect
 
 %} 
 
-classdef ROIInfluenceTraceLong < dj.Computed
+classdef ROIInfluenceTraceLong < dj.Computed % Populated by STIM.ROIInfluence
     methods(Access=protected)
         function makeTuples(self, key)
         end

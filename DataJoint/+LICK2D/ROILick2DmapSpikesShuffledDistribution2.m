@@ -1,7 +1,6 @@
 %{
-# Shuffled distributions of stability and modulation depth of Positional 2D tuning
-# Shuffling is done by shifting spikes, without shuffling trial identity
-
+# Shuffled distributions of stability and modulation depth of Positional 2D
+tuning; Shuffling is done by mixing trial identiy, not shifting spikes
 -> EXP2.SessionEpoch
 -> IMG.ROI
 number_of_bins                          : int   #
@@ -12,9 +11,9 @@ lickmap_fr_regular_modulation_shuffled                      : longblob   # shuff
 
 %}
 
-classdef ROILick2DmapSpikesShuffledDistribution < dj.Computed % Populated by LICK2D.ROILick2DmapSpikes3binsPvalue
+classdef ROILick2DmapSpikesShuffledDistribution2 < dj.Computed % Populated by LICK2D.ROILick2DmapSpikes3binsPvalue2
     properties(SetAccess=protected)
-        master=LICK2D.ROILick2DPSTHSpikesPvalue
+        master=LICK2D.ROILick2DmapSpikes3binsPvalue2
     end
     methods(Access=protected)
         function makeTuples(self, key)

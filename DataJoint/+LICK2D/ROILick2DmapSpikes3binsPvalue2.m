@@ -1,7 +1,6 @@
 %{
 # P-value of stability and modulation depth of Positional 2D tuning of a neuron (firing-rate map averaged across the entire trial duration) with each pixel corresponding to neuronal response to a specific lick-port position in 2D
-# Shuffling is done by shifting spikes, without shuffling trial identity
-
+# Shuffling is done by mixing trial identiy, not shifting spikes
 -> EXP2.SessionEpoch
 -> IMG.ROI
 number_of_bins                          : int   #
@@ -13,7 +12,7 @@ lickmap_fr_regular_modulation_pval                  : double   # p_value modulat
 %}
 
 
-classdef ROILick2DmapSpikes3binsPvalue < dj.Computed
+classdef ROILick2DmapSpikes3binsPvalue2 < dj.Computed
     properties
 % keySource = (EXP2.SessionEpoch*IMG.FOV) & IMG.ROISpikes & IMG.ROI & EXP2.TrialLickPort & 'session_epoch_type="behav_only"' & EXP2.TrialLickBlock & IMG.Mesoscope;
 keySource = (EXP2.SessionEpoch*IMG.FOV) & IMG.ROI & IMG.ROISpikes & EXP2.TrialLickPort & 'session_epoch_type="behav_only"' & EXP2.TrialLickBlock - IMG.Mesoscope;
@@ -34,8 +33,8 @@ keySource = (EXP2.SessionEpoch*IMG.FOV) & IMG.ROI & IMG.ROISpikes & EXP2.TrialLi
             end
             
             %Also populates: 
-            self2=LICK2D.ROILick2DmapSpikesShuffledDistribution;
-            fn_compute_Lick2D_map_and_selectivity2_3bins_shuffle (key,self, rel_data, fr_interval, fr_interval_limit, flag_electric_video, self2);
+            self2=LICK2D.ROILick2DmapSpikesShuffledDistribution2;
+            fn_compute_Lick2D_map_and_selectivity2_3bins_shuffle2 (key,self, rel_data, fr_interval, fr_interval_limit, flag_electric_video, self2);
             
 
         end

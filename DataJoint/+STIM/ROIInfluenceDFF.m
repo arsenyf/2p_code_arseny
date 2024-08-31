@@ -1,8 +1,6 @@
 %{
 # ROI responses to each photostim group.  Zscoring. Spikes. 
-# XYZ coordinate correction of ETL abberations based on ETL callibration  
-# should be the  same as STIM.ROIInfluence2 but also saves the response trace into STIM.ROIInfluenceTraceLong  
-
+# XYZ coordinate correction of ETL abberations based on ETL callibration
 -> IMG.PhotostimGroup
 -> IMG.ROI
 num_svd_components_removed      : int     # how many of the first svd components were removed
@@ -13,7 +11,7 @@ response_p_value1                   : float                # significance of res
 response_mean_odd                   : float                # for the  odd trials
 response_p_value1_odd               : float                #
 response_mean_even                  : float                # for the  even trials
-response_p_value1_even              : float                #
+response_p_value1_even               : float               #
 
 response_std                        : float                # standard deviation of that value over trials
 response_coefvar                    : float                # coefficient of variation of that value over trials
@@ -26,12 +24,10 @@ num_of_target_trials_used           : int                  # number of target ph
 %}
 
 
-classdef ROIInfluence < dj.Computed
+classdef ROIInfluenceDFF < dj.Computed
     properties
-        keySource =  (EXP2.SessionEpoch & 'flag_photostim_epoch =1' & IMG.FOVEpoch) ...
-            &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1') ...
-        & IMG.ROIPositionETL & (EXP2.Session*EXP2.SessionID);
-        
+        keySource =  (EXP2.SessionEpoch & 'flag_photostim_epoch =1' & IMG.FOVEpoch) & IMG.Volumetric & (STIMANAL.SessionEpochsIncludedFinal & 'flag_include=1') & IMG.ROIPositionETL & (EXP2.Session*EXP2.SessionID);
+
     end
     methods(Access=protected)
         function makeTuples(self, key) 
@@ -51,8 +47,9 @@ classdef ROIInfluence < dj.Computed
             rel_roi_xy = (IMG.ROIPositionETL-IMG.ROIBad)  & key; % XYZ coordinate correction of ETL abberations based on ETL callibration
 
             
-            rel_data = (IMG.ROISpikes -IMG.ROIBad)  & key;
-            %             rel_data = IMG.ROIdeltaF;
+%             rel_data = (IMG.ROISpikes -IMG.ROIBad)  & key;
+            rel_data = (IMG.ROIdeltaF -IMG.ROIBad)  & key;
+
             
             
             try
@@ -66,22 +63,22 @@ classdef ROIInfluence < dj.Computed
             
             photostim_protocol =  fetch(IMG.PhotostimProtocol & key,'*');
             if ~isempty(photostim_protocol)
-                timewind_response=[0.05,0.5];
+%                 timewind_response=[0.05,0.5];
+                timewind_response=[0.05,2];
+
             else %default, only if protocol is missing
-                timewind_response=[0.05,0.5];
+%                 timewind_response=[0.05,0.5];
+                timewind_response=[0.05,2];
+
             end
             
-            
-            frame_window_long=[56,110]/2;
-            time=(-frame_window_long(1):1:frame_window_long(2)-1)/frame_rate;
-%             time =[-3:1:3]./frame_rate;
+            time =[-3:1:3]./frame_rate;
             
             
             zoom =fetch1(IMG.FOVEpoch & key,'zoom');
             kkk.scanimage_zoom = zoom;
-            pix2dist_x=  fetch1(IMG.Zoom2Microns & kkk,'fov_microns_size_x') / fetch1(IMG.FOV & key, 'fov_x_size');
-            pix2dist_y=  fetch1(IMG.Zoom2Microns & kkk,'fov_microns_size_y') / fetch1(IMG.FOV & key, 'fov_y_size');
-
+            pix2dist=  fetch1(IMG.Zoom2Microns & kkk,'fov_microns_size_x') / fetch1(IMG.FOV & key, 'fov_x_size');
+            
             %  distance_to_closest_neuron = distance_to_closest_neuron/pix2dist; % in pixels
             
             roi_list=fetchn(rel_roi,'roi_number','ORDER BY roi_number');
@@ -148,7 +145,6 @@ classdef ROIInfluence < dj.Computed
                 %                 end
                 %                 F=gather(F);
                 
-             
                 parfor i_g = 1:1:numel(group_list) %parfor
                     %                 for i_g = 1:1:numel(group_list)
                     k1=key;
@@ -159,14 +155,9 @@ classdef ROIInfluence < dj.Computed
                     target_photostim_frames = fetch1(IMG.PhotostimGroup & k1,'photostim_start_frame');
                     target_photostim_frames=floor(target_photostim_frames./bin_size_in_frame);
                     
-                    k_trace = key; %initialization
-                    k_trace=rmfield(k_trace,{'fov_num','plane_num', 'channel_num'});
-                    k_trace.photostim_group_num = group_list(i_g);
                     
-                    k_response = repmat(k1,numel(roi_list),1);  %initialization
+                    k_response = repmat(k1,numel(roi_list),1);
                     
-
-                                        
                     for i_r= 1:1:numel(roi_list)
                         k_response(i_r).roi_number = roi_list(i_r);
                         k_response(i_r).plane_num = roi_plane_num(i_r);
@@ -174,9 +165,9 @@ classdef ROIInfluence < dj.Computed
                         
                         
                         % Excluding all frames during stimulation of other targets in the vicinity of the potentially connected cell
-                        dx = (allsites_center_x - R_x(i_r))*pix2dist_x;
-                        dy = (allsites_center_y - R_y(i_r))*pix2dist_y;
-                        distance2D = sqrt(dx.^2 + dy.^2); %
+                        dx = allsites_center_x - R_x(i_r);
+                        dy = allsites_center_y - R_y(i_r);
+                        distance2D = sqrt(dx.^2 + dy.^2)*pix2dist; %
                         idx_allsites_near = distance2D<=distance_to_exclude_all   & ~ (allsites_num== group_list(i_g));
                         allsites_photostim_frames_near = cell2mat(allsites_photostim_frames(idx_allsites_near));
                         allsites_photostim_frames_near = unique(floor(allsites_photostim_frames_near./bin_size_in_frame));
@@ -209,26 +200,23 @@ classdef ROIInfluence < dj.Computed
                             k_response(i_r).num_of_target_trials_used =  numel(target_photostim_frames_clean);
                         end
                         
-                        dx = (g_x - R_x(i_r))*pix2dist_x;
-                        dy = (g_y - R_y(i_r))*pix2dist_y;
-                        distance2D = sqrt(dx.^2 + dy.^2); 
-                        distance3D = sqrt( dx.^2 + dy.^2 + roi_z(i_r).^2); %um
+                        dx = g_x - R_x(i_r);
+                        dy = g_y - R_y(i_r);
+                        distance2D = sqrt(dx.^2 + dy.^2); %pixels
+                        distance3D = sqrt( (dx*pix2dist).^2 + (dy*pix2dist).^2 + roi_z(i_r).^2); %um
                         
                         %                         i_r
                         %                         single(distance2D*pix2dist)
-                        k_response(i_r).response_distance_lateral_um = single(distance2D);
+                        k_response(i_r).response_distance_lateral_um = single(distance2D*pix2dist);
                         k_response(i_r).response_distance_axial_um = single(roi_z(i_r));
                         k_response(i_r).response_distance_3d_um = single(distance3D);
                         
                         
                         %                         [StimStat, StimTrace(i_r)] = fn_compute_photostim_delta_influence (f_trace, target_photostim_frames_clean,baseline_frames_clean, timewind_response, time);
-                        [StimStat, StimTrace] = fn_compute_photostim_delta_influence5 (f_trace, target_photostim_frames_clean,baseline_frames_clean, timewind_response, time);
+                        [StimStat] = fn_compute_photostim_delta_influence5 (f_trace, target_photostim_frames_clean,baseline_frames_clean, timewind_response, time);
                         
                         k_response(i_r).response_mean = StimStat.response_mean;
                         
-                        k_trace.all_neurons_response_trace_matrix(i_r,:) = StimTrace.responseraw_trace_mean;
-                        k_trace.all_neurons_response_trace_matrix_without_baseline(i_r,:) = StimTrace.responseraw_trace_mean;
-
 %                         if isnan(StimStat.response_mean)
 %                             a=1
 %                         end
@@ -236,34 +224,71 @@ classdef ROIInfluence < dj.Computed
                         k_response(i_r).response_std = StimStat.response_std;
                         k_response(i_r).response_coefvar = StimStat.response_coefvar;
                         k_response(i_r).response_fanofactor = StimStat.response_fanofactor;
-                        k_response(i_r).response_p_value1 = StimStat.response_p_value1;
+                        if  isnan(StimStat.response_p_value1)
+                            k_response(i_r).response_p_value1 = 1;
+                            k_response(i_r).response_p_value1_odd = 1;
+                            k_response(i_r).response_p_value1_even = 1;
+                            
+                        else
+                            k_response(i_r).response_p_value1 = StimStat.response_p_value1;
+                            k_response(i_r).response_p_value1_odd = StimStat.response_p_value1_odd;
+                            k_response(i_r).response_p_value1_even = StimStat.response_p_value1_even;
+                        end
                         %                         k_response(i_r).response_p_value2 = StimStat.response_p_value2;
                         k_response(i_r).response_mean_odd = StimStat.response_mean_odd;
-                        k_response(i_r).response_p_value1_odd = StimStat.response_p_value1_odd;
                         %                         k_response(i_r).response_p_value2_odd = StimStat.response_p_value2_odd;
                         k_response(i_r).response_mean_even = StimStat.response_mean_even;
-                        k_response(i_r).response_p_value1_even = StimStat.response_p_value1_even;
                         %                         k_response(i_r).response_p_value2_even = StimStat.response_p_value2_even;
                         
                         
                         
                         
                     end
-
-                      k_trace.all_neurons_roi_numbers = roi_list;
-                      k_trace.all_neurons_connection_strength = [k_response.response_mean];
-                      k_trace.all_neurons_response_significance = [k_response.response_p_value1];
-                      k_trace.all_neurons_distance_lateral = [k_response.response_distance_lateral_um];
-                      k_trace.all_neurons_distance_axial = [k_response.response_distance_axial_um];
-                      k_trace.all_neurons_distance_3d = [k_response.response_distance_3d_um];
-                      k_trace.time_vector = time;
-
                     
-                    insert(self, k_response);                    
-                    insert(STIM.ROIInfluenceTraceLong, k_trace);
-
+                    %                     StimTrace=struct2table(StimTrace);
+                    
+                    %                     response_sign = {'all','excited','inhibited'};
+                    %                     k_trace=k1;
+                    %                     k_trace=rmfield(k_trace,{'fov_num','plane_num', 'channel_num'});
+                    %                     flag_distance=[0,1,2,3];
+                    %                     flag_distance_edge1=[0,25,100,200];
+                    %                     flag_distance_edge2=[25,100,200,inf];
+                    %                     for i_dist = 1:1:numel(flag_distance)
+                    %                         for i_sign = 1:1:numel(response_sign)
+                    %                             for i_p=1:1:numel(p_val)
+                    %
+                    %                                 idx_rois= [k_response.response_p_value1_odd]<=p_val(i_p)  & [k_response.response_distance_lateral_um]>=flag_distance_edge1(i_dist) & [k_response.response_distance_lateral_um]<flag_distance_edge2(i_dist);
+                    %                                 idx_rois = idx_rois & [k_response.num_of_target_trials_used]>0 & [k_response.num_of_baseline_trials_used]>0;
+                    %                                 switch response_sign{i_sign}
+                    %                                     case 'excited'
+                    %                                         idx_rois = idx_rois & [k_response.response_mean_odd]>0;
+                    %                                     case 'inhibited'
+                    %                                         idx_rois = idx_rois & [k_response.response_mean_odd]<0;
+                    %                                 end
+                    %                                 if sum(idx_rois)>1
+                    %                                     k_trace.response_trace_mean = sum(StimTrace.response_trace_mean(idx_rois,:),1);
+                    %                                     k_trace.response_trace_mean_odd = sum(StimTrace.response_trace_mean_odd(idx_rois,:),1);
+                    %                                     k_trace.response_trace_mean_even = sum(StimTrace.response_trace_mean_even(idx_rois,:),1);
+                    %                                     k_trace.baseline_trace_mean = sum(StimTrace.baseline_trace_mean(idx_rois,:),1);
+                    %                                     k_trace.responseraw_trace_mean = sum(StimTrace.responseraw_trace_mean(idx_rois,:),1);
+                    %                                 else
+                    %                                     k_trace.response_trace_mean = single(time+NaN);
+                    %                                     k_trace.response_trace_mean_odd = single(time+NaN);
+                    %                                     k_trace.response_trace_mean_even = single(time+NaN);
+                    %                                     k_trace.baseline_trace_mean = single(time+NaN);
+                    %                                     k_trace.responseraw_trace_mean = single(time+NaN);
+                    %
+                    %                                 end
+                    %                                 k_trace.response_p_val = p_val(i_p);
+                    %                                 k_trace.response_sign = response_sign{i_sign};
+                    %                                 k_trace.flag_distance = flag_distance(i_dist);
+                    %                                 k_trace.num_pairs = sum(idx_rois);
+                    %                                 insert(STIM.ROIInfluenceTrace, k_trace);
+                    %                             end
+                    %                         end
+                    %                     end
+                    insert(self, k_response);
                 end
-
             end
         end
     end

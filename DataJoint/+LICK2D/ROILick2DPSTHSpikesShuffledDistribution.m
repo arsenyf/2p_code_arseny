@@ -1,5 +1,7 @@
 %{
-# Shuffled distributions of stability and modulation depth of PSTHs
+# Shuffled distributions of stability and modulation depth of PSTHstuning; 
+# Shuffling is done by shifting spikes, without shuffling trial identity
+
 -> EXP2.SessionEpoch
 -> IMG.ROI
 ---
@@ -8,7 +10,7 @@ psth_regular_modulation_shuffled             : longblob   # shuffle distribution
 %}
 
 
-classdef ROILick2DPSTHSpikesShuffledDistribution < dj.Computed
+classdef ROILick2DPSTHSpikesShuffledDistribution < dj.Computed 
     properties(SetAccess=protected)
         master=LICK2D.ROILick2DPSTHSpikesPvalue
     end

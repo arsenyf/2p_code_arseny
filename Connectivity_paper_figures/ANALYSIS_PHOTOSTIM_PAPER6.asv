@@ -9,9 +9,8 @@ STIMANAL.SessionEpochsIncludedFinalUniqueEpochs
 % XYZ coordinate correction of ETL abberations based on ETL callibration
 populate(STIM.ROIInfluence2)
 populate(STIM.ROIInfluenceNoZscore);
-populate(STIM.ROIInfluence); %should be the  same as STIM.ROIInfluence2 but also saves the response trace into STIM.ROIInfluenceTraceLong  
-populate(STIM.ROIInfluenceDFF); %based on DFF (except for target neuron selection that is based on spikes)
-populate(STIM.ROIInfluence2);  %similar to STIM.ROIInfluence2 but with larger window for determining peak response
+populate(STIM.ROIInfluence); 
+
 
 
 

@@ -35,11 +35,8 @@ time_bin = fetch1(rel_trace & key,'time_bin','LIMIT 1');
 threshold_for_event = fetch1(rel_trace& key,'threshold_for_event','LIMIT 1');
 
 %% Anatomical Coordinates in microns
-R=fetch(rel,'roi_centroid_x','roi_centroid_y','x_pos_relative','y_pos_relative','brain_area','ORDER BY roi_number');
-x = [R.roi_centroid_x] + [R.x_pos_relative];
-y = [R.roi_centroid_y] + [R.y_pos_relative];
-x=x/0.75;
-y=y/0.5;
+R=fetch(rel,'roi_centroid_x_um_relative2bregma','roi_centroid_y_um_relative2bregma','roi_centroid_z_um', 'brain_area','ORDER BY roi_number');
+
 
 brain_area_legend=fetch(LAB.BrainArea & IMG.ROIBrainArea,'*');
 
@@ -50,13 +47,14 @@ Data.behavioral_session_number = behavioral_session_number;
 Data.session_date = session_date;
 Data.roi_components_spont=roi_components_spont;
 Data.roi_components_behav=roi_components_behav;
-Data.cell_pos_x=x';
-Data.cell_pos_y=y';
+Data.cell_pos_x=[R.roi_centroid_x_um_relative2bregma];
+Data.cell_pos_y=[R.roi_centroid_y_um_relative2bregma];
+Data.cell_pos_z = [R.roi_centroid_z_um];
 Data.brain_area={R.brain_area}';
 Data.brain_area_legend=brain_area_legend;
 Data.time_bin = time_bin;
 Data.threshold_for_event = threshold_for_event;
-Data.Comment = 'contribution of the temporal components to the activity of each neuron; fetching this table for all neurons should give U in SVD of size (neurons x components) for the top num_comp components; same cells are imaged during spontaneous and behavioral session;  cell_x & cell_y represent antatomical coordinates of each neuron  in microns; time_bin and threshold_for_event define how the data was pre processed before computing the principle components using SVD';
+Data.Comment = 'contribution of the temporal components to the activity of each neuron; fetching this table for all neurons should give U in SVD of size (neurons x components) for the top num_comp components; same cells are imaged during spontaneous and behavioral session;  time_bin and threshold_for_event define how the data was pre processed before computing the principle components using SVD; cell_pos_x cell_pos_y cell_pos_z represent antatomical coordinates of each neuron  in microns, relative to Bregma, and for z -- relative to  top  plane';
 
 
 save([dir_save filename],'Data')

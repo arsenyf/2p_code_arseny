@@ -10,19 +10,20 @@ dir_current_fig = [dir_base  '\Photostim\photostim_traces\coupled\'];
 % key.subject_id = 445980;
 % key.session =2;
 
-key.subject_id = 486673;
-key.session =1;
+key.subject_id=462455;
+key.session=2
 
 epoch_list = fetchn(EXP2.SessionEpoch & 'session_epoch_type="spont_photo"' & key, 'session_epoch_number','ORDER BY session_epoch_number');
 % key.session_epoch_number = epoch_list(end); % to take the photostim groups from
-key.session_epoch_number = epoch_list(3); % to take the photostim groups from
-epoch_list=epoch_list(1:1:3);
+key.session_epoch_number = epoch_list(1); % to take the photostim groups from
+epoch_list=epoch_list(1);
+% epoch_list=epoch_list(1:1:3);
 
 min_distance_to_closest_target=25; % in microns
 
 close all;
 frame_window_short=[40,40]/4;
-frame_window_long=[200,100]/2;
+frame_window_long=[60,100]/2;
 flag_baseline_trial_or_avg=0; %1 baseline per trial, 0 - baseline averaged across trials
 
 
@@ -34,9 +35,11 @@ try
 catch
     frame_rate= fetch1(IMG.FOV & key, 'imaging_frame_rate');
 end
-min_distance_to_closest_target_pixels=min_distance_to_closest_target/pix2dist;
 
-rel=STIM.ROIInfluence5 & 'response_p_value1<=0.05' & sprintf('response_distance_pixels >%.2f', min_distance_to_closest_target_pixels);
+% rel=STIM.ROIInfluenceLocal & 'response_p_value1<=0.01' & 'response_mean>0' & sprintf('response_distance_lateral_um >%.2f', min_distance_to_closest_target);
+rel=STIM.ROIInfluenceDFF & 'response_p_value1<=0.001' & 'response_mean>0' & sprintf('response_distance_lateral_um >%.2f', min_distance_to_closest_target);
+% rel=STIM.ROIInfluence2 & 'response_p_value1<=0.01' & 'response_mean>0' & sprintf('response_distance_lateral_um >%.2f', min_distance_to_closest_target);
+rel=STIM.ROIInfluence3 & 'response_p_value1<=0.001' & 'response_mean>0' & sprintf('response_distance_lateral_um >%.2f', min_distance_to_closest_target);
 
 if flag_baseline_trial_or_avg==0 %baseline averaged across trials
     dir_suffix= 'baseline_avg';
@@ -125,20 +128,26 @@ for i_g=1:1:numel(group_list)
             k2.session_epoch_number = epoch_list(i_epoch);
             photostim_start_frame = fetch1(IMG.PhotostimGroup & k2,'photostim_start_frame');
             
-            f_trace_direct{i_epoch} = fetch1(IMG.ROITrace & k2,'f_trace');
-            
+%             f_trace_direct{i_epoch} = fetch1(IMG.ROITrace & k2,'f_trace');
+            f_trace_direct{i_epoch} = fetch1(IMG.ROIdeltaF & k2,'dff_trace');
+%             f_trace_direct{i_epoch} = fetch1(IMG.ROISpikes & k2,'spikes_trace');
+
             global_baseline=mean( f_trace_direct{i_epoch});
             
-            
-            [~,StimTrace] = fn_compute_photostim_response (f_trace_direct{i_epoch} , photostim_start_frame, frame_window_short,frame_window_long, flag_baseline_trial_or_avg, global_baseline, time);
-            dFoverF_mean=StimTrace.dFoverF_mean;
+            timewind_baseline1=[-5,0];
+            timewind_response=[0,2];
+            [~,StimTrace] = fn_compute_photostim_response (f_trace_direct{i_epoch} , photostim_start_frame, timewind_response, timewind_baseline1, timewind_baseline1, timewind_baseline1, flag_baseline_trial_or_avg, global_baseline, time);
+
+%             function [StimStat, StimTrace] = fn_compute_photostim_response (f_trace, photostim_start_frame, timewind_response, timewind_baseline1,timewind_baseline2,timewind_baseline3, flag_baseline_trial_or_avg, global_baseline, time)
+
+            dFoverF_mean=StimTrace.response_trace_mean;
             
             y=dFoverF_mean;
             y_smooth=  movmean(y,[smooth_bins 0], 2, 'omitnan','Endpoints','shrink');
             max_epoch(i_epoch)=max(y_smooth);
             min_epoch(i_epoch)=min(y_smooth);
             hold on;
-            plot(time(2:end-1),y_smooth(2:end-1),'Color',line_color(i_epoch,:));
+            plot(time(1:end-1),y_smooth,'Color',line_color(i_epoch,:));
         end
         ylim ([min([-0.1,min_epoch]),max([0.5 ,max_epoch])]);
         xlabel('Time (s)');
