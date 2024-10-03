@@ -1,6 +1,6 @@
 %{
-# Shuffled distributions of stability and modulation depth of Positional 2D
-tuning; Shuffling is done by mixing trial identiy, not shifting spikes
+# Shuffled distributions of stability and modulation depth of Positional 2D tuning; 
+# Shuffling is done by mixing trial identiy, not shifting spikes
 -> EXP2.SessionEpoch
 -> IMG.ROI
 number_of_bins                          : int   #

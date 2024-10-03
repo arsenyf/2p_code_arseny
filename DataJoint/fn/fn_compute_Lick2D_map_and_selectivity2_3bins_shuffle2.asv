@@ -46,6 +46,8 @@ rand_z_jitter=pos_z+(rand(1,numel(pos_x))-0.5)./3;
 x_bins_original=x_bins;
 z_bins_original=z_bins;
 
+% introducing jitter in the bins. This is used in case the original grid is not a
+% perfect 3 by 3 grid, and in this way we can assign the borderline bins  more evenly across bins
 x_bins=prctile(rand_x_jitter,[0,33,66,100]);
 z_bins=prctile(rand_z_jitter,[0,33,66,100]);
 
@@ -125,8 +127,17 @@ catch
     idx_odd_regular = ismember(1:1:num_trials,1:2:num_trials) & idx_response;
     idx_even_regular =  ismember(1:1:num_trials,2:2:num_trials) & idx_response;
 end
-idx_odd_regular = idx_regular(1:2:numel(idx_regular));
-idx_even_regular = idx_regular(2:2:numel(idx_regular));
+
+try
+    % idx order in a block
+    num_trials_in_block=mode([Block.num_trials_in_block]); %the most frequently occurring number of trials per block (in case num trials in block change within session)
+    begin_mid_end_bins = linspace(2,num_trials_in_block,4);
+    idx_first = [Block.current_trial_num_in_block]==1 & idx_response & idx_regular;
+    idx_begin = ([Block.current_trial_num_in_block]>=begin_mid_end_bins(1) & [Block.current_trial_num_in_block]<=floor(begin_mid_end_bins(2)) ) & idx_response & idx_regular;
+    idx_mid=   ([Block.current_trial_num_in_block]>begin_mid_end_bins(2) & [Block.current_trial_num_in_block]<=round(begin_mid_end_bins(3)) ) & idx_response & idx_regular;
+    idx_end=   ([Block.current_trial_num_in_block]>begin_mid_end_bins(3) & [Block.current_trial_num_in_block]<=ceil(begin_mid_end_bins(4)) ) & idx_response & idx_regular;
+catch
+end
 
 
 for i_x=1:1:numel(x_bins_centers)
@@ -165,51 +176,48 @@ for i_roi=1:1:size(S,1)
         psth_all{i_roi,i_tr}=s;
     end
     
-    for i_shuffle = 1:1:num_shuffles
+    %% Here we shuffle by randomly shuffling the identiy of the trials with respect to different spatial bins
+    
+    lickmap_regular_odd_vs_even_corr_shuffled=zeros(1,num_shuffles);
+    lickmap_fr_regular_modulation_shuffled=zeros(1,num_shuffles);
+    psth_position_concat_regular_odd_even_corr_shuffled=zeros(1,num_shuffles);
+    
+    parfor i_shuffle = 1:1:num_shuffles %parf
+        
         if i_shuffle==1 % first iteration of the shuffle we don't actually do shuffle but use the original data
             idx_xz_shuffled=idx_xz;
         else %we do shuffling
             shifted_trial_order = randperm(num_trials);
-
-            counter=1;
-             for i_x=1:1:numel(x_bins_centers)
-                 
-            for i_z=1:1:numel(z_bins_centers)
-                idx_xz_shuffled{i_z,i_x} = counter:numel(idx_xz{i_z,i_x})
-            end
-             end
             
-            idx_xz_shuffled=idx_xz(shift);
+            counter=0;
+            for i_x=1:1:numel(x_bins_centers)
+                
+                for i_z=1:1:numel(z_bins_centers)
+                    num_trials_to_shift = numel(idx_xz{i_z,i_x});
+                    idx_xz_shuffled{i_z,i_x} = shifted_trial_order(counter+1:(counter+num_trials_to_shift));
+                    counter = counter + num_trials_to_shift;
+                end
+            end
         end
         
-        
-        
-%         %% PSTH
-%     spikes=S(i_roi).dff_trace;
-%     for i_tr = 1:1:numel(start_file)
-%         if idx_response(i_tr)==0 %its an ignore trial
-%             fr_all(i_roi,i_tr)=NaN;
-%             psth_all{i_roi,i_tr}=NaN;
-%             continue
-%         end
-%         s=spikes(start_file(i_tr):end_file(i_tr));
-%         s=movmean(s,[smooth_window_frames 0],'omitnan','Endpoints','shrink');
-%         time=(1:1:numel(s))/frame_rate + fr_interval(1);
-%         s_interval=s(time>=fr_interval_limit(1) & time<fr_interval_limit(2));
-%         fr_all(i_roi,i_tr)= sum(s_interval)/numel(s_interval); %taking mean fr
-%         %         fr_all(i_roi,i_tr)= max(s_interval); %taking the max
-%         psth_all{i_roi,i_tr}=s;
-%     end
-        
-        
-
-        
+                
         
         %% PSTH per position, and 2D maps
+        map_xz_spikes_regular=[];
+        map_xz_spikes_regular_odd=[];
+        map_xz_spikes_regular_even=[];
+        map_xz_timespent_regular=[];
+        map_xz_timespent_regular_odd=[];
+        map_xz_timespent_regular_even=[];
+        psth_per_position_regular=[];
+        psth_per_position_regular_stem=[];
+        psth_per_position_regular_odd=[];
+        psth_per_position_regular_even=[];
+        
         for i_x=1:1:numel(x_bins_centers)
             for i_z=1:1:numel(z_bins_centers)
                 %             idx = find((x_idx==i_x)  & ~isnan(start_file) &  (z_idx==i_z));
-                idx_bin = idx_xz{i_z,i_x};
+                idx_bin = idx_xz_shuffled{i_z,i_x};
                 
                 %% Binning for 2D 2D MAP calculation
                 %spikes binned
@@ -255,8 +263,7 @@ for i_roi=1:1:size(S,1)
         r=corr([cell2mat(psth_per_position_regular_odd(:)')',cell2mat(psth_per_position_regular_even(:)')'],'Rows' ,'pairwise');
         psth_position_concat_regular_odd_even_corr_shuffled(i_shuffle) = r(2);
         
-        
-        
+       
     end
     
     key_ROI1(i_roi).session_epoch_type = key.session_epoch_type;
@@ -268,7 +275,7 @@ for i_roi=1:1:size(S,1)
     key_ROI2(i_roi).session_epoch_number = key.session_epoch_number;
     key_ROI2(i_roi).number_of_bins = key.number_of_bins;
     
-    
+
     % Computing p-value: what fraction of observations in the shuffled distribution  were above the true observation (the first entry)
     key_ROI1(i_roi).lickmap_regular_odd_vs_even_corr_pval = sum(lickmap_regular_odd_vs_even_corr_shuffled(2:end)>=lickmap_regular_odd_vs_even_corr_shuffled(1))/num_shuffles;
     key_ROI1(i_roi).lickmap_fr_regular_modulation_pval = sum(lickmap_fr_regular_modulation_shuffled(2:end)>=lickmap_fr_regular_modulation_shuffled(1))/num_shuffles;

@@ -177,7 +177,13 @@ for i_roi=1:1:size(S,1)
     end
     
     %% Here we shuffle by randomly shuffling the identiy of the trials with respect to different spatial bins
-    for i_shuffle = 1:1:num_shuffles
+    
+    lickmap_regular_odd_vs_even_corr_shuffled=zeros(1,num_shuffles);
+    lickmap_fr_regular_modulation_shuffled=zeros(1,num_shuffles);
+    psth_position_concat_regular_odd_even_corr_shuffled=zeros(1,num_shuffles);
+    
+    parfor i_shuffle = 1:1:num_shuffles %parfor
+        
         if i_shuffle==1 % first iteration of the shuffle we don't actually do shuffle but use the original data
             idx_xz_shuffled=idx_xz;
         else %we do shuffling
@@ -197,6 +203,17 @@ for i_roi=1:1:size(S,1)
                 
         
         %% PSTH per position, and 2D maps
+        map_xz_spikes_regular=[];
+        map_xz_spikes_regular_odd=[];
+        map_xz_spikes_regular_even=[];
+        map_xz_timespent_regular=[];
+        map_xz_timespent_regular_odd=[];
+        map_xz_timespent_regular_even=[];
+        psth_per_position_regular=[];
+        psth_per_position_regular_stem=[];
+        psth_per_position_regular_odd=[];
+        psth_per_position_regular_even=[];
+        
         for i_x=1:1:numel(x_bins_centers)
             for i_z=1:1:numel(z_bins_centers)
                 %             idx = find((x_idx==i_x)  & ~isnan(start_file) &  (z_idx==i_z));
@@ -246,8 +263,7 @@ for i_roi=1:1:size(S,1)
         r=corr([cell2mat(psth_per_position_regular_odd(:)')',cell2mat(psth_per_position_regular_even(:)')'],'Rows' ,'pairwise');
         psth_position_concat_regular_odd_even_corr_shuffled(i_shuffle) = r(2);
         
-        
-        
+       
     end
     
     key_ROI1(i_roi).session_epoch_type = key.session_epoch_type;
@@ -259,7 +275,7 @@ for i_roi=1:1:size(S,1)
     key_ROI2(i_roi).session_epoch_number = key.session_epoch_number;
     key_ROI2(i_roi).number_of_bins = key.number_of_bins;
     
-    
+
     % Computing p-value: what fraction of observations in the shuffled distribution  were above the true observation (the first entry)
     key_ROI1(i_roi).lickmap_regular_odd_vs_even_corr_pval = sum(lickmap_regular_odd_vs_even_corr_shuffled(2:end)>=lickmap_regular_odd_vs_even_corr_shuffled(1))/num_shuffles;
     key_ROI1(i_roi).lickmap_fr_regular_modulation_pval = sum(lickmap_fr_regular_modulation_shuffled(2:end)>=lickmap_fr_regular_modulation_shuffled(1))/num_shuffles;

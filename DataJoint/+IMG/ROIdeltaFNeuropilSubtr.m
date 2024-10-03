@@ -9,7 +9,8 @@ dff_trace      : longblob   # (s) delta f over f
 
 classdef ROIdeltaFNeuropilSubtr < dj.Imported
     properties
-        keySource = (EXP2.SessionEpoch & 'session_epoch_type="behav_only"') & IMG.ROI & IMG.ROITrace & IMG.ROITraceNeuropil - IMG.Mesoscope;
+%         keySource = (EXP2.SessionEpoch & 'session_epoch_type="behav_only"') & IMG.ROI & IMG.ROITrace & IMG.ROITraceNeuropil & IMG.Mesoscope;
+        keySource = (EXP2.SessionEpoch) & IMG.ROI & IMG.ROITrace & IMG.ROITraceNeuropil;
     end
     methods(Access=protected)
         function makeTuples(self, key)
@@ -100,7 +101,7 @@ classdef ROIdeltaFNeuropilSubtr < dj.Imported
                 plot_recording_length= min(floor(numel(dFF)/frame_rate),5000);
                 
                 %save every 1 in 100 rois
-                if mod(iROI,50)==0
+                if mod(iROI,100)==0
                     subplot(4,1,1)
                     hold on
                     plot(Fall(iROI,1:plot_recording_length),'g')
