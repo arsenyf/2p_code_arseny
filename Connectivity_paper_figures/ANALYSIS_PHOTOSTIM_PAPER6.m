@@ -94,6 +94,9 @@ populate(STIMANAL.InfluenceVsCorrMap3); %lickmap_regular_odd_vs_even_corr>0 & li
 populate(STIMANAL.InfluenceVsCorrMapShuffled3);  %lickmap_regular_odd_vs_even_corr>0 & lickmap_fr_regular_modulation>=25
 PLOT_InfluenceVsCorrMapShuffledDiff(); 
 
+%Revision -- using shuffling on location tuning for inclusion
+populate(STIMANAL.InfluenceVsCorrMap4); %lickmap_regular_odd_vs_even_corr>0 & lickmap_fr_regular_modulation>=25
+populate(STIMANAL.InfluenceVsCorrMapShuffled4);  %lickmap_regular_odd_vs_even_corr>0 & lickmap_fr_regular_modulation>=25
 
 
 

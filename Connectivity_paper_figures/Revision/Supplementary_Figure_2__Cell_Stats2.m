@@ -1,4 +1,4 @@
-function Supplementary_Figure_2__Cell_Stats
+function Supplementary_Figure_2__Cell_Stats2
 close all;
 
 
@@ -357,9 +357,14 @@ fn_plot_single_cell_psth_by_position_example_with_stability(rel_example,roi_numb
 
 idx_column_radius=2; %10 to 30 microns
 %% Tuning versus anatomical dtstance   -- PSTH
-key_distance.odd_even_corr_threshold=0.25;
-rel_data_distance= (LICK2D.DistanceCorrPSTHSpikes *EXP2.SessionID & 'num_cells_included>=0') - IMG.Mesoscope;
-rel_data_shuffled_distance= (LICK2D.DistanceCorrPSTHSpikesShuffled *EXP2.SessionID & 'num_cells_included>=0') - IMG.Mesoscope;
+rel_data_distance= (LICK2D.DistanceCorrConcatSpikes2 *EXP2.SessionID & 'num_cells_included>=0') - IMG.Mesoscope;
+rel_data_shuffled_distance= (LICK2D.DistanceCorrConcatSpikesShuffled2 *EXP2.SessionID & 'num_cells_included>=0') - IMG.Mesoscope;
+
+
+
+key_distance.p_value_threshold=0.05;
+rel_data_distance= (LICK2D.DistanceCorrPSTHSpikes3 *EXP2.SessionID & 'num_cells_included>=0') - IMG.Mesoscope;
+rel_data_shuffled_distance= (LICK2D.DistanceCorrPSTHSpikesShuffled3 *EXP2.SessionID & 'num_cells_included>=0') - IMG.Mesoscope;
 D=fetch(rel_data_distance	 & key_distance,'*');
 D_shuffled=fetch(rel_data_shuffled_distance	 & key_distance,'*');
 bins_lateral_distance=D(1).lateral_distance_bins;
@@ -455,9 +460,9 @@ text(xl(1)+diff(xl)*0.25, yl(1)+diff(yl)*0.15, 'Shuffled', 'fontsize', 6, 'fontn
 
 
 %% Tuning versus anatomical dtstance  -- MAP
-key_distance.odd_even_corr_threshold=0.25;
-rel_data_distance= (LICK2D.DistanceCorrMapSpikes2 *EXP2.SessionID & 'num_cells_included>=0') - IMG.Mesoscope;
-rel_data_shuffled_distance= (LICK2D.DistanceCorrMapSpikesShuffled2 *EXP2.SessionID & 'num_cells_included>=0') - IMG.Mesoscope;
+key_distance.p_value_threshold=0.05;
+rel_data_distance= (LICK2D.DistanceCorrMapSpikes3 *EXP2.SessionID & 'num_cells_included>=0') - IMG.Mesoscope;
+rel_data_shuffled_distance= (LICK2D.DistanceCorrMapSpikesShuffled3 *EXP2.SessionID & 'num_cells_included>=0') - IMG.Mesoscope;
 D=fetch(rel_data_distance	 & key_distance,'*');
 D_shuffled=fetch(rel_data_shuffled_distance	 & key_distance,'*');
 bins_lateral_distance=D(1).lateral_distance_bins;

@@ -1,7 +1,7 @@
 function Figure1_v11
 close all;
 
-DATA=fetch1(PAPER.ConnectivityPaperFigure1datav6shuffle,'figure_data');
+DATA=fetch1(PAPER.ConnectivityPaperFigure1datav7shuffle,'figure_data');
 lickmap_regular_odd_vs_even_corr_threshold=0.25; % will only affect panel m
 %             information_per_spike_regular_threshold=0.02; % will only affect panel m
 D_tuned_temporal=DATA.D_tuned_temporal;
@@ -419,9 +419,9 @@ set(gca, 'FontSize',6);
 Figure_1_data_plot_script
 
 %% Tuning versus anatomical dtstance
-key_distance.odd_even_corr_threshold=0.25;
-rel_data_distance= (LICK2D.DistanceCorrConcatSpikes *EXP2.SessionID & 'num_cells_included>=0') - IMG.Mesoscope;
-rel_data_shuffled_distance= (LICK2D.DistanceCorrConcatSpikesShuffled *EXP2.SessionID & 'num_cells_included>=0') - IMG.Mesoscope;
+key_distance.p_value_threshold=0.05;
+rel_data_distance= (LICK2D.DistanceCorrConcatSpikes3 *EXP2.SessionID & 'num_cells_included>=0') - IMG.Mesoscope;
+rel_data_shuffled_distance= (LICK2D.DistanceCorrConcatSpikesShuffled3 *EXP2.SessionID & 'num_cells_included>=0') - IMG.Mesoscope;
 D=fetch(rel_data_distance	 & key_distance,'*');
 D_shuffled=fetch(rel_data_shuffled_distance	 & key_distance,'*');
 bins_lateral_distance=D(1).lateral_distance_bins;

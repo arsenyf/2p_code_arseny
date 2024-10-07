@@ -16,7 +16,7 @@ num_cells_included                   :int       #
 %}
 
 
-classdef DistanceCorrConcatSpikes2 < dj.Computed
+classdef DistanceCorrConcatSpikes3 < dj.Computed
     properties
         keySource = (EXP2.SessionEpoch  & IMG.ROI & LICK2D.ROILick2DmapStatsSpikes3binsShort - IMG.Mesoscope) & IMG.Volumetric ;
     end
@@ -46,7 +46,8 @@ classdef DistanceCorrConcatSpikes2 < dj.Computed
             
             for i_c = 1:1:numel(p_value_threshold)
                 %                 rel_roi = IMG.ROI & (IMG.ROIGood-IMG.ROIBad) & key & (LICK2D.ROILick2DmapStatsSpikes3binsShort & sprintf('psth_position_concat_regular_odd_even_corr>=%.2f',psth_position_concat_regular_odd_even_corr(i_c)));
-                rel_roi = IMG.ROI & (IMG.ROIGood-IMG.ROIBad) & key & (LICK2D.ROILick2DmapSpikes3binsPvalue2 & sprintf('psth_position_concat_regular_odd_even_corr_pval<=%.2f',p_value_threshold(i_c)));
+                rel_roi = IMG.ROI & (IMG.ROIGood-IMG.ROIBad) & key & (LICK2D.ROILick2DmapSpikes3binsPvalue2 & sprintf('lickmap_fr_regular_modulation_pval<=%.2f',p_value_threshold(i_c))) ...
+                    & (LICK2D.ROILick2DPSTHSpikesPvalue & sprintf('psth_regular_modulation_pval<=%.2f',p_value_threshold(i_c)));
                 
                 rel_roi_xy = IMG.ROIPositionETL & rel_roi;
                 rel_data = LICK2D.ROILick2DmapPSTHSpikes3bins & rel_roi & key;

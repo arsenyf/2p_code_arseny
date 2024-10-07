@@ -1,13 +1,16 @@
 function fn_compute_distance_psth_correlation(rel_roi, rel_data, key,self, dir_save_fig, rel_roi_xy,mesoscope_flag)
 
-min_distance_in_xy=20; %to exclude auto-focus flourescence
+min_distance_in_xy=10; %to exclude auto-focus flourescence
+% min_distance_in_xy=20; %to exclude auto-focus flourescence
 
 % column_inner_radius =[10 10 10 10 10 10 10 10  10  10  10  10  25 25 25  30 30 30 30  30  40  40 40  50  50  60  60  60  60  100 120 120]; % microns
 % column_outer_radius =[25 30 40 50 60 75 90 100 120 150 200 250 50 40 100 50 60 75 100 120 60  70 100 100 250 250 100 250 120 250 250 500]; % microns
 
-column_inner_radius =[20 20 20 20 20 20 20  20  20  25]; % microns
-column_outer_radius =[30 40 50 60 75 90 100 120 150 50]; % microns
+% column_inner_radius =[20 20 20 20 20 20 20  20  20  25]; % microns
+% column_outer_radius =[30 40 50 60 75 90 100 120 150 50]; % microns
 
+column_inner_radius =[10 10 20 20 20 20 20 20  20  20  25]; % microns
+column_outer_radius =[25 30 40 50 60 75 90 100 120 150 50]; % microns
 
 lateral_distance_bins=[0,10,20,30:10:500];
 eucledian_distance_bins=[0,10,20,30:10:500];

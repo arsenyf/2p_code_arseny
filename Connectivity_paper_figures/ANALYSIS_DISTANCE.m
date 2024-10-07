@@ -6,7 +6,8 @@ populate(LICK2D.DistanceCorrConcatSpikes)
 populate(LICK2D.DistanceCorrConcatSpikesShuffled)
 populate(LICK2D.DistanceCorrConcatSpikes2) 
 populate(LICK2D.DistanceCorrConcatSpikesShuffled2)
-
+populate(LICK2D.DistanceCorrConcatSpikes3) 
+populate(LICK2D.DistanceCorrConcatSpikesShuffled3)
 
 % populate(LICK2D.DistanceCorrConcatSpikesNegativeLateral2) 
 
@@ -16,11 +17,14 @@ populate(LICK2D.DistanceCorrPSTHSpikes)
 populate(LICK2D.DistanceCorrPSTHSpikesShuffled)
 populate(LICK2D.DistanceCorrPSTHSpikes2)
 populate(LICK2D.DistanceCorrPSTHSpikesShuffled2)
-
+populate(LICK2D.DistanceCorrPSTHSpikes3)
+populate(LICK2D.DistanceCorrPSTHSpikesShuffled2)
 
 populate(LICK2D.DistanceCorrMapSpikes) 
 populate(LICK2D.DistanceCorrMapSpikesShuffled)
 populate(LICK2D.DistanceCorrMapSpikes2) 
+populate(LICK2D.DistanceCorrMapSpikesShuffled2)
+populate(LICK2D.DistanceCorrMapSpikes3) 
 populate(LICK2D.DistanceCorrMapSpikesShuffled2)
 
 

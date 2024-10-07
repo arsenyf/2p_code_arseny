@@ -19,10 +19,10 @@ classdef ConnectivityPaperFigure1datav6shuffle < dj.Computed
             filename=[sprintf('Figure1v6')];
             
             
-            psth_regular_odd_vs_even_corr=0.25;
-            lickmap_regular_odd_vs_even_corr_threshold=0.25;
-            lickmap_fr_regular_modulation_threshold=25;
-            psth_regular_modulation_threshold=25;
+%             psth_regular_odd_vs_even_corr=0.25;
+%             lickmap_regular_odd_vs_even_corr_threshold=0.25;
+%             lickmap_fr_regular_modulation_threshold=25;
+%             psth_regular_modulation_threshold=25;
             p_value_threshold = 0.05;
             %             information_per_spike_regular_threshold=0.1;
             rel_roi=PAPER.ROILICK2DInclusion;

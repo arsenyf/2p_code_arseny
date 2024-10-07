@@ -1,7 +1,7 @@
 %{
 # Pairwise correlation as a function of distance
 -> EXP2.SessionEpoch
-odd_even_corr_threshold               : double   #
+p_value_threshold               : double   #
 ---
 distance_corr_2d                     :blob      # mat of average pairwise pearson coeff of cells, binned according lateral X axial distance
 distance_corr_lateral                :blob      # binned according lateral  distance
@@ -35,7 +35,7 @@ classdef DistanceCorrConcatSpikesShuffled2 < dj.Computed
             
             dir_base = fetch1(IMG.Parameters & 'parameter_name="dir_root_save"', 'parameter_value');
             
-            psth_position_concat_regular_odd_even_corr=[-1, 0, 0.25, 0.5];
+            p_value_threshold = [0.1, 0.05, 0.01];
             
             mesoscope_flag=count(IMG.Mesoscope & key);
                 if mesoscope_flag==1
@@ -45,11 +45,11 @@ classdef DistanceCorrConcatSpikesShuffled2 < dj.Computed
             end
 
             
-            for i_c = 1:1:numel(psth_position_concat_regular_odd_even_corr)
-                rel_roi = IMG.ROI & (IMG.ROIGood-IMG.ROIBad) & key & (LICK2D.ROILick2DmapStatsSpikes3binsShort & sprintf('psth_position_concat_regular_odd_even_corr>=%.2f',psth_position_concat_regular_odd_even_corr(i_c)));
+            for i_c = 1:1:numel(p_value_threshold)
+                rel_roi = IMG.ROI & (IMG.ROIGood-IMG.ROIBad) & key & (LICK2D.ROILick2DmapSpikes3binsPvalue2 & sprintf('psth_position_concat_regular_odd_even_corr_pval<=%.2f',p_value_threshold(i_c)));
                 rel_roi_xy = IMG.ROIPositionETL & rel_roi;
                 rel_data = LICK2D.ROILick2DmapPSTHSpikes3bins & rel_roi & key;
-                key.odd_even_corr_threshold = psth_position_concat_regular_odd_even_corr(i_c);
+                key.p_value_threshold = p_value_threshold(i_c);
                 fn_compute_distance_psth_correlation_shuffled(rel_roi, rel_data, key,self, dir_save_fig, rel_roi_xy, mesoscope_flag);
             end
             
