@@ -27,26 +27,27 @@ rel_example2 = rel_example;
 
 PAPER_graphics_definition_Sup_Figure2
 
+sigfnif_threshold_modulation=25;
+sigfnif_threshold_stability=0.25;
 
 % Temporal modulation
 axes('position',[position_x1(1),position_y1(1), panel_width1, panel_height1])
 p_value_threshold=0.05;
 hold on
 % psth_regular_modulation = D_tuned_temporal.psth_regular_modulation;
-%shuffled
-% rel_temporal_signif_shuffled = LICK2D.ROILick2DPSTHSpikesShuffledDistribution & (LICK2D.ROILick2DPSTHSpikesPvalue &  sprintf('psth_regular_modulation_pval<=%.2f',p_value_threshold)) & rel_roi;
-rel_temporal_signif_shuffled = LICK2D.ROILick2DPSTHSpikesShuffledDistribution  & rel_roi;
-psth_regular_modulation_shuffled= cell2mat(fetchn(rel_temporal_signif_shuffled,'psth_regular_modulation_shuffled'));
-[hhh3,edges]=histcounts([psth_regular_modulation_shuffled(:)],linspace(0,100,15));
-hhh3=100*hhh3/sum(hhh3);
-bar(edges(1:end-1),hhh3,'FaceColor',[0.5 0.5 0.5],'EdgeColor',[0.5 0.5 0.5])
-sigfnif_threshold=25;
+% %shuffled
+% % rel_temporal_signif_shuffled = LICK2D.ROILick2DPSTHSpikesShuffledDistribution & (LICK2D.ROILick2DPSTHSpikesPvalue &  sprintf('psth_regular_modulation_pval<=%.2f',p_value_threshold)) & rel_roi;
+% rel_temporal_signif_shuffled = LICK2D.ROILick2DPSTHSpikesShuffledDistribution  & rel_roi;
+% psth_regular_modulation_shuffled= cell2mat(fetchn(rel_temporal_signif_shuffled,'psth_regular_modulation_shuffled'));
+% [hhh3,edges]=histcounts([psth_regular_modulation_shuffled(:)],linspace(0,100,15));
+% hhh3=100*hhh3/sum(hhh3);
+% bar(edges(1:end-1),hhh3,'FaceColor',[0.5 0.5 0.5],'EdgeColor',[0.5 0.5 0.5])
 
 %actual
 psth_regular_modulation = fetchn( LICK2D.ROILick2DPSTHSpikesModulation &  (LICK2D.ROILick2DPSTHSpikesPvalue &  sprintf('psth_regular_modulation_pval<=%.2f',p_value_threshold)) & rel_roi,'psth_regular_modulation');
 [hhh3,edges]=histcounts([psth_regular_modulation],linspace(0,100,15));
 hhh3=100*hhh3/sum(hhh3);
-bar(edges(1:end-1),hhh3,'FaceColor','none','EdgeColor',[0 0 0])
+bar(edges(1:end-1),hhh3,'FaceColor', [0 0 0],'EdgeColor',[0 0 0])
 yl = [0, max(hhh3)];
 yl(2)=30;
 xl = [0,100];
@@ -59,7 +60,7 @@ set(gca,'XTick',[0,100],'Ytick',[0, yl(2)],'TickLength',[0.05,0], 'FontSize',6);
 box off
 text(xl(1)-diff(xl)*0.75, yl(1)+diff(yl)*1.5, 'a', ...
     'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
-% plot([sigfnif_threshold,sigfnif_threshold],yl,'Color',[1 0 0],'LineWidth',2);
+% plot([sigfnif_threshold_modulation,sigfnif_threshold_modulation],yl,'Color',[1 0 0],'LineWidth',2);
 
 
 % Location modulation
@@ -73,21 +74,25 @@ hold on
 % psth_regular_modulation = D_tuned_temporal.psth_regular_modulation;
 %shuffled
 % rel_positional_signif_shuffled = LICK2D.ROILick2DmapSpikesShuffledDistribution2 & (LICK2D.ROILick2DmapSpikes3binsPvalue2 &  sprintf('lickmap_fr_regular_modulation_pval<=%.2f',p_value_threshold)) & rel_roi;
-rel_positional_signif_shuffled = LICK2D.ROILick2DmapSpikesShuffledDistribution2  & rel_roi;
-lickmap_fr_regular_modulation_shuffled= cell2mat(fetchn(rel_positional_signif_shuffled,'lickmap_fr_regular_modulation_shuffled'));
-[hhh3,edges]=histcounts([lickmap_fr_regular_modulation_shuffled(:)],linspace(0,100,15));
-hhh3=100*hhh3/sum(hhh3);
-bar(edges(1:end-1),hhh3,'FaceColor',[0.5 0.5 0.5],'EdgeColor',[0.5 0.5 0.5])
-sigfnif_threshold=25;
+
+
+%shuffled
+% rel_positional_signif_shuffled = LICK2D.ROILick2DmapSpikesShuffledDistribution2  & rel_roi;
+% lickmap_fr_regular_modulation_shuffled= cell2mat(fetchn(rel_positional_signif_shuffled,'lickmap_fr_regular_modulation_shuffled'));
+% [hhh3,edges]=histcounts([lickmap_fr_regular_modulation_shuffled(:)],linspace(0,100,15));
+% hhh3=100*hhh3/sum(hhh3);
+% bar(edges(1:end-1),hhh3,'FaceColor',[0.5 0.5 0.5],'EdgeColor',[0.5 0.5 0.5])
+% sigfnif_threshold=25;
 
 %actual
 lickmap_fr_regular_modulation = fetchn( LICK2D.ROILick2DmapSpikes3binsModulation &  (LICK2D.ROILick2DmapSpikes3binsPvalue2 &  sprintf('lickmap_fr_regular_modulation_pval<=%.2f',p_value_threshold)) & rel_roi,'lickmap_fr_regular_modulation');
 [hhh3,edges]=histcounts([lickmap_fr_regular_modulation],linspace(0,100,15));
 hhh3=100*hhh3/sum(hhh3);
-bar(edges(1:end-1),hhh3,'FaceColor','none','EdgeColor',[0 0 0])
+bar(edges(1:end-1),hhh3,'FaceColor', [0 0 0],'EdgeColor',[0 0 0])
 yl = [0, max(hhh3)];
 yl(2)=25;
 xl = [0,100];
+% text(xl(1)+diff(xl)*0.3, yl(1)+diff(yl)*0.9, 'Shuffled', 'fontsize', 6, 'fontname', 'helvetica','Color',[0.5 0.5 0.5]);
 
 
 text(xl(1)+diff(xl)*0.5,yl(1)-diff(yl)*0.5, [sprintf('Tuning modulation') newline '(%)'], 'FontSize',6,'HorizontalAlignment','center')
@@ -99,7 +104,7 @@ set(gca,'XTick',[0,100],'Ytick',[0, yl(2)],'TickLength',[0.05,0], 'FontSize',6);
 box off
 text(xl(1)-diff(xl)*0.75, yl(1)+diff(yl)*1.5, 'b', ...
     'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
-% plot([sigfnif_threshold,sigfnif_threshold],yl,'Color',[1 0 0],'LineWidth',2);
+% plot([sigfnif_threshold_modulation,sigfnif_threshold_modulation],yl,'Color',[1 0 0],'LineWidth',2);
 
 
 %% Field size
@@ -130,12 +135,27 @@ text(xl(1)-diff(xl)*0.75, yl(1)+diff(yl)*1.5, 'c', ...
 %% Temporal tuning similarity,\nacross positions
 axes('position',[position_x2(1),position_y2(1), panel_width2, panel_height2])
 hold on
+
+%shuffled
+p_value_threshold=0.05;
+hold on
+% psth_regular_modulation = D_tuned_temporal.psth_regular_modulation;
+
+% %shuffled
+% % rel_temporal_signif_shuffled = LICK2D.ROILick2DPSTHSpikesShuffledDistribution & (LICK2D.ROILick2DPSTHSpikesPvalue &  sprintf('psth_regular_modulation_pval<=%.2f',p_value_threshold)) & rel_roi;
+% rel_temporal_signif_shuffled = LICK2D.ROILick2DPSTHSpikesShuffledDistribution  & rel_roi;
+% psth_regular_odd_vs_even_corr_shuffled= cell2mat(fetchn(rel_temporal_signif_shuffled,'psth_regular_odd_vs_even_corr_shuffled'));
+% [hhh3,edges]=histcounts([psth_regular_odd_vs_even_corr_shuffled(:)],linspace(-1,1,15));
+% hhh3=100*hhh3/sum(hhh3);
+% bar(edges(1:end-1),hhh3,'FaceColor',[0.5 0.5 0.5],'EdgeColor',[0.5 0.5 0.5])
+
+
+%actual
 psth_regular_odd_vs_even_corr = D_tuned_temporal.psth_regular_odd_vs_even_corr;
 % psth_regular_odd_vs_even_corr = fetchn( LICK2D.ROILick2DPSTHStatsSpikes & rel_roi,'psth_regular_odd_vs_even_corr');
-sigfnif_threshold=0.25;
 [hhh3,edges]=histcounts([psth_regular_odd_vs_even_corr],linspace(-1,1,15));
 hhh3=100*hhh3/sum(hhh3);
-bar(edges(1:end-1),hhh3,'FaceColor',[0 0 0],'EdgeColor',[0 0 0])
+bar(edges(1:end-1),hhh3,'FaceColor', [0 0 0],'EdgeColor',[0 0 0])
 yl = [0, max(hhh3)];
 yl(2)=40;
 xl = [-1,1];
@@ -148,20 +168,40 @@ set(gca,'XTick',[-1,0,1],'Ytick',[0, yl(2)],'TickLength',[0.05,0], 'FontSize',6)
 box off
 text(xl(1)-diff(xl)*0.75, yl(1)+diff(yl)*1.5, 'f', ...
     'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
-plot([sigfnif_threshold,sigfnif_threshold],yl,'Color',[1 0 0],'LineWidth',2);
+% plot([sigfnif_threshold_stability,sigfnif_threshold_stability],yl,'Color',[1 0 0],'LineWidth',2);
+
+
+
+
 
 
 
 axes('position',[position_x2(2),position_y2(1), panel_width2, panel_height2])
+
+%shuffled
+p_value_threshold=0.05;
+hold on
+% psth_regular_modulation = D_tuned_temporal.psth_regular_modulation;
+% 
+% %shuffled
+% % rel_temporal_signif_shuffled = LICK2D.ROILick2DPSTHSpikesShuffledDistribution & (LICK2D.ROILick2DPSTHSpikesPvalue &  sprintf('psth_regular_modulation_pval<=%.2f',p_value_threshold)) & rel_roi;
+% rel_temporal_signif_shuffled = LICK2D.ROILick2DmapSpikesShuffledDistribution2  & rel_roi;
+% psth_position_concat_regular_odd_even_corr_shuffled= cell2mat(fetchn(rel_temporal_signif_shuffled,'psth_position_concat_regular_odd_even_corr_shuffled'));
+% [hhh3,edges]=histcounts([psth_position_concat_regular_odd_even_corr_shuffled(:)],linspace(-1,1,15));
+% hhh3=100*hhh3/sum(hhh3);
+% bar(edges(1:end-1),hhh3,'FaceColor',[0.5 0.5 0.5],'EdgeColor',[0.5 0.5 0.5])
+
+
+%actual
 hold on
 psth_position_concat_regular_odd_even_corr = D_tuned_temporal_and_positional.psth_position_concat_regular_odd_even_corr;
 % psth_position_concat_regular_odd_even_corr = fetchn( LICK2D.ROILick2DmapStatsSpikes3binsShort & rel_roi,'psth_position_concat_regular_odd_even_corr');
 sigfnif_threshold=0.25;
 [hhh3,edges]=histcounts([psth_position_concat_regular_odd_even_corr],linspace(-1,1,15));
 hhh3=100*hhh3/sum(hhh3);
-bar(edges(1:end-1),hhh3,'FaceColor',[0 0 0],'EdgeColor',[0 0 0])
+bar(edges(1:end-1),hhh3,'FaceColor', [0 0 0],'EdgeColor',[0 0 0])
 yl = [0, max(hhh3)];
-yl(2)=25;
+yl(2)=30;
 xl = [-1,1];
 text(xl(1)+diff(xl)*0.5,yl(1)-diff(yl)*0.5, [sprintf('Tuning corr.,') newline '{\it r} (odd,even)'], 'FontSize',6,'HorizontalAlignment','center')
 text(xl(1)+diff(xl)*0.5,yl(1)+diff(yl)*1.3,sprintf('Location-temporal \ntuning stability'), 'FontSize',6,'HorizontalAlignment','center', 'fontweight', 'bold');
@@ -172,19 +212,35 @@ set(gca,'XTick',[-1,0,1],'Ytick',[0, yl(2)],'TickLength',[0.05,0], 'FontSize',6)
 box off
 text(xl(1)-diff(xl)*1, yl(1)+diff(yl)*1.5, 'g', ...
     'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
-plot([sigfnif_threshold,sigfnif_threshold],yl,'Color',[1 0 0],'LineWidth',2);
+% plot([sigfnif_threshold_stability,sigfnif_threshold_stability],yl,'Color',[1 0 0],'LineWidth',2);
 
 
 
 
 axes('position',[position_x2(3),position_y2(1), panel_width2, panel_height2])
+
+%shuffled
+p_value_threshold=0.05;
+hold on
+% psth_regular_modulation = D_tuned_temporal.psth_regular_modulation;
+% %shuffled
+% % rel_temporal_signif_shuffled = LICK2D.ROILick2DPSTHSpikesShuffledDistribution & (LICK2D.ROILick2DPSTHSpikesPvalue &  sprintf('psth_regular_modulation_pval<=%.2f',p_value_threshold)) & rel_roi;
+% rel_temporal_signif_shuffled = LICK2D.ROILick2DmapSpikesShuffledDistribution2  & rel_roi;
+% lickmap_regular_odd_vs_even_corr_shuffled= cell2mat(fetchn(rel_temporal_signif_shuffled,'lickmap_regular_odd_vs_even_corr_shuffled'));
+% [hhh3,edges]=histcounts([lickmap_regular_odd_vs_even_corr_shuffled(:)],linspace(-1,1,15));
+% hhh3=100*hhh3/sum(hhh3);
+% bar(edges(1:end-1),hhh3,'FaceColor',[0.5 0.5 0.5],'EdgeColor',[0.5 0.5 0.5])
+
+
+
+%actual
 hold on
 % lickmap_regular_odd_vs_even_corr = fetchn( LICK2D.ROILick2DmapStatsSpikes3binsShort & rel_roi,'lickmap_regular_odd_vs_even_corr');
 lickmap_regular_odd_vs_even_corr = D_tuned_positional.lickmap_regular_odd_vs_even_corr;
 sigfnif_threshold=0.25;
 [hhh3,edges]=histcounts([lickmap_regular_odd_vs_even_corr],linspace(-1,1,15));
 hhh3=100*hhh3/sum(hhh3);
-bar(edges(1:end-1),hhh3,'FaceColor',[0 0 0],'EdgeColor',[0 0 0])
+bar(edges(1:end-1),hhh3,'FaceColor', [0 0 0],'EdgeColor',[0 0 0])
 yl = [0, max(hhh3)];
 yl(2)=20;
 xl = [-1,1];
@@ -197,8 +253,9 @@ set(gca,'XTick',[-1,0,1],'Ytick',[0, yl(2)],'TickLength',[0.05,0], 'FontSize',6)
 box off
 text(xl(1)-diff(xl)*0.75, yl(1)+diff(yl)*1.5, 'h', ...
     'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
-plot([sigfnif_threshold,sigfnif_threshold],yl,'Color',[1 0 0],'LineWidth',2);
+% plot([sigfnif_threshold_stability,sigfnif_threshold_stability],yl,'Color',[1 0 0],'LineWidth',2);
 
+% text(xl(1)+diff(xl)*0.9, yl(1)+diff(yl)*0.9, 'Shuffled', 'fontsize', 6, 'fontname', 'helvetica','Color',[0.5 0.5 0.5]);
 
 
 

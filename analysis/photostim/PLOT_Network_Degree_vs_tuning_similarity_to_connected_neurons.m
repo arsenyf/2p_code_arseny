@@ -2,8 +2,8 @@ function PLOT_Network_Degree_vs_tuning_similarity_to_connected_neurons()
 % clf
 
 dir_base = fetch1(IMG.Parameters & 'parameter_name="dir_root_save"', 'parameter_value');
-dir_current_fig = [dir_base  'Connectivity_paper_figures\plots\'];
-filename = 'network_degree_vs_tuning_shuffled_final';
+dir_current_fig = [dir_base  'Connectivity_paper_figures\plots\Revision\'];
+filename = 'Fig4_panel_OutDegree_vs_tuning_similarity_to_connected_neurons';
 num_shuffles=100;
 rel_include= (IMG.ROI- IMG.ROIBad) & STIM.ROIResponseDirectUnique;
 k_degree.max_distance_lateral =100;
@@ -151,10 +151,12 @@ hist_bins(end)=[];
 
 [hist_bins_centers, y_binned_mean,y_binned_stem, y_binned_shuffled_mean, y_binned_shuffled_stem] =fn_bin_and_shuffle (hist_bins, num_shuffles, k, y);
 shadedErrorBar(hist_bins_centers,y_binned_mean,y_binned_stem,'lineprops',{'.-','Color',[1 0 0]})
-shadedErrorBar(hist_bins_centers,y_binned_shuffled_mean,y_binned_shuffled_stem,'lineprops',{'.-','Color',[0 0 0]})
+% shadedErrorBar(hist_bins_centers,y_binned_shuffled_mean,y_binned_shuffled_stem,'lineprops',{'.-','Color',[0 0 0]})
 ylim([min(y_binned_mean-y_binned_stem),max(y_binned_mean+y_binned_stem)])
-xlabel(sprintf('Number of causal connections,\n out-degree')) 
-ylabel(sprintf('Tuning correlation with \n effectively connected neurons,\n r'))
+ylim([0,max(y_binned_mean+y_binned_stem)])
+
+xlabel(sprintf('Causal connections,\n out-degree')) 
+ylabel(sprintf('Tuning correlation with \n cusally connected neurons, r'))
 % ylabel(sprintf('Spatial Information \n(bits/spike)'))
 title(sprintf('Location tuning\n'));
 box off;

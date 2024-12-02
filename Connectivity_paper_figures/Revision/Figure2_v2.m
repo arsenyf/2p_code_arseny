@@ -1,11 +1,12 @@
 function Figure2_v2
 close all;
-lickmap_regular_odd_vs_even_corr_threshold=0.25; 
-
+% lickmap_regular_odd_vs_even_corr_threshold=-1; 
+lickmap_fr_regular_modulation_pval_threshold=0.05;
 DATA=fetch1(PAPER.ConnectivityPaperFigure2datav2shuffle,'figure_data');
 DATA.D_positional_and_reward=DATA.D_positional_and_reward;
 DATA.D_reward=DATA.D_reward;
 DATA.D_venn_reward_positional=DATA.D_venn_reward_positional	;
+DATA.D_venn_reward_temporal=DATA.D_venn_reward_temporal;
 
 % idx_large1 = [DATA.D_positional_and_reward.reward_mean_pval_regular_large<=0.05];
 % idx_small1 = [DATA.D_positional_and_reward.reward_mean_pval_regular_small<=0.05];
@@ -19,7 +20,11 @@ idx_small1 = [DATA.D_positional_and_reward.reward_mean_pval_regular_small<=0.05]
 idx_large2 = [DATA.D_reward.reward_mean_pval_regular_large<=0.05];
 idx_small2 = [DATA.D_reward.reward_mean_pval_regular_small<=0.05];
 
-idx_positional =DATA.D_reward.lickmap_regular_odd_vs_even_corr >lickmap_regular_odd_vs_even_corr_threshold;
+% idx_positional =DATA.D_reward.lickmap_regular_odd_vs_even_corr >lickmap_regular_odd_vs_even_corr_threshold;
+idx_positional =DATA.D_reward.lickmap_fr_regular_modulation_pval <=lickmap_fr_regular_modulation_pval_threshold;
+
+%<=lickmap_fr_regular_modulation_pval_threshold;
+
 % idx_positional =DATA.D_reward.psth_position_concat_regular_odd_even_corr >lickmap_regular_odd_vs_even_corr_threshold;
 % idx_positional =DATA.D_reward.information_per_spike_regular >0.02;
 
@@ -28,7 +33,7 @@ rel_example = IMG.ROIID*LICK2D.ROILick2DPSTHSpikesExample*LICK2D.ROILick2DmapSpi
 rel_example_psth = IMG.ROIID*LICK2D.ROILick2DPSTHSpikesLongerInterval;
 
 dir_base = fetch1(IMG.Parameters & 'parameter_name="dir_root_save"', 'parameter_value');
-dir_current_fig = [dir_base  'Connectivity_paper_figures\plots\'];
+dir_current_fig = [dir_base  'Connectivity_paper_figures\plots\Revision\'];
 dir_embeded_graphics=dir_current_fig;
 
 filename=[sprintf('Figure2_v2')];
@@ -118,7 +123,7 @@ fn_plot_single_cell_psth_by_position_example_fig2 (rel_example,roi_number_uid , 
 %% Stats
 
 
-%% Venn diagram
+%% Venn diagram - Location reward tuning
 axes('position',[position_x3(3),position_y3(1)-0.02, panel_width3*1.8, panel_height3*1.8])
 DATA.D_venn_reward_positional;
 count_total=DATA.D_venn_reward_positional.count_total;
@@ -133,24 +138,71 @@ ABC=DATA.D_venn_reward_positional.ABC;
 percentage_large_reward = A_count_largereward/count_total
 percentage_small_reward = B_count_smallreward/count_total
 percentage_reward_position_conjunctive = numel(DATA.D_positional_and_reward.field_size_large)/count_total
+percentage_reward_position_conjunctive = DATA.D_venn_reward_positional.count_reward_and_positional/count_total
+
+DATA.D_venn_reward_positional.count_reward_and_positional/(DATA.D_venn_reward_positional.A_count_largereward + DATA.D_venn_reward_positional.B_count_smallreward - DATA.D_venn_reward_positional.AB)
+
 
 [h,v]=venn([A_count_largereward,B_count_smallreward,C_count_positional], [AB, AC, BC, ABC],'FaceColor',{[1 0.3 0],[0 0.7 0.2],[1 0 0]});
 
 %by itself plots circles with total areas A, and intersection area(s) I. 
 % A is a three element vector [c1 c2 c3], and I is a four element vector [i12 i13 i23 i123], specifiying the two-circle intersection areas i12, i13, i23, and the three-circle intersection i123.
 for i_v=1:1:numel(v.ZonePop)
-text(v.ZoneCentroid(i_v,1)-v.ZoneCentroid(i_v,1)*0.2,v.ZoneCentroid(i_v,2),sprintf('%.0f%%',floor((100*v.ZonePop(i_v)/count_total))),'Color',[1 1 1],'FontSize',5,'HorizontalAlignment','left');
+text(v.ZoneCentroid(i_v,1)-v.ZoneCentroid(i_v,1)*0.2,v.ZoneCentroid(i_v,2),sprintf('%.0f%%',round((100*v.ZonePop(i_v)/count_total))),'Color',[1 1 1],'FontSize',5,'HorizontalAlignment','left');
 end
 axis off
 box off
 text(v.Position(1,1)-v.Radius(1)*1.9,v.Position(1,2)-v.Radius(1)*1.4,sprintf('Reward-increase\n modulated'),'Color',[1 0.3 0],'FontSize',6);
 text(v.Position(2,1)-v.Radius(1)*0.3,v.Position(2,2)-v.Radius(2)*1.6,sprintf('Reward-omission\n modulated'),'Color',[0 0.7 0.2],'FontSize',6);
-text(v.Position(3,1)-v.Radius(1)*1.3,v.Position(3,2)+v.Radius(3)*1.2,sprintf('Location tuned'),'Color',[1 0 0],'FontSize',6);
+text(v.Position(3,1)-v.Radius(1)*1.3,v.Position(3,2)+v.Radius(3)*1.2,sprintf('Location tuning'),'Color',[1 0 0],'FontSize',6);
 ff=gca;
 xl=ff.XLim;
 yl=ff.YLim;
 text(xl(1)-diff(xl)*0.2, yl(1)+diff(yl)*1.1, 'd', ...
     'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
+
+
+%% Venn diagram - temporal reward tuning
+axes('position',[position_x3(3),position_y3(1)-0.3, panel_width3*1.8, panel_height3*1.8])
+DATA.D_venn_reward_temporal;
+count_total=DATA.D_venn_reward_temporal.count_total;
+A_count_largereward=DATA.D_venn_reward_temporal.A_count_largereward;
+B_count_smallreward=DATA.D_venn_reward_temporal.B_count_smallreward;
+C_count_temporal=DATA.D_venn_reward_temporal.C_count_temporal;
+AB=DATA.D_venn_reward_temporal.AB;
+AC=DATA.D_venn_reward_temporal.AC;
+BC=DATA.D_venn_reward_temporal.BC;
+ABC=DATA.D_venn_reward_temporal.ABC;
+
+percentage_large_reward = A_count_largereward/count_total
+percentage_small_reward = B_count_smallreward/count_total
+percentage_reward_temporal_conjunctive = DATA.D_venn_reward_temporal.count_reward_and_temporal/count_total
+%reward and temporal:
+DATA.D_venn_reward_temporal.count_reward_and_temporal/(DATA.D_venn_reward_temporal.A_count_largereward + DATA.D_venn_reward_temporal.B_count_smallreward - DATA.D_venn_reward_temporal.AB)
+
+[h,v]=venn([A_count_largereward,B_count_smallreward,C_count_temporal], [AB, AC, BC, ABC],'FaceColor',{[1 0.3 0],[0 0.7 0.2],[0.8 0.5 1]});
+
+%by itself plots circles with total areas A, and intersection area(s) I. 
+% A is a three element vector [c1 c2 c3], and I is a four element vector [i12 i13 i23 i123], specifiying the two-circle intersection areas i12, i13, i23, and the three-circle intersection i123.
+try
+for i_v=1:1:numel(v.ZonePop)
+   ((100*v.ZonePop(i_v)/count_total))
+% text(v.ZoneCentroid(i_v,1)-v.ZoneCentroid(i_v,1)*0.2,v.ZoneCentroid(i_v,2),sprintf('%.0f%%',ceil((100*v.ZonePop(i_v)/count_total))),'Color',[1 1 1],'FontSize',5,'HorizontalAlignment','left');
+end
+catch
+end
+
+axis off
+box off
+text(v.Position(1,1)-v.Radius(1)*2.3,v.Position(1,2)-v.Radius(1)*1.4,sprintf('Reward-increase\n modulated'),'Color',[1 0.3 0],'FontSize',6);
+text(v.Position(2,1)+v.Radius(1)*0.3,v.Position(2,2)-v.Radius(2)*1.6,sprintf('Reward-omission\n modulated'),'Color',[0 0.7 0.2],'FontSize',6);
+text(v.Position(3,1)-v.Radius(1)*1.3,v.Position(3,2)+v.Radius(3)*1.2,sprintf('Temporal tuning'),'Color',[0.8 0.5 1],'FontSize',6);
+ff=gca;
+xl=ff.XLim;
+yl=ff.YLim;
+text(xl(1)-diff(xl)*0.2, yl(1)+diff(yl)*1.1, 'd', ...
+    'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
+
 
 %% Large/Regular reward modulation histogram and percentage of positionally tuned neurons per modulation bin
 
@@ -177,7 +229,7 @@ ff=gca;
 xl=ff.XLim;
 yl=ff.YLim;
 text(xl(1)+diff(xl)*0.5,yl(1)-diff(yl)*0.5,sprintf('Reward-increase \nmodulation (%%)'), 'FontSize',6,'HorizontalAlignment','center')
-text(xl(1)+diff(xl)*0.5,yl(1)+diff(yl)*1.3,sprintf('Reward-increase\n neurons (%%)'), 'FontSize',6,'HorizontalAlignment','center', 'fontweight', 'bold','Color',[1 0.3 0]);
+text(xl(1)+diff(xl)*0.5,yl(1)+diff(yl)*1.3,sprintf('Reward-increase\n neurons'), 'FontSize',6,'HorizontalAlignment','center', 'fontweight', 'bold','Color',[1 0.3 0]);
 text(xl(1)-diff(xl)*0.1,yl(1)-diff(yl)*0.2,sprintf('Neurons modulated\n by reward increase (%%)\n'),'Rotation',90, 'FontSize',6,'VerticalAlignment','bottom','Color',[1 0.3 0]);
 % set(gca,'Ycolor',[0.5 0.5 0.5],'TickLength',[0.05,0]);
 set(gca,'Ycolor',[1 0.5 0],'TickLength',[0.05,0]);
@@ -202,12 +254,12 @@ plot(bins2_centers,smooth(tuned_in_change_bins,5)'+tuned_in_change_bins*0,'.-','
 ff=gca;
 xl=ff.XLim;
 yl=ff.YLim;
-text(xl(1)+diff(xl)*1.5,yl(1)-diff(yl)*0.75,sprintf('Location tuned\n neurons (%%)'),'Rotation',90, 'FontSize',6,'VerticalAlignment','middle','Color',[1 0 0]);
+text(xl(1)+diff(xl)*1.5,yl(1)-diff(yl)*0.05,sprintf('Location tuned\n neurons (%%)'),'Rotation',90, 'FontSize',6,'VerticalAlignment','middle','Color',[1 0 0]);
 % ylabel(sprintf('Positionally tuned\n neurons (%%)'),'Color',[1 0 0],'FontSize',6);
-set(gca,'Xtick',[-100,0,100],'Ytick',[25,50],'TickLength',[0.05,0.05],'TickDir','in');
+set(gca,'Xtick',[-100,0,100],'Ytick',[20,40],'TickLength',[0.05,0.05],'TickDir','in');
 box off
 xlim([-100,100]);
-ylim([25 ceil(max(tuned_in_change_bins))]);
+ylim([20 ceil(max(tuned_in_change_bins))]);
 ff=gca;
 xl=ff.XLim;
 yl=ff.YLim;
@@ -229,7 +281,7 @@ ff=gca;
 xl=ff.XLim;
 yl=ff.YLim;
 text(xl(1)+diff(xl)*0.5,yl(1)-diff(yl)*0.5,sprintf('Reward-omission \nmodulation (%%)'), 'FontSize',6,'HorizontalAlignment','center')
-text(xl(1)+diff(xl)*0.5,yl(1)+diff(yl)*1.3,sprintf('Reward-omission\n neurons (%%)'), 'FontSize',6,'HorizontalAlignment','center', 'fontweight', 'bold','Color',[0 0.7 0.2]);
+text(xl(1)+diff(xl)*0.5,yl(1)+diff(yl)*1.3,sprintf('Reward-omission\n neurons'), 'FontSize',6,'HorizontalAlignment','center', 'fontweight', 'bold','Color',[0 0.7 0.2]);
 text(xl(1)-diff(xl)*0.1,yl(1)-diff(yl)*0.2,sprintf('Neurons modulated\n by reward omission (%%)\n'),'Rotation',90, 'FontSize',6,'VerticalAlignment','bottom','Color',[0 0.7 0.2]);
 set(gca,'Ycolor',[0 0.7 0.2],'TickLength',[0.05,0]);
 
@@ -253,11 +305,11 @@ plot(bins2_centers,smooth(tuned_in_change_bins,5)'+tuned_in_change_bins*0,'.-','
 ff=gca;
 xl=ff.XLim;
 yl=ff.YLim;
-text(xl(1)+diff(xl)*1.5,yl(1)-diff(yl)*0.5,sprintf('Location tuned\n neurons (%%)'),'Rotation',90, 'FontSize',6,'VerticalAlignment','middle','Color',[1 0 0]);
-set(gca,'Xtick',[-100,0,100],'Ytick',[25,50],'TickLength',[0.05,0.05],'TickDir','in');
+text(xl(1)+diff(xl)*1.5,yl(1)-diff(yl)*0.05,sprintf('Location tuned\n neurons (%%)'),'Rotation',90, 'FontSize',6,'VerticalAlignment','middle','Color',[1 0 0]);
+set(gca,'Xtick',[-100,0,100],'Ytick',[20,40],'TickLength',[0.05,0.05],'TickDir','in');
 box off
 xlim([-100,100]);
-ylim([25 ceil(max(tuned_in_change_bins))]);
+ylim([20 ceil(max(tuned_in_change_bins))]);
 ff=gca;
 xl=ff.XLim;
 yl=ff.YLim;

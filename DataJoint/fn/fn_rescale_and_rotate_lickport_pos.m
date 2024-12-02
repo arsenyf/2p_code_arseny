@@ -35,7 +35,7 @@ pos_z_original = pos_z;
 %----------------------------
 roll = mean(fetchn((EXP2.TrialLickBlock & key) - TRACKING.VideoGroomingTrial,'roll_deg'));
 if isnan(roll) %if there is no roll
-roll=0;
+    roll=0;
 end
 
 R = [cosd(roll) -sind(roll); sind(roll) cosd(roll)];
@@ -68,31 +68,33 @@ POS.pos_z = pos_z;
 POS.pos_x_original = pos_x_original;
 POS.pos_z_original = pos_z_original;
 
-
-%% Plotting lickport positions
-session_date = fetch1(EXP2.Session & key,'session_date');
-
-filename = [ 'anm' num2str(key.subject_id) '_s' num2str(key.session) '_' session_date]
-
-subplot(2,2,1)
-plot(pos_x_original+rand(1,numel(pos_x_original))/10, pos_z_original+rand(1,numel(pos_x_original))/10,'.')
-xlabel('X');
-ylabel('Z');
-title(sprintf('anm%d %s session %d\nOriginal position',key.subject_id, session_date, key.session),'FontSize',10);
-
-subplot(2,2,2)
-plot(pos_x+rand(1,numel(pos_x))/10, pos_z+rand(1,numel(pos_x))/10,'.')
-xlabel('X');
-ylabel('Z');
-title('Rotated position','FontSize',10);
-
-
-
-if isempty(dir(dir_current_fig))
-    mkdir (dir_current_fig)
+try
+    %% Plotting lickport positions
+    session_date = fetch1(EXP2.Session & key,'session_date');
+    
+    filename = [ 'anm' num2str(key.subject_id) '_s' num2str(key.session) '_' session_date]
+    
+    subplot(2,2,1)
+    plot(pos_x_original+rand(1,numel(pos_x_original))/10, pos_z_original+rand(1,numel(pos_x_original))/10,'.')
+    xlabel('X');
+    ylabel('Z');
+    title(sprintf('anm%d %s session %d\nOriginal position',key.subject_id, session_date, key.session),'FontSize',10);
+    
+    subplot(2,2,2)
+    plot(pos_x+rand(1,numel(pos_x))/10, pos_z+rand(1,numel(pos_x))/10,'.')
+    xlabel('X');
+    ylabel('Z');
+    title('Rotated position','FontSize',10);
+    
+    
+    
+    if isempty(dir(dir_current_fig))
+        mkdir (dir_current_fig)
+    end
+    %
+    figure_name_out=[ dir_current_fig filename '_lickport'];
+    eval(['print ', figure_name_out, ' -dtiff  -r300']);
+    % eval(['print ', figure_name_out, ' -dpdf -r200']);
+    close all;
+catch
 end
-%
-figure_name_out=[ dir_current_fig filename '_lickport'];
-eval(['print ', figure_name_out, ' -dtiff  -r300']);
-% eval(['print ', figure_name_out, ' -dpdf -r200']);
-close all;

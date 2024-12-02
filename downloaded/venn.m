@@ -238,7 +238,10 @@ function varargout = venn (varargin)
             Z = calcZoneAreas(2, A, I);
             zoneCentroids = zoneCentroids2(d, r, Z);
         else
+            try
             zoneCentroids = zoneCentroids3(x, y, d, r, Z);
+            catch
+            end
         end
     end
         

@@ -1,5 +1,5 @@
 %{
-# Correlation versus influence, and Influence versus Correlation. Binned
+# Correlation in tuning between the target and connected neurons, averaged across all connected neurons to that target
 -> IMG.PhotostimGroup
 -> IMG.ROI
 response_p_val         : double      # response p-value of influence cell pairs for inclusion. 1 means we take all pairs

@@ -67,7 +67,9 @@ IMG.Parameters; %configure the path to your data folder here
 populate_Session_without_behavior (user_name, rig); % populate session without behavior
 % populate_behavior_WaterCue (dir_behavioral_data, behavioral_protocol_name);
 populate_behavior_Lick2D(dir_behavioral_data, behavioral_protocol_name); %also EXP2.SessionTrial
+populate(EXP2.SessionTrialUniqueIDCorrect); % DEBUG: the EXP2.SessionTrial ID is not unique for some reason. Here it is unique
 
+populate(EXP2.TrialLickPortPositionRescale); %rescale lick port positions and rotates to staighten in egocentric coordinaters
 % populate_Session_and_behavior (dir_behavioral_data, user_name, rig); % populate session with behavior
 
 populate(EXP2.SessionBehavioral) %it just tells if this is session is the first, sencond etc among behavioral sessions
@@ -315,6 +317,7 @@ populate(TRACKING.VideoFiducialsTrial);
 populate(TRACKING.VideoFiducialsSessionAvg);
 populate(TRACKING.VideoTongueTrial); %also populates TRACKING.VideoLickportTrial TRACKING.VideoGroomingTrial TRACKING.VideoBodypartTrajectTrial TRACKING.VideoLickportPositionTrial
 populate(TRACKING.VideoNthLickTrial);
+populate(TRACKING.VideoLickCountTrial); %simply counts the number of licks per trial
 populate(LICK2D.PLOTCameras);
 populate(LICK2D.PLOTCameras);
 

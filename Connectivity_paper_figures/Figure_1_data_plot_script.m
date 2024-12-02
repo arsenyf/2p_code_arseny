@@ -138,7 +138,7 @@ bin_mat_coordinate_ver= repmat([1:1:4]',1,4);
 [preferred_bin_mat] = histcounts2(bin_mat_coordinate_ver([D_tuned_positional_4bins.preferred_bin_regular]),bin_mat_coordinate_hor([D_tuned_positional_4bins.preferred_bin_regular]),[1:1:4+1],[1:1:4+1]);
 preferred_bin_mat=100*preferred_bin_mat./sum(preferred_bin_mat(:));
 mmm=imagesc([-1,0,1],[-1,0,1],preferred_bin_mat);
-yl=[0, max(20,ceil(nanmax(preferred_bin_mat(:))))];
+yl=[0, max(15,ceil(nanmax(preferred_bin_mat(:))))];
 caxis(yl)
 colormap(ax10,jet2);
 text(0.5,3.2,sprintf('Peak\nlocations'), 'FontSize',6,'HorizontalAlignment','center', 'fontweight', 'bold');
@@ -195,9 +195,9 @@ A = [A1 A2]; I = I1;
 % text(v.ZoneCentroid(i_v,1)-v.ZoneCentroid(i_v,1)*0.0,v.ZoneCentroid(i_v,2),sprintf('%.1f%%',(100*v.ZonePop(i_v)/count_total)),'Color',[1 1 1],'FontSize',6,'HorizontalAlignment','left');
 % % text(v.ZoneCentroid(i_v,1)-v.ZoneCentroid(i_v,1)*0.0,v.ZoneCentroid(i_v,2),sprintf('%.1f%%',(100*v.CirclePop(i_v)/count_total)),'Color',[1 1 1],'FontSize',6,'HorizontalAlignment','left');
 % end
-text(v.ZoneCentroid(1,1)*2.7,v.ZoneCentroid(1,2),sprintf('%.1f\n  %%',(100*v.ZonePop(1)/count_total)),'Color',[0 0 0],'FontSize',6,'HorizontalAlignment','left');
-text(v.ZoneCentroid(2,1)*1.3,v.ZoneCentroid(1,2),sprintf('%.1f\n  %%',(100*v.ZonePop(2)/count_total)),'Color',[0 0 0],'FontSize',6,'HorizontalAlignment','left');
-text(v.ZoneCentroid(3,1)*0.5,v.ZoneCentroid(1,2),sprintf('%.1f\n  %%',(100*v.ZonePop(3)/count_total)),'Color',[0 0 0],'FontSize',6,'HorizontalAlignment','left');
+text(v.ZoneCentroid(1,1)*4,v.ZoneCentroid(1,2),sprintf('%.1f\n  %%',(100*v.ZonePop(1)/count_total)),'Color',[0 0 0],'FontSize',6,'HorizontalAlignment','left');
+text(v.ZoneCentroid(2,1)*1.2,v.ZoneCentroid(1,2),sprintf('%.1f\n  %%',(100*v.ZonePop(2)/count_total)),'Color',[0 0 0],'FontSize',6,'HorizontalAlignment','left');
+text(v.ZoneCentroid(3,1)*0.25,v.ZoneCentroid(1,2),sprintf('%.1f\n  %%',(100*v.ZonePop(3)/count_total)),'Color',[0 0 0],'FontSize',6,'HorizontalAlignment','left');
 
 axis off
 box off
@@ -205,7 +205,7 @@ ff=gca;
 xl=ff.XLim;
 yl=ff.YLim;
 text(v.Position(1,1)-v.Radius(1)*0.2,v.Position(1,2)+v.Radius(1)*1.3,sprintf('Temporal tuning'),'Color',[0 0 1],'FontSize',6,'HorizontalAlignment','Center');
-text(v.Position(2,1)-v.Radius(1)*0.2,v.Position(2,2)-v.Radius(2)*1.65,sprintf('Location tuning'),'Color',[1 0 0],'FontSize',6,'HorizontalAlignment','Center');
+text(v.Position(2,1)-v.Radius(1)*0.2,v.Position(2,2)-v.Radius(2)*2.3,sprintf('Location tuning'),'Color',[1 0 0],'FontSize',6,'HorizontalAlignment','Center');
 
 text(xl(1)+diff(xl)*0.5, yl(1)+diff(yl)*1.3, sprintf('%d cells',count_total), 'fontsize', 6, 'fontname', 'helvetica', 'fontweight', 'bold','HorizontalAlignment','Center');
 
