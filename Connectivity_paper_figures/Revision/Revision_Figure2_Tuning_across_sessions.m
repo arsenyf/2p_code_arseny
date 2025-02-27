@@ -1,8 +1,8 @@
-function Revision_PLOT_TuningStatistics_Across_days ()
+function Revision_Figure2_Tuning_across_sessions ()
 close all
 dir_base = fetch1(IMG.Parameters & 'parameter_name="dir_root_save"', 'parameter_value');
 dir_current_fig = [dir_base  '\Connectivity_paper_figures\plots\Revision\'];
-filename = 'Revision_TuningStatistics_across_days';
+filename = 'Revision_TuningStatistics_across_sessions';
 figure
 
 

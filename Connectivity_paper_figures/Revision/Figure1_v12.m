@@ -1,4 +1,4 @@
-function Figure1_v11
+function Figure1_v12
 close all;
 
 DATA=fetch1(PAPER.ConnectivityPaperFigure1datav7shuffle,'figure_data');

@@ -257,6 +257,10 @@ for i_roi=1:1:size(S,1)
     catch
     end
     
+    if isnan(lickmap_regular_odd_vs_even_corr)
+        lickmap_regular_odd_vs_even_corr=0;
+    end
+    
     try
         lickmap_first_vs_begin_corr=corr([lickmap_fr_first(:),lickmap_fr_begin(:)],'Rows' ,'pairwise');
         lickmap_first_vs_begin_corr=lickmap_first_vs_begin_corr(2);

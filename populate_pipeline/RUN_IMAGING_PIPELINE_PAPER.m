@@ -46,7 +46,7 @@ IMG.Parameters; %configure the path to your data folder here
 
 
 %% STEP 0 - populate LAB (for each new person/rig/animal)
-% populate_LAB_new_Rig_Person_Animal() % 
+ populate_LAB_new_Rig_Person_Animal() % 
 
 % Definition tables - make sure they are not empty by running them
 % EXP2.ActionEventType;
@@ -105,6 +105,8 @@ populate(IMG.ROIBad);
 populate(IMG.ROIID);
 
 populate(IMG.ROIInclude);
+populate(PAPER.ROILICK2DInclusion)
+populate(PAPER.ROILICK2DInclusionWithMesoscope)
 
 % We use this:
 populate(IMG.ETLTransform);  % XYZ coordinate transform (same transform across all sessions) for correction of ETL abberations based on ETL callibration. Populated from external script.
@@ -197,11 +199,19 @@ populate(LICK2D.ROILick2DmapSpikes); %also populates LICK2D.ROILick2DmapPSTHSpik
 populate(LICK2D.ROILick2DmapStatsSpikeShort);
 populate(LICK2D.ROILick2DmapUnimodalitySpikes);
 populate(LICK2D.ROILick2DPSTHSpikesPvalue); % p_value of stability and modulation depth of the 1D tuning (PSTH); also populates LICK2D.ROILick2DPSTHSpikesShuffledDistribution
+populate(LICK2D.ROILick2DmapSpikesModulation) % modulation depth of the 2D tuning (map)
 
+
+%binning in 3
 populate(LICK2D.ROILick2DmapSpikes3bins); %also populates LICK2D.ROILick2DmapPSTHSpikes3bins LICK2D.ROILick2DmapPSTHStabilitySpikes3bins LICK2D.ROILick2DmapStatsSpikes3bins LICK2D.ROILick2DSelectivitySpikes3bins LICK2D.ROILick2DSelectivityStatsSpikes3bins
 populate(LICK2D.ROILick2DmapStatsSpikes3binsShort);
 populate(LICK2D.ROILick2DmapSpikes3binsModulation) % modulation depth of the 2D tuning (map)
 populate(LICK2D.ROILick2DmapSpikes3binsPvalue); %also populates LICK2D.ROILick2DmapSpikesShuffledDistribution
+
+
+populate(LICK2D.ROILick2DmapSpikesTongueMap) % computes 2D tuning based on binned tongue endpoint position in horizonal and vertical plane (not target position)
+ %also populates   LICK2D.ROILick2DmapPSTHSpikesTongueMap LICK2D.ROILick2DmapPSTHStabilitySpikesTongueMap;LICK2D.ROILick2DmapStatsSpikesTongueMap;LICK2D.ROILick2DSelectivitySpikesTongueMap;LICK2D.ROILick2DSelectivityStatsSpikesTongueMap;
+populate(LICK2D.ROILick2DmapSpikesModulationTongue) % modulation depth of the 2D tuning (map) based on the tongue position
 
 
 populate(LICK2D.ROILick2DPSTHSpikesPoisson); % also populates LICK2D.ROILick2DPSTHStatsSpikesPoisson LICK2D.ROILick2DPSTHBlockSpikesPoisson LICK2D.ROILick2DPSTHBlockStatsSpikesPoisson
@@ -318,7 +328,7 @@ populate(TRACKING.VideoFiducialsSessionAvg);
 populate(TRACKING.VideoTongueTrial); %also populates TRACKING.VideoLickportTrial TRACKING.VideoGroomingTrial TRACKING.VideoBodypartTrajectTrial TRACKING.VideoLickportPositionTrial
 populate(TRACKING.VideoNthLickTrial);
 populate(TRACKING.VideoLickCountTrial); %simply counts the number of licks per trial
-populate(LICK2D.PLOTCameras);
+populate(TRACKING.VideoLickAimingTrial); %calculates correlations between lick direction and target positions
 populate(LICK2D.PLOTCameras);
 
 populate(PLOTS.MapsBodypartCorr);

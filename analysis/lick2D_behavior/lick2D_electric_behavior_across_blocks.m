@@ -1,4 +1,4 @@
-function    lick2D_video_behavior_across_blocks_electric()
+function    lick2D_electric_behavior_across_blocks()
 clf
 
 % subject_list=[463189,464724,464725,463190,462458];

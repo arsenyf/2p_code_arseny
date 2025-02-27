@@ -20,9 +20,9 @@ pos_z_bins_centers                      : blob   # binning used for the 2D tunin
 
 classdef ROILick2DmapSpikesTongueMap < dj.Computed
     properties
-%                         keySource = (EXP2.SessionEpoch*IMG.FOV) & IMG.ROISpikes & IMG.ROI & EXP2.TrialLickPort & 'session_epoch_type="behav_only"' & EXP2.TrialLickBlock & IMG.Mesoscope;
-keySource = (EXP2.SessionEpoch*IMG.FOV) & IMG.ROI & IMG.ROISpikes & EXP2.TrialLickPort & 'session_epoch_type="behav_only"' & EXP2.TrialLickBlock & TRACKING.VideoTongueTrial - IMG.Mesoscope;
-        
+% keySource = (EXP2.SessionEpoch*IMG.FOV) & IMG.ROI & IMG.ROISpikes & EXP2.TrialLickPort & 'session_epoch_type="behav_only"' & EXP2.TrialLickBlock & TRACKING.VideoTongueTrial - IMG.Mesoscope;
+        keySource = (EXP2.SessionEpoch*IMG.FOV) & IMG.ROI & IMG.ROISpikes & EXP2.TrialLickPort & 'session_epoch_type="behav_only"' & EXP2.TrialLickBlock & TRACKING.VideoTongueTrial & IMG.Mesoscope;
+
     end
     methods(Access=protected)
         function makeTuples(self, key)
@@ -39,11 +39,11 @@ keySource = (EXP2.SessionEpoch*IMG.FOV) & IMG.ROI & IMG.ROISpikes & EXP2.TrialLi
             fn_compute_Lick2D_map_based_on_tongue_position (key,self, rel_data, fr_interval, fr_interval_limit, flag_electric_video);
             
             % % also populates
-            %     self2=LICK2D.ROILick2DmapPSTHSpikesTongueMap;
-            %     self2=LICK2D.ROILick2DmapPSTHStabilitySpikes;
-            %     self3=LICK2D.ROILick2DmapStatsSpikesTongueMap;
-            %     self4=LICK2D.ROILick2DSelectivitySpikesTongueMap;
-            %     self5=LICK2D.ROILick2DSelectivityStatsSpikes;
+            self2=LICK2D.ROILick2DmapPSTHSpikesTongueMap;
+            self3=LICK2D.ROILick2DmapPSTHStabilitySpikesTongueMap;
+            self4=LICK2D.ROILick2DmapStatsSpikesTongueMap;
+            self5=LICK2D.ROILick2DSelectivitySpikesTongueMap;
+            self6=LICK2D.ROILick2DSelectivityStatsSpikesTongueMap;
 
         end
     end
