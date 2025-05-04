@@ -1,5 +1,7 @@
 function ANALYSIS_PHOTOSTIM_PAPER6()
 
+Summary_statistics ()
+
 STIMANAL.SessionEpochsIncludedFinal %% manually update session info here
 STIMANAL.SessionEpochsIncludedFinalUniqueEpochs
 % photostim_direct_new()
@@ -11,7 +13,7 @@ populate(STIM.ROIInfluence2)
 populate(STIM.ROIInfluenceNoZscore);
 populate(STIM.ROIInfluence); %should be the  same as STIM.ROIInfluence2 but also saves the response trace into STIM.ROIInfluenceTraceLong  
 populate(STIM.ROIInfluenceDFF); %based on DFF (except for target neuron selection that is based on spikes)
-populate(STIM.ROIInfluence2);  %similar to STIM.ROIInfluence2 but with larger window for determining peak response
+populate(STIM.ROIInfluence3);  %similar to STIM.ROIInfluence2 but with larger window for determining peak response
 
 
 
@@ -146,4 +148,29 @@ populate(STIMANAL.Target2ConnectedCorrTuningMap)
 populate(STIMANAL.Target2ConnectedCorrTuningMap2)
 PLOT_Network_Degree_vs_tuning_similarity_to_connected_neurons()
 
+Revision_Figure1_firstlick_lastlick_tuning
+Revision_Figure2_Tuning_across_sessions_and_block_pvalue_signif()
+Supplementary_Figure_XXX__TongueMap_vsTargetMap()
+Supplementary_Figure1_number_of_success_trials_across_sessions
 
+
+% GLM for licks
+populate(LICK2D.ROILick2DPSTHSpikesGLM) % also populates LICK2D.ROILick2DPSTHStatsSpikesGLM
+populate(LICK2D.ROILick2DPSTHSpikesGLM2) % also populates LICK2D.ROILick2DPSTHStatsSpikesGLM2 -- different binning, time and spline definition. Not used eventually.
+
+% Opsing density
+populate(STIMANAL.TargetsDensity)
+
+% Inhibitory interactions
+populate(STIMANAL.InfluenceVsCorrMap3Inhibitory)
+populate(STIMANAL.InfluenceVsCorrMapShuffled3Inhibitory)
+
+
+populate(STIMANAL.InfluenceVsCorrMap3Inhibitory2)
+populate(STIMANAL.InfluenceVsCorrMapShuffled3Inhibitory2)
+
+populate(STIMANAL.InfluenceVsCorrMap3Inhibitory3)
+populate(STIMANAL.InfluenceVsCorrMapShuffled3Inhibitory3)
+
+populate(STIMANAL.InfluenceVsCorrMap3Inhibitory4)
+populate(STIMANAL.InfluenceVsCorrMapShuffled3Inhibitory4)

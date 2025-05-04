@@ -173,7 +173,7 @@ text(xl(1)-diff(xl)*0.5,yl(1)+diff(yl)*0.3,sprintf('Control targets'), 'FontSize
 
 
 
-%% Tuning
+%% Tuning -- all connections (inhibitory and excitatory combined)
 min_pairs_in_influence_bin=25;
 min_pairs_in_corr_bin=25;
 min_session_per_bin=5;
@@ -192,12 +192,52 @@ key.neurons_or_control=0;
 colormap=[0 1 1];
 [xl] = fn_plot_tuning_vs_connectivity_figure4(rel_data, rel_shuffled, key,title_string, colormap, min_pairs_in_influence_bin, min_session_per_bin);
 
-
 key.neurons_or_control=1;
 colormap=[1 0 1];
 [xl] = fn_plot_tuning_vs_connectivity_figure4(rel_data, rel_shuffled, key,title_string, colormap, min_pairs_in_influence_bin, min_session_per_bin);
 
+yl=[-0.01, 0.03]
+ylim(yl)
+% text(xl(1)+diff(xl)*0.5,yl(1)-diff(yl)*0.5,['Connection strength' newline ' (\Delta z-score activity)'], 'FontSize',6,'HorizontalAlignment','center');
+% text(xl(1)-diff(xl)*0.4,yl(1)-diff(yl)*0.2,[sprintf('Tuning correlations,') newline '    {residual \it r}'], 'FontSize',6,'VerticalAlignment','middle','Rotation',90);
 
+set(gca,'XTick',[0,1],'Ytick',[0, 0.03],'TickLength',[0.05,0.05], 'FontSize',6);
+% text(xl(1)-diff(xl)*0.6, yl(1)+diff(yl)*1.35, 'c', ...
+%         'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
+% text(xl(1)+diff(xl)*0.5,yl(1)+diff(yl)*1.3,sprintf('Positional tuning'), 'FontSize',6,'HorizontalAlignment','center', 'fontweight', 'bold');
+
+
+text(xl(1)-diff(xl)*0.75, yl(1)+diff(yl)*1.3, 'b', ...
+    'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
+xlabel (['Connection strength' newline '(\Delta z-score activity)']);
+ylabel([sprintf('Tuning correlation, \n residual') ' \itr']);
+text(xl(1)+diff(xl)*0.25,yl(1)+diff(yl)*1.1,sprintf('Location tuning'),'FontSize',7,'HorizontalAlignment','left','Color',[0 0 0])
+% text(xl(1)+diff(xl)*0.25,yl(1)+diff(yl)*1.1,sprintf('Positional tuning'),'FontSize',6,'HorizontalAlignment','left','Color',[0 0 0], 'fontweight', 'bold')
+plot(xl,[0 0],'k')
+
+
+%% Tuning -- inhibitory connections only
+min_pairs_in_influence_bin=25;
+min_pairs_in_corr_bin=25;
+min_session_per_bin=5;
+
+key.neurons_or_control=1;
+key.response_p_val=1;
+rel_data = STIMANAL.InfluenceVsCorrMap3Inhibitory2*EXP2.SessionID  & 'num_pairs>=0' & 'num_targets>=0' ...
+    &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' );
+
+rel_shuffled = STIMANAL.InfluenceVsCorrMapShuffled3Inhibitory2 *EXP2.SessionID & 'num_pairs>=0' & 'num_targets>=0' ...
+    &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' );
+
+title_string = 'Positional tuning';
+ax5=axes('position',[position_x1(4),position_y1(1), panel_width1, panel_height1])
+key.neurons_or_control=0;
+colormap=[0 1 1];
+[xl] = fn_plot_tuning_vs_connectivity_figure4(rel_data, rel_shuffled, key,title_string, colormap, min_pairs_in_influence_bin, min_session_per_bin);
+
+key.neurons_or_control=1;
+colormap=[1 0 1];
+[xl] = fn_plot_tuning_vs_connectivity_figure4(rel_data, rel_shuffled, key,title_string, colormap, min_pairs_in_influence_bin, min_session_per_bin);
 
 yl=[-0.01, 0.03]
 ylim(yl)

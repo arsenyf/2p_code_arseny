@@ -7,6 +7,7 @@ response_mean_trials   : blob                # response amlitude (mean over resp
 response_peak_trials   : blob                # response amlitude (peak at response window) at each trial
 response_trace_trials  : longblob          # response trace at each trial
 time_vector            : blob                # response amlitude at each trial
+idx_photostim_trials_used : blob                # idx of photostim trials used after dealing with those that occured at the very begining or end of the session
 %}
 
 
@@ -63,7 +64,7 @@ classdef ROIResponseDirectVariability < dj.Imported
                 
                 
                 
-                f_trace = fetch1(IMG.ROITrace & k1,'f_trace');
+                f_trace = fetch1(IMG.ROIdeltaF & k1,'dff_trace');
                 photostim_start_frame = fetch1(IMG.PhotostimGroup &  STIM.ROIResponseDirectUnique & k1,'photostim_start_frame');
                 %         global_baseline=mean(movmin(f_trace_direct(i_epoch,:),1009));
                 global_baseline=mean( f_trace);
@@ -73,13 +74,14 @@ classdef ROIResponseDirectVariability < dj.Imported
                 timewind_baseline1 = [ -5 0];
                 timewind_baseline2  = [-5 0] ;
                 timewind_baseline3  = [ -5 0];
-                [StimStat,StimTrace] = fn_compute_photostim_response_variability (f_trace , photostim_start_frame, timewind_response, timewind_baseline1,timewind_baseline2,timewind_baseline3, flag_baseline_trial_or_avg, global_baseline, time);
+                [StimStat,StimTrace,idx_photostim_trials_used] = fn_compute_photostim_response_variability (f_trace , photostim_start_frame, timewind_response, timewind_baseline1,timewind_baseline2,timewind_baseline3, flag_baseline_trial_or_avg, global_baseline, time);
                 
                 
                 kk = fetch( STIM.ROIResponseDirectUnique & key);
                 kk.response_mean_trials = StimStat.response_trials;
                 kk.response_peak_trials = StimStat.response_peak_trials;
                 kk.response_trace_trials = StimTrace.response_trace_trials;
+                kk.idx_photostim_trials_used = idx_photostim_trials_used;
                 kk.time_vector = time;
                 insert(self, kk); %
                 

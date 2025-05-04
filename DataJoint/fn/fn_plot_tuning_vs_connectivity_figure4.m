@@ -3,7 +3,6 @@ function [xl] = fn_plot_tuning_vs_connectivity_figure4(rel_data, rel_shuffled, k
 
 DATA=struct2table(fetch(rel_data & key,'*', 'ORDER BY session_uid'));
 DATA_SHUFFLED=struct2table(fetch(rel_shuffled & key,'*', 'ORDER BY session_uid'));
-
 bins_corr_edges = DATA.bins_corr_edges(1,:);
 bins_corr_centers = bins_corr_edges(1:1:end-1) + diff(bins_corr_edges)/2;
 
@@ -75,6 +74,7 @@ idx_subplot = 0;
 %% Residual correlation (i.e. Shuffled subtracted) versus connectivity
 xl=[bins_influence_edges(1), bins_influence_edges(end)];
 hold on
+% y=DATA.corr_binned_by_influence;% - DATA_SHUFFLED.corr_binned_by_influence;
 y=DATA.corr_binned_by_influence - DATA_SHUFFLED.corr_binned_by_influence;
 
 try

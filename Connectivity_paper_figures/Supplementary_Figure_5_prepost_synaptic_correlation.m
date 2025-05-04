@@ -32,7 +32,15 @@ position_y(end+1)=position_y(end)-vertical_dist;
 
 %% Correlation
 % rel=STIMANAL.ROIInfluenceVariability3  &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1');
-rel=STIMANAL.ROIInfluenceVariability  &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1') & (STIM.ROIInfluence2 & 'response_p_value1<=0.01') ;
+% rel=STIMANAL.ROIInfluenceVariability  &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1') & (STIM.ROIInfluence2 & 'response_p_value1<=0.01') ;
+% rel=STIMANAL.ROIInfluenceVariability  &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1') & (STIM.ROIInfluence2 & 'response_p_value1<=0.01') ;
+% rel=STIMANAL.ROIInfluenceVariabilityPC3removed  &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1') & (STIM.ROIInfluence2 & 'response_p_value1<=0.01') ;
+% rel=STIMANAL.ROIInfluenceVariabilityPC1removed  &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1') & (STIM.ROIInfluence2 & 'response_p_value1<=0.01') ;
+
+rel=STIMANAL.ROIInfluenceVariabilitySpikes  &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1') & (STIM.ROIInfluence2 & 'response_p_value1<=0.01') ;
+% rel=STIMANAL.ROIInfluenceVariabilitySpikesShort  &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1') & (STIM.ROIInfluence2 & 'response_p_value1<=0.01') ;
+% rel=STIMANAL.ROIInfluenceVariabilitySpikesPC1removed  &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1') & (STIM.ROIInfluence2 & 'response_p_value1<=0.01') ;
+
 
 r_all=fetchn(rel,'pre_post_synaptic_response_correlation');
 

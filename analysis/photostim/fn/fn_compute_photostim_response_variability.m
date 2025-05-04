@@ -1,8 +1,9 @@
-function [StimStat, StimTrace] = fn_compute_photostim_response_variability (f_trace, photostim_start_frame, timewind_response, timewind_baseline1,timewind_baseline2,timewind_baseline3, flag_baseline_trial_or_avg, global_baseline, time)
+function [StimStat, StimTrace, idx_photostim_trials_used] = fn_compute_photostim_response_variability (f_trace, photostim_start_frame, timewind_response, timewind_baseline1,timewind_baseline2,timewind_baseline3, flag_baseline_trial_or_avg, global_baseline, time)
 
 num_frames_pre =  sum(time<0);
 num_frames_post =  sum(time>=0);
-photostim_start_frame=photostim_start_frame((photostim_start_frame-num_frames_pre>0) & (photostim_start_frame+num_frames_post<=numel(f_trace)));
+idx_photostim_trials_used = (photostim_start_frame-num_frames_pre>0) & (photostim_start_frame+num_frames_post<=numel(f_trace));
+photostim_start_frame=photostim_start_frame(idx_photostim_trials_used);
 F=zeros(numel(photostim_start_frame),(num_frames_pre+num_frames_post));
 for i_stim=1:1:numel(photostim_start_frame)
     s_fr = photostim_start_frame(i_stim);
@@ -144,7 +145,6 @@ StimTrace.response_trace_mean_1half = single(mean(F(idx_1half_trials,:),1));
 StimTrace.response_trace_mean_2half = single(mean(F(idx_2half_trials,:),1));
 StimTrace.response_trace_mean_odd = single(mean(F(idx_odd_trials,:),1));
 StimTrace.response_trace_mean_even = single(mean(F(idx_even_trials,:),1));
-
 StimTrace.response_trace_trials = single(F);
 
 

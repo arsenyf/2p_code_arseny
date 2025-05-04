@@ -135,12 +135,9 @@ AC=DATA.D_venn_reward_positional.AC;
 BC=DATA.D_venn_reward_positional.BC;
 ABC=DATA.D_venn_reward_positional.ABC;
 
-percentage_large_reward = A_count_largereward/count_total
-percentage_small_reward = B_count_smallreward/count_total
-percentage_reward_position_conjunctive = numel(DATA.D_positional_and_reward.field_size_large)/count_total
-percentage_reward_position_conjunctive = DATA.D_venn_reward_positional.count_reward_and_positional/count_total
 
 DATA.D_venn_reward_positional.count_reward_and_positional/(DATA.D_venn_reward_positional.A_count_largereward + DATA.D_venn_reward_positional.B_count_smallreward - DATA.D_venn_reward_positional.AB)
+prob_reward_position_conjunctive = DATA.D_venn_reward_positional.count_reward_and_positional/count_total
 
 
 [h,v]=venn([A_count_largereward,B_count_smallreward,C_count_positional], [AB, AC, BC, ABC],'FaceColor',{[1 0.3 0],[0 0.7 0.2],[1 0 0]});
@@ -162,6 +159,21 @@ text(xl(1)-diff(xl)*0.2, yl(1)+diff(yl)*1.1, 'd', ...
     'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
 
 
+
+
+%% chi-square test for independence
+prob_large_reward = A_count_largereward/count_total
+prob_positional = C_count_positional/count_total
+prob_largereward_and_position_conjunctive = DATA.D_venn_reward_positional.AC/count_total;
+[h, p_value, stats] = my_chi_square_test (count_total,prob_large_reward, prob_positional, prob_largereward_and_position_conjunctive );
+
+%% chi-square test for independence
+prob_small_reward = B_count_smallreward/count_total
+prob_positional = C_count_positional/count_total
+prob_smallreward_and_position_conjunctive = DATA.D_venn_reward_positional.AB/count_total;
+[h, p_value, stats] = my_chi_square_test (count_total,prob_small_reward, prob_positional, prob_smallreward_and_position_conjunctive );
+
+
 %% Venn diagram - temporal reward tuning
 axes('position',[position_x3(3),position_y3(1)-0.3, panel_width3*1.8, panel_height3*1.8])
 DATA.D_venn_reward_temporal;
@@ -174,8 +186,8 @@ AC=DATA.D_venn_reward_temporal.AC;
 BC=DATA.D_venn_reward_temporal.BC;
 ABC=DATA.D_venn_reward_temporal.ABC;
 
-percentage_large_reward = A_count_largereward/count_total
-percentage_small_reward = B_count_smallreward/count_total
+prob_large_reward = A_count_largereward/count_total
+prob_small_reward = B_count_smallreward/count_total
 percentage_reward_temporal_conjunctive = DATA.D_venn_reward_temporal.count_reward_and_temporal/count_total
 %reward and temporal:
 DATA.D_venn_reward_temporal.count_reward_and_temporal/(DATA.D_venn_reward_temporal.A_count_largereward + DATA.D_venn_reward_temporal.B_count_smallreward - DATA.D_venn_reward_temporal.AB)
@@ -202,6 +214,8 @@ xl=ff.XLim;
 yl=ff.YLim;
 text(xl(1)-diff(xl)*0.2, yl(1)+diff(yl)*1.1, 'd', ...
     'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
+
+
 
 
 %% Large/Regular reward modulation histogram and percentage of positionally tuned neurons per modulation bin

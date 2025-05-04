@@ -31,7 +31,7 @@ xh=xh(1:end-1)+diff(xh)/2;
 colors=fake_parula(numel(num_svd_components_removed_vector)+2);
 %     colors=jet(numel(num_svd_components_removed_vector)+2);
 
-min_x=0; max_x=500;
+min_x=0; max_x=1000;
 
 for i_c=1:1:numel(num_svd_components_removed_vector)
     key.num_svd_components_removed=num_svd_components_removed_vector(i_c);
@@ -57,7 +57,7 @@ for i_c=1:1:numel(num_svd_components_removed_vector)
     key.session_epoch_type= 'spont_only';
     D=fetch(rel_data&key,'*');
     title(sprintf('Spontaneous activity\n'));
-            ylim([-0.005 0.1]);
+            ylim([-0.01 0.5]);
 
     %zoom in
     subplot(2,3,4)
@@ -97,7 +97,7 @@ for i_c=1:1:numel(num_svd_components_removed_vector)
     xlim([min_x max_x]);
     xlabel('Lateral Distance (\mum)');
     title(sprintf('Behavior\n'));
-        ylim([-0.005 0.1]);
+        ylim([-0.005 0.4]);
 
     
     % zoom in

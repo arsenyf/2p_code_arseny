@@ -101,7 +101,8 @@ classdef ConnectivityPaperFigure1datav7shuffle < dj.Computed
             D_tuned_positional.psth_position_concat_regular_odd_even_corr=fetchn(rel_stats3, 'psth_position_concat_regular_odd_even_corr','ORDER BY roi_number_uid');
             D_tuned_positional.lickmap_regular_odd_vs_even_corr=fetchn(rel_stats3, 'lickmap_regular_odd_vs_even_corr','ORDER BY roi_number_uid');
             D_tuned_positional.psth_corr_across_position_regular=fetchn(rel_stats22, 'psth_corr_across_position_regular','ORDER BY roi_number_uid');
-            
+            D_tuned_positional.preferred_bin_regular=fetchn(rel_stats3, 'preferred_bin_regular','ORDER BY roi_number_uid');
+
             D_tuned_temporal_and_positional.lickmap_regular_odd_vs_even_corr=fetchn(rel_stats5, 'lickmap_regular_odd_vs_even_corr','ORDER BY roi_number_uid');
             D_tuned_temporal_and_positional.information_per_spike_regular=fetchn(rel_stats5, 'information_per_spike_regular','ORDER BY roi_number_uid');
             D_tuned_temporal_and_positional.psth_position_concat_regular_odd_even_corr=fetchn(rel_stats5, 'psth_position_concat_regular_odd_even_corr','ORDER BY roi_number_uid');

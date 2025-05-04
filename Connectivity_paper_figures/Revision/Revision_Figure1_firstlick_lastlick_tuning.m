@@ -1,10 +1,10 @@
-function Revision_Figure1_firstlicl_lastlick_tuning
+function Revision_Figure1_firstlick_lastlick_tuning
 close all
 dir_base = fetch1(IMG.Parameters & 'parameter_name="dir_root_save"', 'parameter_value');
 dir_current_fig = [dir_base  '\Connectivity_paper_figures\plots\Revision\'];
 dir_embeded_graphics=dir_current_fig;
 
-filename=[sprintf('FigureRevision1_v1')];
+filename=[sprintf('Revision_SupFig2_firstlick_lastlick_tuning')];
 
 % PAPER_graphics_definition_Figure1
 figure;
@@ -18,7 +18,12 @@ set(gcf,'color',[1 1 1]);
 
 %% Inclusion  by tuning aligned for 1st tongue contact
 %----------------------------------------------------
-key=PAPER.ROILICK2DInclusion & (LICK2D.ROILick2DPSTHStatsSpikes & 'psth_regular_odd_vs_even_corr>0.25') & (LICK2D.ROILick2DPSTHSpikesModulation & 'psth_regular_modulation>25') ;
+p_value_threshold=0.05;
+
+% just the cells
+key = PAPER.ROILICK2DInclusion  &  (LICK2D.ROILick2DPSTHSpikesPvalue &  sprintf('psth_regular_modulation_pval<=%.2f',p_value_threshold));
+% key = PAPER.ROILICK2DInclusion  &  (LICK2D.ROILick2DmapSpikes3binsPvalue2 &  sprintf('lickmap_fr_regular_modulation_pval<=%.2f',p_value_threshold));
+% key=PAPER.ROILICK2DInclusion & (LICK2D.ROILick2DPSTHStatsSpikes & 'psth_regular_odd_vs_even_corr>0.25') & (LICK2D.ROILick2DPSTHSpikesModulation & 'psth_regular_modulation>25') ;
 
 % PSTH aligned to lick port presentation
 PSTH_all = cell2mat(fetchn(LICK2D.ROILick2DPSTHSpikesLickport & key,'psth_regular'));

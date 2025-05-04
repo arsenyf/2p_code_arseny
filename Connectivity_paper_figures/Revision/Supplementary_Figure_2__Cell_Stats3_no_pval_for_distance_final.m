@@ -35,12 +35,12 @@ p_value_threshold=0.05;
 hold on
 % psth_regular_modulation = D_tuned_temporal.psth_regular_modulation;
 % %shuffled
-% % rel_temporal_signif_shuffled = LICK2D.ROILick2DPSTHSpikesShuffledDistribution & (LICK2D.ROILick2DPSTHSpikesPvalue &  sprintf('psth_regular_modulation_pval<=%.2f',p_value_threshold)) & rel_roi;
-% rel_temporal_signif_shuffled = LICK2D.ROILick2DPSTHSpikesShuffledDistribution  & rel_roi;
-% psth_regular_modulation_shuffled= cell2mat(fetchn(rel_temporal_signif_shuffled,'psth_regular_modulation_shuffled'));
+rel_temporal_signif_shuffled = LICK2D.ROILick2DPSTHSpikesShuffledDistribution  & rel_roi;
+psth_regular_modulation_shuffled= cell2mat(fetchn(rel_temporal_signif_shuffled,'psth_regular_modulation_shuffled'));
 % [hhh3,edges]=histcounts([psth_regular_modulation_shuffled(:)],linspace(0,100,15));
 % hhh3=100*hhh3/sum(hhh3);
 % bar(edges(1:end-1),hhh3,'FaceColor',[0.5 0.5 0.5],'EdgeColor',[0.5 0.5 0.5])
+plot([mean(psth_regular_modulation_shuffled(:)),mean(psth_regular_modulation_shuffled(:))],[0,30],'Color',[0.5 0.5 0.5],'LineWidth',2);
 
 %actual
 psth_regular_modulation = fetchn( LICK2D.ROILick2DPSTHSpikesModulation &  (LICK2D.ROILick2DPSTHSpikesPvalue &  sprintf('psth_regular_modulation_pval<=%.2f',p_value_threshold)) & rel_roi,'psth_regular_modulation');
@@ -65,23 +65,14 @@ text(xl(1)-diff(xl)*0.75, yl(1)+diff(yl)*1.5, 'a', ...
 % Location modulation
 axes('position',[position_x1(2),position_y1(1), panel_width1, panel_height1])
 hold on
-
-
 p_value_threshold=0.05;
-hold on
-
-% psth_regular_modulation = D_tuned_temporal.psth_regular_modulation;
 %shuffled
-% rel_positional_signif_shuffled = LICK2D.ROILick2DmapSpikesShuffledDistribution2 & (LICK2D.ROILick2DmapSpikes3binsPvalue2 &  sprintf('lickmap_fr_regular_modulation_pval<=%.2f',p_value_threshold)) & rel_roi;
-
-
-%shuffled
-% rel_positional_signif_shuffled = LICK2D.ROILick2DmapSpikesShuffledDistribution2  & rel_roi;
-% lickmap_fr_regular_modulation_shuffled= cell2mat(fetchn(rel_positional_signif_shuffled,'lickmap_fr_regular_modulation_shuffled'));
+rel_positional_signif_shuffled = LICK2D.ROILick2DmapSpikesShuffledDistribution2  & rel_roi;
+lickmap_fr_regular_modulation_shuffled= cell2mat(fetchn(rel_positional_signif_shuffled,'lickmap_fr_regular_modulation_shuffled'));
 % [hhh3,edges]=histcounts([lickmap_fr_regular_modulation_shuffled(:)],linspace(0,100,15));
 % hhh3=100*hhh3/sum(hhh3);
 % bar(edges(1:end-1),hhh3,'FaceColor',[0.5 0.5 0.5],'EdgeColor',[0.5 0.5 0.5])
-% sigfnif_threshold=25;
+plot([mean(lickmap_fr_regular_modulation_shuffled(:)),mean(lickmap_fr_regular_modulation_shuffled(:))],[0,25],'Color',[0.5 0.5 0.5],'LineWidth',2);
 
 %actual
 lickmap_fr_regular_modulation = fetchn( LICK2D.ROILick2DmapSpikes3binsModulation &  (LICK2D.ROILick2DmapSpikes3binsPvalue2 &  sprintf('lickmap_fr_regular_modulation_pval<=%.2f',p_value_threshold)) & rel_roi,'lickmap_fr_regular_modulation');
@@ -92,8 +83,6 @@ yl = [0, max(hhh3)];
 yl(2)=25;
 xl = [0,100];
 % text(xl(1)+diff(xl)*0.3, yl(1)+diff(yl)*0.9, 'Shuffled', 'fontsize', 6, 'fontname', 'helvetica','Color',[0.5 0.5 0.5]);
-
-
 text(xl(1)+diff(xl)*0.5,yl(1)-diff(yl)*0.5, [sprintf('Tuning modulation') newline '(%)'], 'FontSize',6,'HorizontalAlignment','center')
 text(xl(1)+diff(xl)*0.5,yl(1)+diff(yl)*1.3,sprintf('Location tuning\nmodulation'), 'FontSize',6,'HorizontalAlignment','center', 'fontweight', 'bold');
 text(xl(1)-diff(xl)*0.5,yl(1)+diff(yl)*0.05, sprintf('All neurons\n      (%%)'), 'FontSize',6,'HorizontalAlignment','left','Rotation',90);

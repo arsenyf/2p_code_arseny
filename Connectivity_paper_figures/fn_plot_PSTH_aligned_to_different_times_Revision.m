@@ -34,14 +34,14 @@ set(gca,'XTick',[0,5],'Ytick',[],'TickLength',[0.05,0], 'FontSize',6);
 % set(gca,'XTick',[0,xl(end)],'Ytick',[1, 100000],'YtickLabel',[{'1', '100,000'}],'TickLength',[0.05,0], 'FontSize',6);
 
 if flag_plot_colorbar==1
-%colorbar
-ax8=axes('position',[position_x2(plot_x)+0.05,position_y22(plot_y), panel_width3, panel_height3]);
-colormap(ax8,inferno)
-cb1 = colorbar();
-axis off
-set(cb1,'Ticks',[0, 1], 'FontSize',6);
-text(5,0.5,sprintf('Activity (norm.)'),'Rotation',90, 'FontSize',6,'HorizontalAlignment','Center');
-set(gca, 'FontSize',6);
+    %colorbar
+    ax8=axes('position',[position_x2(plot_x)+0.05,position_y22(plot_y), panel_width3, panel_height3]);
+    colormap(ax8,inferno)
+    cb1 = colorbar();
+    axis off
+    set(cb1,'Ticks',[0, 1], 'FontSize',6);
+    text(5,0.5,sprintf('Activity (norm.)'),'Rotation',90, 'FontSize',6,'HorizontalAlignment','Center');
+    set(gca, 'FontSize',6);
 end
 
 % Preferred time all PSTHs
@@ -51,7 +51,7 @@ axes('position',[position_x2(plot_x),position_y22(plot_y)+0.04, panel_width3, pa
 hhh1=100*hhh1/sum(hhh1);
 bar(edges(1:end-1),hhh1,'FaceColor',[0 0 0],'EdgeColor',[0 0 0])
 yl = [0, max(hhh1)];
-yl(2)=20;
+yl(2)=25;
 half_bin =mean(diff(edges))/2;
 xl = [(psth_time(1)-half_bin), ceil(psth_time(end))];
 % xl = [floor(psth_time(1)), ceil(psth_time(end))];
@@ -63,7 +63,7 @@ box off;
 % title(sprintf('Temporal tuning\n%d cells',numel(peaktime_psth)), 'FontSize',6);
 title(sprintf('Temporal tuning\naligned to\n%s\n',title_name), 'FontSize',6);
 if flag_legend==1
-text(xl(1)-diff(xl)*0.7, yl(1)+diff(yl)*1.75, 'a', ...
-    'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
-text(xl(1)-diff(xl)*0.3,yl(1)-diff(yl)*0.25,sprintf('Neurons \n  (%%)'),'Rotation',90, 'FontSize',6,'VerticalAlignment','bottom');
+    text(xl(1)-diff(xl)*0.7, yl(1)+diff(yl)*1.75, 'a', ...
+        'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
+    text(xl(1)-diff(xl)*0.3,yl(1)-diff(yl)*0.25,sprintf('Neurons \n  (%%)'),'Rotation',90, 'FontSize',6,'VerticalAlignment','bottom');
 end

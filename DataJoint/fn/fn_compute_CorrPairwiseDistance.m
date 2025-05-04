@@ -12,7 +12,9 @@ set(gcf,'PaperOrientation','portrait');
 set(gcf,'Units','centimeters','Position',get(gcf,'paperPosition')+[3 0 0 0]);
 set(gcf,'color',[1 1 1]);
 
-num_svd_components_removed_vector = [0, 1, 10, 100, 500];
+% num_svd_components_removed_vector = [0, 1, 10, 100, 500];
+num_svd_components_removed_vector = [0, 1, 3];
+
 corr_histogram_bins=[-0.2:0.005:0.2];
 %             distance_bins=[0:50:100,200:100:1000,1250:250:5000]; % in microns
 %             distance_bins=[0:50:450,500:250:2750,3000:1000:6000]; % in microns

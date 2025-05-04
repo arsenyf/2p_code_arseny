@@ -15,9 +15,6 @@ Supplementary_Figure1_number_of_success_trials_across_sessions()
 Supplementary_Figure1_number_of_success_trials_across_blocks()
 
 
-%% Revision
-Supplementary_Figure_XXX__TongueMap_vsTargetMap
-
 
 %% Behavior main analysis
 lick2D_video_behavior_across_sessions 
@@ -39,7 +36,16 @@ lick2D_video_yaw_trajectory_no_goals %same as above but without the targets bein
 
 
 
-%% Additional analysis to do:
-% within trial variability (angle/x/z position) across blocks/days separately for before lickport appearence and after licport appearence
-% number of early licks as a function of block
-% all of these separate by naive (2 days) versus expert (2>days)
+%% Revision
+% Modulation of neihborhood
+populate(LICK2D.DistanceTuningColumnsMapsSpikes)
+%Similarity of tuning between target and connected cells as a function o target out-degree
+populate(STIMANAL.Target2ConnectedCorrTuningMap)
+populate(STIMANAL.Target2ConnectedCorrTuningMap2)
+PLOT_Network_Degree_vs_tuning_similarity_to_connected_neurons()
+
+Revision_Figure1_firstlick_lastlick_tuning
+Revision_Figure2_Tuning_across_sessions_and_block_pvalue_signif()
+Supplementary_Figure_XXX__TongueMap_vsTargetMap()
+Supplementary_Figure1_number_of_success_trials_across_sessions
+

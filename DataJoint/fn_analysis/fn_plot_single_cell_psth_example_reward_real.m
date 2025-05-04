@@ -11,7 +11,7 @@ psth_small_stem= P.psth_small_stem/psth_max;
 psth_large= P.psth_large/psth_max;
 psth_large_stem= P.psth_large_stem/psth_max;
 hold on;
-plot([0,0],[0,1],'-k','linewidth',0.25)
+% plot([0,0],[0,1],'-k','linewidth',0.25)
 lineProps.style='-';
 lineProps.width=0.05;
 
@@ -28,7 +28,9 @@ lineProps.col={[ 0 0 0.8]};
 mseb(psth_time,psth_regular, psth_regular_stem,lineProps);
 
 
-xl = [floor(psth_time(1)) ceil(psth_time(end))];
+% xl = [floor(psth_time(1)) ceil(psth_time(end))];
+xl = [0 ceil(psth_time(end))];
+
 xlim(xl);
 yl=[0,1];
 ylim(yl);

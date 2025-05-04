@@ -33,7 +33,7 @@ axes('position',[position_x2(4),position_y22(1)+0.04, panel_width3, panel_height
 hhh1=100*hhh1/sum(hhh1);
 bar(edges(1:end-1),hhh1,'FaceColor',[0 0 0],'EdgeColor',[0 0 0])
 yl = [0, max(hhh1)];
-yl(2)=20;
+yl(2)=25;
 xl = [floor(psth_time(1)) ceil(psth_time(end))];
 text(xl(1)-diff(xl)*0.3,yl(1)-diff(yl)*0.25,sprintf('Neurons \n  (%%)'),'Rotation',90, 'FontSize',6,'VerticalAlignment','bottom');
 xlim(xl);
@@ -157,6 +157,28 @@ axis off
 set(cb2,'Ticks',[yl],'TickLabels',[yl], 'FontSize',6);
 text(3.5,+0.5,sprintf('%%\n neurons'), 'FontSize',6,'HorizontalAlignment','left');
 set(gca, 'FontSize',6);
+
+%% Laterality bias computed on a 4x4 grid
+% percent left tuned cells
+left_tuned_cells = preferred_bin_mat(:,1:2);
+left_tuned_cells=sum(left_tuned_cells(:))
+right_tuned_cells = preferred_bin_mat(:,3:4);
+right_tuned_cells=sum(right_tuned_cells(:))
+% percent right tuned cells
+
+%% Laterality bias computed on a 3x3 grid
+bin_mat_coordinate_hor= repmat([1:1:3],3,1);
+bin_mat_coordinate_ver= repmat([1:1:3]',1,3);
+[preferred_bin_mat] = histcounts2(bin_mat_coordinate_ver([D_tuned_positional.preferred_bin_regular]),bin_mat_coordinate_hor([D_tuned_positional.preferred_bin_regular]),[1:1:3+1],[1:1:3+1]);
+preferred_bin_mat=100*preferred_bin_mat./sum(preferred_bin_mat(:));
+mmm=imagesc([-1,0,1],[-1,0,1],preferred_bin_mat);
+yl=[0, max(15,ceil(nanmax(preferred_bin_mat(:))))];
+% percent left tuned cells
+left_tuned_cells = preferred_bin_mat(:,1);
+left_tuned_cells=sum(left_tuned_cells(:))
+right_tuned_cells = preferred_bin_mat(:,3);
+right_tuned_cells=sum(right_tuned_cells(:))
+% percent right tuned cells
 
 
 %% Temporal tuning similarity,\nacross positions

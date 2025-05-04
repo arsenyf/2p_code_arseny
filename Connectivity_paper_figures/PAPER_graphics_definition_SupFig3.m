@@ -46,7 +46,7 @@ position_y2(end+1)=position_y2(end)-vertical_dist2;
 
 
 % Scatters
-panel_width3=0.4;
+panel_width3=0.2;
 panel_height3=0.2;
 horizontal_dist3=0.4;
 vertical_dist3=0.15;

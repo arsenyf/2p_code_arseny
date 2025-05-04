@@ -103,15 +103,8 @@ xlabel (['Connection strength' newline '(\Delta z-score activity)']);
 % text(xl(1)-diff(xl)*0.25,yl(1)+diff(yl)*1.1,sprintf('Residual = Data - Distance shuffled'), 'FontSize',6,'HorizontalAlignment','left','Color',[0 0 1]);
 set(gca,'Xtick',[0,1.5], 'XtickLabel',[0,1.5])
 set(gca,'Ytick',[0,0.03], 'YtickLabel',[0,0.03],'TickLength',[0.03,0.03], 'FontSize',6)
-
-
 xlim(xl)
 
-
-
-if isempty(dir(dir_current_fig))
-    mkdir (dir_current_fig)
-end
 
 
 
