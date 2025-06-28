@@ -1,10 +1,10 @@
-function Figure4_v8()
+function Figure4_v8_males()
 close all
 dir_base = fetch1(IMG.Parameters & 'parameter_name="dir_root_save"', 'parameter_value');
-dir_current_fig = [dir_base  'Connectivity_paper_figures\plots\'];
+dir_current_fig = [dir_base  'Connectivity_paper_figures\plots\revision\males_females\'];
 dir_embeded_graphics=dir_current_fig;
 
-filename=[sprintf('Figure4_v8_with_inhibition')];
+filename=[sprintf('Figure4_v8_males')];
 
 
 DefaultFontSize =6;
@@ -43,9 +43,9 @@ min_session_per_bin=5;
 title_string = 'Noise Correlations, rest';
 
 rel_data = STIMANAL.InfluenceVsCorrTraceSpont*EXP2.SessionID  & 'num_pairs>=0' & 'num_targets>=0' ...
-    &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' );
+    &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' ) & (LAB.Subject & 'sex="M"');
 rel_shuffled = STIMANAL.InfluenceVsCorrTraceSpontShuffled*EXP2.SessionID & 'num_pairs>=0' & 'num_targets>=0' ...
-    &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' );
+    &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' ) & (LAB.Subject & 'sex="M"');
 
 % Target Neurons
 key.neurons_or_control=1;
@@ -98,9 +98,9 @@ plot(xl,[0 0],'k')
 axes('position',[position_x1(2),position_y1(1), panel_width1, panel_height1])
 
 rel_data = STIMANAL.InfluenceVsCorrTraceBehav*EXP2.SessionID  & 'num_pairs>=0' & 'num_targets>=0' ...
-    &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' );
+    &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' ) & (LAB.Subject & 'sex="M"');
 rel_shuffled = STIMANAL.InfluenceVsCorrTraceBehavShuffled*EXP2.SessionID & 'num_pairs>=0' & 'num_targets>=0' ...
-    &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' );
+    &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' ) & (LAB.Subject & 'sex="M"');
 
 % Target Neurons
 key.neurons_or_control=1;
@@ -181,10 +181,10 @@ min_session_per_bin=5;
 key.neurons_or_control=1;
 key.response_p_val=1;
 rel_data = STIMANAL.InfluenceVsCorrMap3*EXP2.SessionID  & 'num_pairs>=0' & 'num_targets>=0' ...
-    &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' );
+    &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' ) & (LAB.Subject & 'sex="M"');
 
 rel_shuffled = STIMANAL.InfluenceVsCorrMapShuffled3 *EXP2.SessionID & 'num_pairs>=0' & 'num_targets>=0' ...
-    &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' );
+    &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' ) & (LAB.Subject & 'sex="M"');
 
 title_string = 'Positional tuning';
 ax5=axes('position',[position_x1(3),position_y1(1), panel_width1, panel_height1])
@@ -227,10 +227,10 @@ min_session_per_bin=5;
 key.neurons_or_control=1;
 key.response_p_val=1;
 rel_data = STIMANAL.InfluenceVsCorrMap3Inhibitory4*EXP2.SessionID  & 'num_pairs>=0' & 'num_targets>=0' ...
-    &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' );
+    &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' ) & (LAB.Subject & 'sex="M"');
 
 rel_shuffled = STIMANAL.InfluenceVsCorrMapShuffled3Inhibitory4 *EXP2.SessionID & 'num_pairs>=0' & 'num_targets>=0' ...
-    &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' );
+    &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & IMG.Volumetric & 'stimpower>=100' & 'flag_include=1' ) & (LAB.Subject & 'sex="M"');
 
 title_string = 'Positional tuning';
 ax5=axes('position',[position_x1(4),position_y1(1), panel_width1, panel_height1])
@@ -241,8 +241,7 @@ colormap=[0 1 1];
 key.neurons_or_control=1;
 colormap=[1 0 1];
 [xl] = fn_plot_tuning_vs_connectivity_figure4(rel_data, rel_shuffled, key,title_string, colormap, min_pairs_in_influence_bin, min_session_per_bin);
-xlim([-0.4,0])
-set(gca,'Xtick',[-0.4,0])
+
 yl=[-0.01, 0.03]
 ylim(yl)
 % text(xl(1)+diff(xl)*0.5,yl(1)-diff(yl)*0.5,['Connection strength' newline ' (\Delta z-score activity)'], 'FontSize',6,'HorizontalAlignment','center');
@@ -277,9 +276,9 @@ eval(['print ', figure_name_out, ' -dpdf -r300']);
 eval(['print ', figure_name_out, ' -dtiff  -r300']);
 
 
-PLOT_Network_Degree_vs_tuning_final()
+PLOT_Network_Degree_vs_tuning_final_males()
 
 
-Plot_in_out_degree_and_bidirectional_connectivity()
+Plot_in_out_degree_and_bidirectional_connectivity_males()
 
-PLOT_Network_Degree_vs_tuning_similarity_to_connected_neurons()
+PLOT_Network_Degree_vs_tuning_similarity_to_connected_neurons_m()

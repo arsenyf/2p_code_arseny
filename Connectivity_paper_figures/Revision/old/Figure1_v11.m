@@ -158,7 +158,7 @@ plane4=fetch1(IMG.Plane & key_fov_example & 'plane_num=4','mean_img');
 imagesc(flip(plane4));
 xl=[0,size(plane4,1)];
 yl=[0,size(plane4,2)];
-caxis([0 max(plane4(:))*0.4])
+caxis([0 max(plane4(:))*0.2])
 axis off;
 axis tight;
 axis equal;
@@ -167,7 +167,7 @@ colormap(ax1,gray)
 ax2=axes('position',[position_x1_fov(3),position_y1_fov(3), panel_width1_fov, panel_height1_fov]);
 plane3=fetch1(IMG.Plane & key_fov_example & 'plane_num=3','mean_img');
 imagesc(flip(plane3));
-caxis([0 max(plane3(:))*0.6])
+caxis([0 max(plane3(:))*0.4])
 axis off;
 axis tight;
 axis equal;
@@ -176,7 +176,7 @@ colormap(ax2,gray)
 ax3=axes('position',[position_x1_fov(2),position_y1_fov(2), panel_width1_fov, panel_height1_fov]);
 plane2=fetch1(IMG.Plane & key_fov_example & 'plane_num=2','mean_img');
 imagesc(flip(plane2));
-caxis([0 max(plane2(:))*0.8])
+caxis([0 max(plane2(:))*0.6])
 axis off;
 axis tight;
 axis equal;
@@ -186,7 +186,7 @@ ax4=axes('position',[position_x1_fov(1),position_y1_fov(1), panel_width1_fov, pa
 hold on
 plane1=fetch1(IMG.Plane & key_fov_example & 'plane_num=1','mean_img');
 imagesc(flip(plane1));
-caxis([0 max(plane1(:))*1.0])
+caxis([0 max(plane1(:))*0.8])
 text(xl(1)-diff(xl)*0.5, yl(1)+diff(yl)*1.1, 'd', ...
     'fontsize', 12, 'fontname', 'helvetica', 'fontweight', 'bold');
 axis off;

@@ -171,7 +171,7 @@ bin_mat_coordinate_hor= repmat([1:1:3],3,1);
 bin_mat_coordinate_ver= repmat([1:1:3]',1,3);
 [preferred_bin_mat] = histcounts2(bin_mat_coordinate_ver([D_tuned_positional.preferred_bin_regular]),bin_mat_coordinate_hor([D_tuned_positional.preferred_bin_regular]),[1:1:3+1],[1:1:3+1]);
 preferred_bin_mat=100*preferred_bin_mat./sum(preferred_bin_mat(:));
-mmm=imagesc([-1,0,1],[-1,0,1],preferred_bin_mat);
+% mmm=imagesc([-1,0,1],[-1,0,1],preferred_bin_mat);
 yl=[0, max(15,ceil(nanmax(preferred_bin_mat(:))))];
 % percent left tuned cells
 left_tuned_cells = preferred_bin_mat(:,1);

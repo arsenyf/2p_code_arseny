@@ -1,6 +1,6 @@
 function ANALYSIS_PHOTOSTIM_PAPER6()
 
-Summary_statistics()
+Summary_statistics ()
 
 STIMANAL.SessionEpochsIncludedFinal %% manually update session info here
 STIMANAL.SessionEpochsIncludedFinalUniqueEpochs
@@ -177,14 +177,5 @@ populate(STIMANAL.InfluenceVsCorrMapShuffled3Inhibitory4)
 
 
 % Male to Female comparison
-%For Figure1_v12_males 
-%Figure1_v12_females
-population(PAPER.ConnectivityPaperFigure1datav7shuffleMales)
-population(PAPER.ConnectivityPaperFigure1datav7shuffleFemales)
 
-%For Figure 2
-%Figure2_v2_males
-%Figure2_v2_females
-populate(PAPER.ConnectivityPaperFigure2datav2shuffleMales)
-populate(PAPER.ConnectivityPaperFigure2datav2shuffleFemales)
-
+ConnectivityPaperFigure1datav7shuffleFemales

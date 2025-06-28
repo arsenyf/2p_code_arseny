@@ -189,7 +189,7 @@ xlabel(sprintf('Lickport X-pos \n(normalized)'), 'FontSize',10);
 ylabel(sprintf('Lickport  Z-pos '), 'FontSize',10);
 set(gca,'YDir','normal');
 set(gca, 'FontSize',10);
-title(sprintf('number licks per trial \n before target appearence'));
+title(sprintf('number licks per trial \n before target appearance'));
 
 
 subplot(3,3,6)
@@ -208,7 +208,7 @@ xlabel(sprintf('Lickport X-pos \n(normalized)'), 'FontSize',10);
 ylabel(sprintf('Lickport  Z-pos '), 'FontSize',10);
 set(gca,'YDir','normal');
 set(gca, 'FontSize',10);
-title(sprintf('number licks per trial \n after target appearence'));
+title(sprintf('number licks per trial \n after target appearance'));
 
 
 
@@ -228,7 +228,7 @@ xlabel(sprintf('Lickport X-pos \n(normalized)'), 'FontSize',10);
 ylabel(sprintf('Lickport  Z-pos '), 'FontSize',10);
 set(gca,'YDir','normal');
 set(gca, 'FontSize',10);
-title(sprintf('%% contact licks\n after target appearence'));
+title(sprintf('%% contact licks\n after target appearance'));
 
 if isempty(dir(dir_current_fig))
     mkdir (dir_current_fig)

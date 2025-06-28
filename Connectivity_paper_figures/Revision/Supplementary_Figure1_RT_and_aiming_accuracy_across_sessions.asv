@@ -46,8 +46,7 @@ position_y1(end+1)=position_y1(end)-vertical_dist1;
 
 % subject_list=[463189,464724,464725,463190,462458];
 
-subject_list=unique(fetchn(TRACKING.VideoNthLickTrial ,'subject_id'));
-% subject_list=unique(fetchn(TRACKING.VideoNthLickTrial & (LAB.Subject & 'sex="M"'),'subject_id'));
+subject_list=unique(fetchn(TRACKING.VideoNthLickTrial & (LAB.Subject & 'sex="M"'),'subject_id'));
 
 x_tong_port_corr_after=[];
 x_tong_port_corr_before=[];

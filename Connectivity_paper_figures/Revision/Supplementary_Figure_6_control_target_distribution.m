@@ -43,6 +43,33 @@ position_y1(end+1)=position_y1(end)-vertical_dist;
 position_y1(end+1)=position_y1(end)-vertical_dist*1.1;
 
 
+%% Stats of Opsing density, and target density and distances
+
+rel=STIMANAL.TargetsDensity &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs& IMG.Volumetric & 'stimpower>=100' & 'flag_include=1'  ...
+     & (STIMANAL.NeuronOrControlNumber & 'num_targets_neurons>=25') ...
+    & (STIMANAL.NeuronOrControlNumber & 'num_targets_controls>=25'));
+distance_between_targets=fetchn(rel,'distance_between_targets');
+targets_density_percentage=fetchn(rel,'targets_density_percentage');
+opsin_expressing_neurons_density_percentage=fetchn(rel,'opsin_expressing_neurons_density_percentage');
+
+for i_s=1:1:numel(distance_between_targets)
+    distance_between_targets_sessions (i_s)= mean(distance_between_targets{i_s});
+end
+distance_between_targets_mean = mean(distance_between_targets_sessions)
+distance_between_targets_stem = std(distance_between_targets_sessions)/sqrt(numel(distance_between_targets_sessions))
+
+targets_density_percentage_mean = mean((cell2mat(targets_density_percentage)))
+range = [min((cell2mat(targets_density_percentage))), max((cell2mat(targets_density_percentage)))]
+
+targets_density_percentage_stem = std((cell2mat(targets_density_percentage)))/sqrt(numel(targets_density_percentage))
+
+opsin_expressing_neurons_density_percentage_mean = mean((cell2mat(opsin_expressing_neurons_density_percentage)))
+opsin_expressing_neurons_density_percentage_stem = std((cell2mat(opsin_expressing_neurons_density_percentage)))/sqrt(numel(opsin_expressing_neurons_density_percentage))
+
+
+
+
+
  %% FOV
 % key_fov.subject_id = 463192;
 % key_fov.session=1;
@@ -125,27 +152,6 @@ set(gca, 'FontSize', 10)
 xlim([0,250])
 control_target_average_distance_to_target_neurons = median(distance_to_closest_responsive_target)
 
-
-%% Opsing density, and target density and distances
-
-rel=STIMANAL.TargetsDensity &  (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs& IMG.Volumetric & 'stimpower>=100' & 'flag_include=1'  ...
-     & (STIMANAL.NeuronOrControlNumber & 'num_targets_neurons>=25') ...
-    & (STIMANAL.NeuronOrControlNumber & 'num_targets_controls>=25'));
-distance_between_targets=fetchn(rel,'distance_between_targets');
-targets_density_percentage=fetchn(rel,'targets_density_percentage');
-opsin_expressing_neurons_density_percentage=fetchn(rel,'opsin_expressing_neurons_density_percentage');
-
-for i_s=1:1:numel(distance_between_targets)
-    distance_between_targets_sessions (i_s)= mean(distance_between_targets{i_s});
-end
-distance_between_targets_mean = mean(distance_between_targets_sessions)
-distance_between_targets_stem = std(distance_between_targets_sessions)/sqrt(numel(distance_between_targets_sessions))
-
-targets_density_percentage_mean = mean((cell2mat(targets_density_percentage)))
-targets_density_percentage_stem = std((cell2mat(targets_density_percentage)))/sqrt(numel(targets_density_percentage))
-
-opsin_expressing_neurons_density_percentage_mean = mean((cell2mat(opsin_expressing_neurons_density_percentage)))
-opsin_expressing_neurons_density_percentage_stem = std((cell2mat(opsin_expressing_neurons_density_percentage)))/sqrt(numel(opsin_expressing_neurons_density_percentage))
 
 
 
