@@ -50,6 +50,9 @@ position_y1(end+1)=position_y1(end)-vertical_dist1;
 
 subject_list=unique(fetchn(TRACKING.VideoNthLickTrial,'subject_id'));
 
+subject_list=unique(fetchn(TRACKING.VideoNthLickTrial & PAPER.ROILICK2DInclusion,'subject_id'));
+
+
 percent_success_trials=[];
 percent_contact_licks =[];
 percent_contact_licks_after_first_contact =[];
@@ -137,8 +140,8 @@ xlabel('Session', 'FontSize',8,'FontWeight','Bold');
 ylabel(sprintf('Trials with succesfull \n target contacts (%%)'));
 % text(4,1,sprintf('Lick on first \ntarget contact'),'Color',[1 0 0])
 ylim([90,100])
-xlim([1,5])
-set(gca,'Xtick',[1,5], 'FontSize',8);
+xlim([1,7])
+set(gca, 'FontSize',8);
 % title(sprintf('Reaction time'),'FontWeight','Bold', 'FontSize',8);
 
 axes('position',[position_x1(2),position_y1(1), panel_width1, panel_height1]);
@@ -148,8 +151,8 @@ xlabel('Session', 'FontSize',8,'FontWeight','Bold');
 ylabel(sprintf('Licks with contacts \n after target appearance (%%)'));
 % text(4,1,sprintf('Lick on first \ntarget contact'),'Color',[1 0 0])
 ylim([60,90])
-xlim([1,5])
-set(gca,'Xtick',[1,5], 'FontSize',8);
+xlim([1,7])
+set(gca, 'FontSize',8);
 % title(sprintf('Reaction time'),'FontWeight','Bold', 'FontSize',8);
 
 
@@ -160,8 +163,8 @@ xlabel('Session', 'FontSize',8,'FontWeight','Bold');
 ylabel(sprintf('Number of licks per trial'));
 % text(4,1,sprintf('Lick on first \ntarget contact'),'Color',[1 0 0])
 ylim([0,12])
-xlim([1,5])
-set(gca,'Xtick',[1,5], 'FontSize',8);
+xlim([1,7])
+set(gca, 'FontSize',8);
 % title(sprintf('Reaction time'),'FontWeight','Bold', 'FontSize',8);
 
 
@@ -173,8 +176,8 @@ xlabel('Session', 'FontSize',8,'FontWeight','Bold');
 ylabel(sprintf('Number of licks per trial before after lickport entrance'));
 % text(4,1,sprintf('Lick on first \ntarget contact'),'Color',[1 0 0])
 ylim([0,10])
-xlim([1,5])
-set(gca,'Xtick',[1,5], 'FontSize',8);
+xlim([1,7])
+set(gca, 'FontSize',8);
 % title(sprintf('Reaction time'),'FontWeight','Bold', 'FontSize',8);
 
 
@@ -186,8 +189,8 @@ xlabel('Session', 'FontSize',8,'FontWeight','Bold');
 ylabel(sprintf('Contact licks (%%)'));
 % text(4,1,sprintf('Lick on first \ntarget contact'),'Color',[1 0 0])
 ylim([0,100])
-xlim([1,5])
-set(gca,'Xtick',[1,5], 'FontSize',8);;
+xlim([1,7])
+set(gca, 'FontSize',8);
 % title(sprintf('Reaction time'),'FontWeight','Bold', 'FontSize',8);
 
 
@@ -198,8 +201,8 @@ xlabel('Session', 'FontSize',8,'FontWeight','Bold');
 ylabel(sprintf('Contact licks, after first contact (%%)'));
 % text(4,1,sprintf('Lick on first \ntarget contact'),'Color',[1 0 0])
 ylim([0,100])
-xlim([1,5])
-set(gca,'Xtick',[1,5], 'FontSize',8);
+xlim([1,7])
+set(gca, 'FontSize',8);
 % title(sprintf('Reaction time'),'FontWeight','Bold', 'FontSize',8);
 
 

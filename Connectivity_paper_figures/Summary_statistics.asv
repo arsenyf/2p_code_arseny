@@ -4,17 +4,56 @@ function Summary_statistics ()
 %% Number of Animals
 subjects_with_both_photostim_and_behavior=fetch((LAB.Subject & STIMANAL.SessionEpochsIncludedFinalUniqueEpochs)  & PAPER.ROILICK2DInclusion,'*') %7 females 5 males
 subjects_with_photostim_only=fetch((LAB.Subject & STIMANAL.SessionEpochsIncludedFinalUniqueEpochs) -  PAPER.ROILICK2DInclusion,'*') % 1 males
-subjects_with_behav_only= fetch((LAB.Subject & PAPER.ROILICK2DInclusion) - (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs),'*') % 2 males
+subjects_without_photostim= fetch((LAB.Subject & PAPER.ROILICK2DInclusion) - (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs),'*') % 2 males
+
+subject_with_behav_only=fetch( (LAB.Subject - PAPER.ROILICK2DInclusion - STIMANAL.SessionEpochsIncludedFinalUniqueEpochs)  & TRACKING.VideoNthLickTrial,'*'); %from Mesoscope
 
 %% Number of Sessions
 sessions_with_both_photostim_and_behavior=count((EXP2.Session & STIMANAL.SessionEpochsIncludedFinalUniqueEpochs)  & PAPER.ROILICK2DInclusion)
 sessions_with_photostim_only= count((EXP2.Session & STIMANAL.SessionEpochsIncludedFinalUniqueEpochs) -  PAPER.ROILICK2DInclusion)
-sessions_with_behav_only= count((EXP2.Session & PAPER.ROILICK2DInclusion) - (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs))
+sessions_without_photostim = count((EXP2.Session & PAPER.ROILICK2DInclusion) - (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs))
 
+
+sessions_without_photostim = count((EXP2.SessionID & PAPER.ROILICK2DInclusion) | (EXP2.SessionID & STIMANAL.SessionEpochsIncludedFinalUniqueEpochs))
+a= fetchn(EXP2.SessionID & PAPER.ROILICK2DInclusion,'session_uid')
+b= fetchn(EXP2.SessionID & STIMANAL.SessionEpochsIncludedFinalUniqueEpochs,'session_uid')
+
+unique([a;b])
+%% Typical average number of sessions
+rel=((LAB.Subject & STIMANAL.SessionEpochsIncludedFinalUniqueEpochs)  & PAPER.ROILICK2DInclusion);
+rel = rel.proj('subject_id');  % exclude 'field_name'
+EXP2.Session & rel
+
+% rel=((LAB.Subject & STIMANAL.SessionEpochsIncludedFinalUniqueEpochs) -  PAPER.ROILICK2DInclusion);
+% rel = rel.proj('subject_id');  % exclude 'field_name'
+% EXP2.Session & rel
+% 
+% rel=((LAB.Subject & STIMANAL.SessionEpochsIncludedFinalUniqueEpochs) -  PAPER.ROILICK2DInclusion);
+% rel = rel.proj('subject_id');  % exclude 'field_name'
+% EXP2.Session & rel
+mice_and_sessions=fetch((EXP2.Session & STIMANAL.SessionEpochsIncludedFinalUniqueEpochs)  & PAPER.ROILICK2DInclusion);
+
+% mice_and_sessions=fetch((EXP2.Session & STIMANAL.SessionEpochsIncludedFinalUniqueEpochs)  & PAPER.ROILICK2DInclusion);
+% mice_and_sessions=fetch((EXP2.Session & STIMANAL.SessionEpochsIncludedFinalUniqueEpochs) -  PAPER.ROILICK2DInclusion)
+
+data=table2array(struct2table(mice_and_sessions));
+mice = unique([mice_and_sessions.subject_id]);
+% Count number of unique sessions per mouse
+for i_m = 1:1:numel(mice)
+    mouse_id = mice(i_m);
+    mice_and_sessions
+    sessions_per_mice(i_m) = numel((data(data(:,1)==mouse_id, 2)));
+    fprintf('Mouse %d has %d  sessions\n', mouse_id, sessions_per_mice(i_m));
+end
+
+
+
+%% Genotype and Sex
 list_subjects_genes= fetch(LAB.Subject*LAB.SubjectGeneModification &  (IMG.ROI-IMG.ROIBad) & (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & 'flag_include=1')  & PAPER.ROILICK2DInclusion);
 
-list_subjects_sex= fetchn(LAB.Subject&  (IMG.ROI-IMG.ROIBad) & (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & 'flag_include=1')  & PAPER.ROILICK2DInclusion,'sex');
-list_subjects_sex
+list_subjects_sex= fetchn(LAB.Subject&  (IMG.ROI-IMG.ROIBad) & (STIMANAL.SessionEpochsIncludedFinalUniqueEpochs & 'flag_include=1')  & PAPER.ROILICK2DInclusion,'sex')
+
+
 %% Number of cells
 % cells behavior
 cells_with_behavior = count(PAPER.ROILICK2DInclusion)

@@ -170,8 +170,8 @@ xlabel('Session', 'FontSize',8,'FontWeight','Bold');
 ylabel(sprintf('Time to contact (s),\n relative to target appearence'));
 % text(4,1,sprintf('Lick on first \ntarget contact'),'Color',[1 0 0])
 ylim([0,2])
-xlim([1,7])
-set(gca, 'FontSize',8);
+xlim([1,5])
+set(gca,'Xtick',[1,5], 'FontSize',8);
 title(sprintf('Reaction time'),'FontWeight','Bold', 'FontSize',8);
 text(4,0.72,sprintf('First \ncontact lick'),'Color',[0.5 0.25 0.25])
 
@@ -184,7 +184,8 @@ ylabel(sprintf('Correlation in (tongue,target)\n position, r'));
 ylim([0.4,1])
 text(4,0.72,sprintf('First \ncontact lick'),'Color',[0.5 0.25 0.25])
 text(2,0.93,sprintf('All subsequent \nlicks'),'Color',[0.25 0.25 0.25])
-xlim([1,7])
+xlim([1,5])
+set(gca,'Xtick',[1,5], 'FontSize',8);
 set(gca, 'FontSize',8);
 title(sprintf('Aiming accuracy'),'FontWeight','Bold', 'FontSize',8);
 
